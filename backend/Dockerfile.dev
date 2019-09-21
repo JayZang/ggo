@@ -1,0 +1,12 @@
+FROM node:10.16.3
+
+WORKDIR /app
+
+# 不在 image 安裝 depandency 是因為想在開發時讓 node_modules 存在本地
+# Typescript 才有辦法取得正確型別資訊
+# COPY package.json .
+# RUN npm install
+
+EXPOSE 3000
+
+CMD ["npm", "run", "watch"]
