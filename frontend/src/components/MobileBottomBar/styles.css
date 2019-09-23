@@ -1,0 +1,5 @@
+#mobile-bottom-bar {
+  /* 用於解決 IphoneX 之後全螢幕有效之區域顯示 */
+  padding-bottom: constant(safe-area-inset-bottom); /* iOS 11.0 */
+  padding-bottom: env(safe-area-inset-bottom);      /* iOS 11.2 */
+}
