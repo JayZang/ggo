@@ -12,6 +12,20 @@ code {
     monospace;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
 @media screen and (display-mode: standalone) and (width: 375px) and (height: 768px),
   screen and (display-mode: standalone) and (width: 724px) and (height: 375px),
   screen and (display-mode: fullscreen) and (width: 375px) and (height: 768px),
