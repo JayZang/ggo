@@ -1,21 +1,21 @@
 import { connect } from 'react-redux';
 
-import LeftDrawerMenu from './LeftDrawerMenu';
+import MenuDrawer from './MenuDrawer';
 import { RootState } from 'stores';
 import { Dispatch } from 'redux';
-import { toggleLeftDrawer } from 'stores/view/action';
+import { toggleMenuDrawer } from 'stores/view/action';
 
 const mapStateToProps = (state: RootState) => ({
-  open: state.view.openLeftDrawer,
+  open: state.view.isMenuDrawerOpen,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     toggleDrawer: () => {
-      dispatch(toggleLeftDrawer());
+      dispatch(toggleMenuDrawer());
     }
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LeftDrawerMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(MenuDrawer);
 

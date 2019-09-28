@@ -6,6 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 import { useTheme, WithStyles, withStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
@@ -20,11 +21,11 @@ import styles from './styles';
 import TaskManagementListItem from './TaskManagementListItem'
 
 interface IProps extends WithStyles<typeof styles> {
-  open: boolean
+  open: boolean,
   toggleDrawer: () => void
 }
 
-function LeftDrawer(props: IProps) {
+function MenuDrawer(props: IProps) {
   const theme = useTheme();
   const useMobileDrawer = !useMediaQuery(theme.breakpoints.up('sm'));
   const {
@@ -39,7 +40,11 @@ function LeftDrawer(props: IProps) {
 
   const drawer = (
     <div>
-      <div className={props.classes.toolbar} />
+      <div className={props.classes.toolbar}>
+        <Typography variant="h5" noWrap>
+          GGO Management
+        </Typography>
+      </div>
       <Divider />
       <List>
         <Link to="/members">
@@ -118,4 +123,4 @@ function LeftDrawer(props: IProps) {
   );
 };
 
-export default withStyles(styles)(LeftDrawer);
+export default withStyles(styles)(MenuDrawer);

@@ -5,7 +5,7 @@ import { RootState } from 'stores'
 
 const mapStateToProps = (state: RootState) => {
   return {
-    openLeftArea: state.view.openLeftDrawer
+    openLeftArea: state.view.isMenuDrawerOpen
   }
 }
 

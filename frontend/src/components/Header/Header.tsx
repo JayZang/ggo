@@ -13,7 +13,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx';
 
 import HeaderSearchBar from './SearchBar';
-import HeaderMenuBtn from './MenuBtn';
+import HeaderMenuBtn from 'components/MenuDrawer/MenuBtn';
 import styles from './styles';
 
 interface IProps extends WithStyles<typeof styles> { 

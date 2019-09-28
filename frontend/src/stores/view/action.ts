@@ -1,13 +1,20 @@
 import {
   ViewActionTypes,
-  TOGGLE_LEFT_DRAWER
+  TOGGLE_MENU_DRAWER,
+  OPEN_MENU_DRAWER
 } from './types';
 
 /**
- * Toggle 左方抽屜選單
+ * Toggle 抽屜選單
  */
-export function toggleLeftDrawer(): ViewActionTypes {
+export function toggleMenuDrawer(): ViewActionTypes {
   return {
-    type: TOGGLE_LEFT_DRAWER
+    type: TOGGLE_MENU_DRAWER
+  }
+}
+
+export function openMenuDrawer(): ViewActionTypes {
+  return {
+    type: OPEN_MENU_DRAWER
   }
 }

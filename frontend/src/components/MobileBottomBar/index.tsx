@@ -8,6 +8,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import './styles.css'
+import MenuBtn from 'components/MenuDrawer/MenuBtn'
 
 const styles = (theme: Theme) => createStyles({
   root: {
@@ -68,6 +69,7 @@ class MobileBottomBar extends Component<IProps, IStates> {
           <Tab icon={<TaskIcon />} />
           <Tab icon={<NotificationsIcon />} />
           <Tab icon={<AccountCircle />} />
+          <Tab icon={<MenuBtn />} />
         </Tabs>
       </Paper>
     );

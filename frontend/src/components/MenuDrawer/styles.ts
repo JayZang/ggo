@@ -1,6 +1,7 @@
 import { Theme, createStyles } from '@material-ui/core/styles';
 
 import {
+  symbolicColor,
   leftDrawerOpenWidth as drawerOpenWidth,
   leftDrawerCloseWidth as drawerCloseWidth
 } from 'utils/viewConfig';
@@ -15,7 +16,13 @@ export default (theme: Theme) => createStyles({
       flexShrink: 0,
     },
   },
-  toolbar: theme.mixins.toolbar,
+  toolbar: {
+    ...theme.mixins.toolbar,
+    display: 'flex',
+    alignItems: 'center',
+    paddingLeft: theme.spacing(1.5),
+    color: symbolicColor
+  },
   drawerPaper: {
     width: '100vw',
     whiteSpace: 'nowrap',
@@ -33,9 +40,5 @@ export default (theme: Theme) => createStyles({
         width: drawerOpenWidth
       }
     }
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
+  }
 });

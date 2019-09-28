@@ -18,7 +18,7 @@ class SearchBar extends Component<IProps> {
             <SearchIcon />
           </div>
           <InputBase
-            placeholder="Search"
+            placeholder="Search Name"
             classes={{
               root: classes.searchInputRoot,
               input: classes.searchInput

@@ -2,8 +2,7 @@ import { createStyles, Theme } from '@material-ui/core/styles'
 
 export default (theme: Theme) => createStyles({
   wrapper: {
-    display: 'flex',
-    marginTop: theme.spacing(1)
+    display: 'flex'
   },
   search: {
     position: 'relative',
@@ -11,9 +10,10 @@ export default (theme: Theme) => createStyles({
     backgroundColor: theme.palette.common.white,
     boxShadow: theme.shadows[2],
     width: '100%',
+    margin: theme.spacing(0, 1),
     [theme.breakpoints.up('sm')]: {
       width: 'auto',
-      minWidth: 400
+      margin: 0,
     },
   },
   searchIcon: {
@@ -27,13 +27,14 @@ export default (theme: Theme) => createStyles({
   },
   searchInputRoot: {
     color: 'inherit',
+    width: '100%'
   },
   searchInput: {
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create('width'),
     width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200,
+    [theme.breakpoints.up('sm')]: {
+      minWidth: 400,
     },
   }
 })

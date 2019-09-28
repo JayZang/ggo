@@ -5,8 +5,7 @@ import {
 } from 'utils/viewConfig'
 
 export default (theme: Theme) => createStyles({
-  toolbar: theme.mixins.toolbar,
-  appContentContainer: {
+  appWrapper: {
     display: 'flex',
     flexDirection: 'column',
     marginLeft: 'auto',
@@ -23,7 +22,6 @@ export default (theme: Theme) => createStyles({
     }
   },
   wrapper: {
-    flexGrow: 1,
-    padding: 25
+    flexGrow: 1
   }
 })

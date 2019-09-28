@@ -1,20 +1,28 @@
 import { 
   ViewState,
   ViewActionTypes,
-  TOGGLE_LEFT_DRAWER
+  TOGGLE_MENU_DRAWER,
+  OPEN_MENU_DRAWER
 } from './types';
 
 const initState: ViewState = {
-  openLeftDrawer: false
+  isMenuDrawerOpen: false
 }
 
 export function configView(state = initState, action: ViewActionTypes) {
   switch (action.type) {
-    case TOGGLE_LEFT_DRAWER:
+    case TOGGLE_MENU_DRAWER:
       return {
         ...state,
-        openLeftDrawer: !state.openLeftDrawer
+        isMenuDrawerOpen: !state.isMenuDrawerOpen
       };
+
+    case OPEN_MENU_DRAWER:
+      return {
+        ...state,
+        isMenuDrawerOpen: true
+      }
+
     default:
       return state;
   }

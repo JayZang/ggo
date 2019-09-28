@@ -2,12 +2,12 @@ import {} from 'redux'
 import { connect } from 'react-redux'
 
 import { RootState } from 'stores'
-import AppContentContainer from './AppContentContainer'
+import AppWrapper from './AppWrapper'
 
 const mapStateToProps = (state: RootState) => {
   return {
-    isLeftDrawerOpen: state.view.openLeftDrawer
+    isLeftDrawerOpen: state.view.isMenuDrawerOpen
   }
 }
 
-export default connect(mapStateToProps)(AppContentContainer)
+export default connect(mapStateToProps)(AppWrapper)

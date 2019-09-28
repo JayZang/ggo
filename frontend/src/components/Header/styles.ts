@@ -11,7 +11,10 @@ export default (theme: Theme) => createStyles({
     boxShadow: theme.shadows[0],
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderColor: theme.palette.grey[300]
+    borderColor: theme.palette.grey[300],
+    [theme.breakpoints.down('xs')]: {
+      visibility: 'hidden'
+    }
   },
   grow: {
     flexGrow: 1,

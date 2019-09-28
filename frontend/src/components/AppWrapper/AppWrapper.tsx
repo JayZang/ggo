@@ -10,16 +10,14 @@ interface IProps extends WithStyles<typeof styles> {
   isLeftDrawerOpen: boolean
 }
 
-class AppContentContainer extends Component<IProps> {  
+class AppWrapper extends Component<IProps> {  
   render() {
     const classes = this.props.classes
 
     return (
-      <div id="app-content-container" className={clsx({
-        [classes.appContentContainer]: true,
+      <div className={clsx(classes.appWrapper, {
         'drawer-open': this.props.isLeftDrawerOpen
       })}>
-        <div className={classes.toolbar}></div>
         <div className={classes.wrapper}>
           <Switch>
             <Route path="/members" component={Members} />
@@ -32,4 +30,4 @@ class AppContentContainer extends Component<IProps> {
   }
 }
 
-export default withStyles(styles)(AppContentContainer)
+export default withStyles(styles)(AppWrapper)

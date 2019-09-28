@@ -1,11 +1,16 @@
-export const TOGGLE_LEFT_DRAWER = 'TOGGLE_LEFT_DRAWER';
+export const TOGGLE_MENU_DRAWER = 'TOGGLE_MENU_DRAWER';
+export const OPEN_MENU_DRAWER   = 'OPEN_MENU_DRAWER';
 
 export interface ViewState {
-  openLeftDrawer: boolean
+  isMenuDrawerOpen: boolean
 }
 
-interface ToggleLeftDrawerAction {
-  type: typeof TOGGLE_LEFT_DRAWER
+interface ToggleMenuDrawerAction {
+  type: typeof TOGGLE_MENU_DRAWER
 }
 
-export type ViewActionTypes = ToggleLeftDrawerAction;
+interface OpenMenuDrawerAction {
+  type: typeof OPEN_MENU_DRAWER
+}
+
+export type ViewActionTypes = ToggleMenuDrawerAction | OpenMenuDrawerAction;
