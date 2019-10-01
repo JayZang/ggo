@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import './App.css'
-import LoadingBar from 'components/LoadingBar'
+import RequestLoadingBar from 'components/RequestLoadingBar'
 import Header from 'components/Header'
 import MenuDrawer from 'components/MenuDrawer'
 import MobileBottomBar from 'components/MobileBottomBar'
@@ -13,7 +13,7 @@ class App extends Component {
     return (
       <div className="App">
         <CssBaseline />
-        <LoadingBar />
+        <RequestLoadingBar />
         <Header />
         <MenuDrawer />
         <AppWrapper />

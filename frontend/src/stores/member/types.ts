@@ -1,14 +1,21 @@
+import { IMember } from 'contracts/member'
+
 export const GET_ALL_MEMBERS = 'GET_ALL_MEMBERS'
+export const CLEAR_MEMBERS = 'CLEAR_MEMBERS'
 
 export interface MemberState {
-  members: any[]
+  members: IMember[]
 }
 
 interface GetAllMemberAction {
   type: typeof GET_ALL_MEMBERS,
   payload: {
-    members: any[]
+    members: IMember[]
   }
 }
 
-export type MemberActionTypes = GetAllMemberAction
+interface ClearMembers {
+  type: typeof CLEAR_MEMBERS
+}
+
+export type MemberActionTypes = GetAllMemberAction | ClearMembers

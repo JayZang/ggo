@@ -20,15 +20,19 @@ interface IProps extends WithStyles<typeof styles> {
   hideLoading: () => void
 }
 
-class AppLoadingBar extends Component<IProps> {
+class RequestLoadingBar extends Component<IProps> {
   componentDidMount() {
     axios.interceptors.request.use(config => {
       this.props.showLoading()
       return config
     })
     axios.interceptors.response.use(response => {
-      this.props.hideLoading()
-      return response
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          this.props.hideLoading()
+          resolve(response)
+        }, 1000)
+      })
     }, (error) => {
       this.props.hideLoading()
       return Promise.reject(error);
@@ -55,4 +59,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(AppLoadingBar))
+export default connect(null, mapDispatchToProps)(withStyles(styles)(RequestLoadingBar))

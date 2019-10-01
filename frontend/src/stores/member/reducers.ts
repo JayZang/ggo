@@ -1,7 +1,8 @@
 import { 
   MemberState, 
   MemberActionTypes,
-  GET_ALL_MEMBERS
+  GET_ALL_MEMBERS,
+  CLEAR_MEMBERS
 } from './types'
 
 const initState: MemberState = {
@@ -14,6 +15,12 @@ export default function memberReducer(state = initState, action: MemberActionTyp
       return {
         ...state,
         members: action.payload.members
+      }
+
+    case CLEAR_MEMBERS:
+      return {
+        ...state,
+        members: []
       }
 
     default:

@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 
 import MemberItem from './MemberItem'
+import { IMember } from 'contracts/member'
 
 interface IProps {
   fetchMembers: () => void,
-  members: any[]
+  clearMembers: () => void,
+  members: IMember[]
 }
 
 class MemberList extends Component<IProps> {
@@ -12,10 +14,14 @@ class MemberList extends Component<IProps> {
     this.props.fetchMembers()
   }
 
+  componentWillUnmount() {
+    this.props.clearMembers()
+  }
+
   render() {
     return (
-      <div id="member-list" style={{ marginTop: '32px' }}>
-        {this.props.members.map((value, key) => <MemberItem key={key} />)}
+      <div style={{ marginTop: 30 }}>
+        {this.props.members.map((m, index) => <MemberItem member={m} key={index} />)}
       </div>
     )
   }

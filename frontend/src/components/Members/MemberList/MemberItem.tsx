@@ -16,6 +16,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import clsx from 'clsx'
 
 import defaultManAvatar from 'assets/svgs/default-man-avatar.svg'
+import { IMember, MemberStatus } from 'contracts/member'
 
 const styles = (theme: Theme) => createStyles({
   memberItem: {
@@ -41,7 +42,8 @@ const styles = (theme: Theme) => createStyles({
   },
   name: {
     fontWeight: 'bold',
-    maxWidth: 100,
+    maxWidth: 170,
+    width: 170,
     flexGrow: 1
   },
   gender: {
@@ -68,7 +70,9 @@ const styles = (theme: Theme) => createStyles({
   }
 })
 
-interface IProps extends WithStyles<typeof styles> {}
+interface IProps extends WithStyles<typeof styles> {
+  member: IMember
+}
 
 interface IState {
   menuAnchorEl: HTMLElement | null
@@ -100,6 +104,7 @@ class MemberItem extends Component<IProps, IState> {
 
   render() {
     const classes = this.props.classes
+    const member = this.props.member
 
     return (
       <div className={classes.memberItem}>
@@ -108,10 +113,10 @@ class MemberItem extends Component<IProps, IState> {
             root: classes.paper
           }}
         >
-          <div style={{ display: 'flex'}}>
-            <Avatar src={defaultManAvatar} />
-            <Typography className={clsx(classes.name, classes.field)} component="div">
-              Jay Chang
+          <div className={classes.name} style={{ display: 'flex'}}>
+            <Avatar src={member.avatar || defaultManAvatar} />
+            <Typography className={clsx(classes.field)} component="div">
+              { member.name }
             <Box className={classes.fieldHint}>
                 Name
             </Box>
@@ -119,37 +124,44 @@ class MemberItem extends Component<IProps, IState> {
           </div>
 
           <Typography className={clsx(classes.gender, classes.field)} component="div">
-            男
+            { member.gender ? '男' : '女'}
             <Box className={classes.fieldHint}>
               Gender
             </Box>
           </Typography>
 
           <Typography className={clsx(classes.phone, classes.field)} component="div">
-            0972666666
+            { member.phone }
             <Box className={classes.fieldHint}>
               Phone
             </Box>
           </Typography>
 
           <Typography className={clsx(classes.email, classes.field)} component="div">
-            email@gmail.com
+            { member.email }
             <Box className={classes.fieldHint}>
               Email
             </Box>
           </Typography>
 
           <Typography className={clsx(classes.birthday, classes.field)} component="div">
-            1995/01/01
+            { member.birthday.format('YYYY-MM-DD') }
             <Box className={classes.fieldHint}>
               Birthday
             </Box>
           </Typography>
 
           <Typography className={clsx(classes.birthday, classes.field)} component="div">
-            <span style={{ color: 'rgb(67, 160, 71)' }}>
-              Active
-            </span>
+            { (() => {
+              switch (member.status) {
+                case MemberStatus.active:
+                  return <span className="text-success">Active</span>
+                case MemberStatus.inactive:
+                  return <span className="text-warning">Inactive</span>
+                default:
+                  return 'Unknow'
+              }
+            })() }
             <Box className={classes.fieldHint}>
               Status
             </Box>

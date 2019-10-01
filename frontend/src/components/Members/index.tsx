@@ -8,7 +8,7 @@ import MemberDataCards from './MemberDataCards'
 import AddMemberBtn from './AddMember/Button'
 import MemberFilterBtn from './FilterMember/Button'
 import MemberList from './MemberList'
-import styles from './styles'
+import styles from './styles' 
 
 interface IProps extends WithStyles<typeof styles> {}
 

@@ -71,6 +71,7 @@ class Header extends Component<IProps, IStates> {
     return (
       <Menu
         anchorEl={this.state.profileAnchorEl}
+        getContentAnchorEl={null}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         id={this.menuId}
         keepMounted
