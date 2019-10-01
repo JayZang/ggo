@@ -9,7 +9,7 @@ const initState: ViewState = {
   isMenuDrawerOpen: false
 }
 
-export function configView(state = initState, action: ViewActionTypes) {
+export default function viewReducer(state = initState, action: ViewActionTypes): ViewState {
   switch (action.type) {
     case TOGGLE_MENU_DRAWER:
       return {

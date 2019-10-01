@@ -1,17 +1,18 @@
-import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { ThunkDispatch } from 'redux-thunk'
 
-import MemberItem from './MemberItem'
+import MemberList from './MemberList'
+import { getAllMembers } from 'stores/member/action'
+import { RootState } from 'stores'
 
-const members = [0, 1, 2,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+const mapStateToProps = (state: RootState) => ({
+  members: state.member.members
+})
 
-class MemberList extends Component {
-  render() {
-    return (
-      <div id="member-list" style={{ marginTop: '32px' }}>
-        {members.map((value, key) => <MemberItem key={key} />)}
-      </div>
-    )
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
+  fetchMembers: () => {
+    dispatch(getAllMembers())
   }
-}
+})
 
-export default MemberList
+export default connect(mapStateToProps, mapDispatchToProps)(MemberList)
