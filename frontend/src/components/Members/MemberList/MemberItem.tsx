@@ -16,6 +16,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import clsx from 'clsx'
 
 import defaultManAvatar from 'assets/svgs/default-man-avatar.svg'
+import defaultWomanAvatar from 'assets/svgs/default-woman-avatar.svg'
 import { IMember, MemberStatus } from 'contracts/member'
 
 const styles = (theme: Theme) => createStyles({
@@ -114,7 +115,7 @@ class MemberItem extends Component<IProps, IState> {
           }}
         >
           <div className={classes.name} style={{ display: 'flex'}}>
-            <Avatar src={member.avatar || defaultManAvatar} />
+            <Avatar src={member.avatar || (member.gender ? defaultManAvatar : defaultWomanAvatar)} />
             <Typography className={clsx(classes.field)} component="div">
               { member.name }
             <Box className={classes.fieldHint}>
@@ -185,7 +186,6 @@ class MemberItem extends Component<IProps, IState> {
                 vertical: 'top',
                 horizontal: 'right',
               }}
-              keepMounted
               transformOrigin={{
                 vertical: 'top',
                 horizontal: 'right',

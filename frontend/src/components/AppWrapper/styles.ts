@@ -9,15 +9,15 @@ export default (theme: Theme) => createStyles({
     display: 'flex',
     flexDirection: 'column',
     marginLeft: 'auto',
-    width: '100vw',
+    width: '100%',
     transition: `${theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     })}`,
     [theme.breakpoints.up('sm')]: {
-      width: `calc(100vw - ${leftDrawerCloseWidth}px)`,
+      width: `calc(100% - ${leftDrawerCloseWidth}px)`,
       '&.drawer-open': {
-        width: `calc(100vw - ${leftDrawerOpenWidth}px)`,
+        width: `calc(100% - ${leftDrawerOpenWidth}px)`,
       }
     }
   },

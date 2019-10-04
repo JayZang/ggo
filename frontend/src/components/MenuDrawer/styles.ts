@@ -27,6 +27,7 @@ export default (theme: Theme) => createStyles({
     width: '100vw',
     whiteSpace: 'nowrap',
     zIndex: theme.zIndex.appBar - 1,
+    overflowX: 'hidden',
     [theme.breakpoints.up('sm')]: {
       transition: `${theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
