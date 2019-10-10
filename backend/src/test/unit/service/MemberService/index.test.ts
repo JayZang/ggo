@@ -1,7 +1,8 @@
 import mongoose , { Mongoose }from 'mongoose'
+import { Connection } from 'typeorm'
 
-import { database } from '@/config'
-import Member from '@/models/member'
+import mysqlLoader from '@/loaders/mysql'
+import Member from '@/entity/Member'
 import MemberService from '@/services/MemberService'
 import { 
   correctMemberData, 
@@ -10,20 +11,18 @@ import {
 
 describe('Unit Test: MemberService', () => {
   const memberService = new MemberService()
-  let mongoClient: Mongoose
+  let mysqlConnection: Connection
 
   beforeAll(async () => {
-    mongoose.Promise = Promise
-    mongoClient = await mongoose.connect(database.mongo.url, { useNewUrlParser: true })
-    await Member.remove({})
+    mysqlConnection = await mysqlLoader()
   })
 
   afterAll(async () => {
-    await mongoClient.disconnect()
+    await mysqlConnection.close()
   })
 
   afterEach(async () => {
-    await Member.remove({})
+    await Member.clear()
   })
 
   describe('create() - Create One Member.', () => {
@@ -56,7 +55,8 @@ describe('Unit Test: MemberService', () => {
       let memberCount = 10
       const promises: Promise<any>[] = []
       for (let i = 0; i < memberCount; i++) {
-        promises.push(new Member(correctMemberData).save())
+        const member = Object.assign(new Member, correctMemberData)
+        promises.push(member.save())
       }
       await Promise.all(promises)
       const members = await memberService.all()
@@ -65,11 +65,11 @@ describe('Unit Test: MemberService', () => {
   })
 
   describe('delete() - Delete The Member', () => {
-    let memberId: mongoose.Types.ObjectId
+    let memberId: number
     
     beforeEach(async () => {
-      const member = await (new Member(correctMemberData).save())
-      memberId = member._id
+      const member = Object.assign(new Member, correctMemberData)
+      memberId = (await member.save()).id
     })
 
     it('Should return member when delete success', async () => {
@@ -80,7 +80,7 @@ describe('Unit Test: MemberService', () => {
     })
 
     it('Should return null when the id is not exist in DB', async () => {
-      const id = mongoose.Types.ObjectId()
+      const id = 666
       const deletedMember = await memberService.delete(id)
       const members = await Member.find()
       expect(deletedMember).toBeNull()

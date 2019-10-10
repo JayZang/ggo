@@ -39,12 +39,28 @@ services:
       - ./:/app
     command: tail -f /dev/null
 
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes: 
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+
   mongodb:
     image: mongo:4.0
     ports: 
       - 27017:27017
     volumes: 
       - ./data/mongo:/data/db
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.8
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mysql
 
   backend-test:
     build:

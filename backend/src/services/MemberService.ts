@@ -1,8 +1,7 @@
-import { Types } from 'mongoose'
 import { Service } from 'typedi'
 
-import Member from '@/models/member'
-import { MemberStatus } from '@/interfaces/model/IMember'
+import Member from '@/entity/Member'
+import { MemberStatus } from '@/contract/model/IMember'
 
 @Service()
 export default class MemberService {
@@ -13,7 +12,7 @@ export default class MemberService {
     try {
       const member = new Member()
 
-      member.massAssign(data)
+      Object.assign(member, data)
       member.status = MemberStatus.active
 
       return await member.save()
@@ -37,14 +36,11 @@ export default class MemberService {
    * @param id    Member ObjectId
    * @param data  field to update
    */
-  public async update(id: Types.ObjectId | String, data: any) {
+  public async update(id: string | number, data: any) {
     try {
-      let member = await Member.findById(id)
+      let member = await Member.findOneOrFail(id)
 
-      if (!member)
-        throw new Error('Member Not Found')
-
-      member.massAssign(data)
+      Object.assign(member, data)
       
       return await member.save()
     } catch (err) {
@@ -59,9 +55,13 @@ export default class MemberService {
    * 
    * @param id    Member ObjectId
    */
-  public async delete(id: Types.ObjectId | String) {
+  public async delete(id: string | number) {
     try {
-      return await Member.findByIdAndDelete(id)
+      const member =  await Member.findOneOrFail(id)
+
+      await member.remove()
+      
+      return member
     } catch (err) {
       console.log('Delete member fail')
       console.log(err.toString())

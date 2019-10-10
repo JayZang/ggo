@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { validationResult } from 'express-validator'
+import { validationResult, matchedData } from 'express-validator'
 
 export default (): RequestHandler => {
   return (req, res, next) => {
@@ -7,6 +7,12 @@ export default (): RequestHandler => {
 
     if (!error.isEmpty())
       return res.status(400).json(error.mapped())
+
+    // Only get the values which pass the validation
+    // It prevents clients inject the invalid fields
+    req.body = matchedData(req, {
+      locations: ['body']
+    })
 
     next()
   }
