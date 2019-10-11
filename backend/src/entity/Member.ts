@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column,  OneToMany} from 'typeorm'
+
+import EmergencyContact from './EmergencyContact'
 
 @Entity()
 export default class Member extends BaseEntity {
@@ -35,15 +37,6 @@ export default class Member extends BaseEntity {
   leave_office_date: Date
 
   @Column()
-  emergency_contact_name: string
-
-  @Column()
-  emergency_contact_relationship: string
-
-  @Column()
-  emergency_contact_phone: string
-
-  @Column()
   password: string
 
   @Column({
@@ -56,4 +49,9 @@ export default class Member extends BaseEntity {
     width: 4
   })
   status: number
+
+  @OneToMany(type => EmergencyContact, emergencyContact => emergencyContact.member, {
+    cascade: true
+  })
+  emergencyContacts: EmergencyContact[]
 }

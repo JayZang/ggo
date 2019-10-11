@@ -1,6 +1,8 @@
 import { Service } from 'typedi'
+import _ from 'lodash'
 
 import Member from '@/entity/Member'
+import EmergencyContact from '@/entity/EmergencyContact'
 import { MemberStatus } from '@/contract/model/IMember'
 
 @Service()
@@ -11,9 +13,25 @@ export default class MemberService {
   public async create(data: any) {
     try {
       const member = new Member()
+      const emergencyContact = new EmergencyContact()
 
-      Object.assign(member, data)
+      Object.assign(member, _.pick(data, [
+        'name',
+        'gender',
+        'avatar',
+        'phone',
+        'email',
+        'birthday',
+        'take_office_date',
+        'leave_office_date',
+        'password',
+      ]))
       member.status = MemberStatus.active
+      member.emergencyContacts = [emergencyContact]
+
+      emergencyContact.name               = data.emergency_contact_name
+      emergencyContact.relationship  = data.emergency_contact_relationship
+      emergencyContact.phone              = data.emergency_contact_phone
 
       return await member.save()
     } catch (err) {
