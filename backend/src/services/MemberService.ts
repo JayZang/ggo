@@ -1,39 +1,19 @@
 import { Service } from 'typedi'
+import { getCustomRepository } from 'typeorm'
 import _ from 'lodash'
 
-import Member from '@/entity/Member'
-import EmergencyContact from '@/entity/EmergencyContact'
-import { MemberStatus } from '@/contract/model/IMember'
+import MemberRepo from '@/repository/MemberRepository'
 
 @Service()
 export default class MemberService {
+  
   /**
    * Create One Member
    */
   public async create(data: any) {
     try {
-      const member = new Member()
-      const emergencyContact = new EmergencyContact()
-
-      Object.assign(member, _.pick(data, [
-        'name',
-        'gender',
-        'avatar',
-        'phone',
-        'email',
-        'birthday',
-        'take_office_date',
-        'leave_office_date',
-        'password',
-      ]))
-      member.status = MemberStatus.active
-      member.emergencyContacts = [emergencyContact]
-
-      emergencyContact.name               = data.emergency_contact_name
-      emergencyContact.relationship  = data.emergency_contact_relationship
-      emergencyContact.phone              = data.emergency_contact_phone
-
-      return await member.save()
+      const memberRepo = getCustomRepository(MemberRepo)
+      return await memberRepo.createAndSave(data)
     } catch (err) {
       console.log('Create Member fail')
       console.log(err.toString())
@@ -45,22 +25,20 @@ export default class MemberService {
    * Get All Members
    */
   public async all() {
-    return Member.find()
+    const memberRepo = getCustomRepository(MemberRepo)
+    return memberRepo.find()
   }
 
   /**
    * Update One Member
    * 
-   * @param id    Member ObjectId
+   * @param id       Member id
    * @param data  field to update
    */
   public async update(id: string | number, data: any) {
     try {
-      let member = await Member.findOneOrFail(id)
-
-      Object.assign(member, data)
-      
-      return await member.save()
+      const memberRepo = getCustomRepository(MemberRepo)
+      return await memberRepo.updateById(id, data)
     } catch (err) {
       console.log('Update member fail')
       console.log(err.toString())
@@ -71,15 +49,13 @@ export default class MemberService {
   /**
    * Delete One Member
    * 
-   * @param id    Member ObjectId
+   * @param id    Member id
    */
   public async delete(id: string | number) {
     try {
-      const member =  await Member.findOneOrFail(id)
-
-      await member.remove()
-      
-      return member
+      const memberRepo = getCustomRepository(MemberRepo)
+      const member =  await memberRepo.findOneOrFail(id)      
+      return await memberRepo.remove(member)
     } catch (err) {
       console.log('Delete member fail')
       console.log(err.toString())

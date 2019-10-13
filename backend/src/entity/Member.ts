@@ -1,9 +1,9 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column,  OneToMany} from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column,  OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 
 import EmergencyContact from './EmergencyContact'
 
 @Entity()
-export default class Member extends BaseEntity {
+export default class Member  {
 
   @PrimaryGeneratedColumn()
   id: number
@@ -11,8 +11,11 @@ export default class Member extends BaseEntity {
   @Column()
   name: string
 
-  @Column()
-  gender: boolean
+  @Column({
+    type: 'tinyint',
+    width: 4
+  })
+  gender: number
 
   @Column({
     nullable: true
@@ -36,7 +39,9 @@ export default class Member extends BaseEntity {
   })
   leave_office_date: Date
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   password: string
 
   @Column({
@@ -49,6 +54,12 @@ export default class Member extends BaseEntity {
     width: 4
   })
   status: number
+
+  @CreateDateColumn({ type: 'timestamp' })
+  create_at: Date
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  update_at: Date
 
   @OneToMany(type => EmergencyContact, emergencyContact => emergencyContact.member, {
     cascade: true

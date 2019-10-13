@@ -2,9 +2,9 @@ import mongoose from "mongoose"
 
 import { database } from '@/config'
 
-export default () => {
+export default async () => {
   mongoose.Promise = Promise
-  mongoose.connect(database.mongo.url, {useNewUrlParser: true})
+  await mongoose.connect(database.mongo.url, {useNewUrlParser: true})
     .then(() => {
       console.log('MongoDB Connect Success')
     })
