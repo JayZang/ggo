@@ -1,20 +1,19 @@
 import axios from 'axios'
 
-const URL = '/api/members'
+const URL = '/api/members/:id'
 
-export function all() {
-    return axios.get<[{
-        id: number
+export function remove(id: number | string) {
+    return axios.delete<{
         name: string
         gender: number
         phone: string
         email: string
         birthday: string
         avatar: string | null
+        status: number
         take_office_date: string
         leave_office_date: string | null
-        status: number
         create_at: string
         update_at: string
-    }]>(URL)
+    }>(URL.replace(':id', id.toString()))
 }

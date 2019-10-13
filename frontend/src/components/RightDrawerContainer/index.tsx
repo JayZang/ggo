@@ -28,6 +28,10 @@ const styles = (theme: Theme) => createStyles({
   },
   closeIcon: {
     marginRight: theme.spacing(1)
+  },
+  content: {
+    marginTop:theme.spacing(2),
+    padding: theme.spacing(0, 2)
   }
 })
 
@@ -71,7 +75,7 @@ class RightDrawerContainer extends Component<IProps> {
             </Button>
           </div>
 
-          <div>
+          <div className={classes.content}>
             {this.props.children}
           </div>
         </SwipeableDrawer>
