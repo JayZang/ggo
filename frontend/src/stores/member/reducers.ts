@@ -5,11 +5,15 @@ import {
     CLEAR_MEMBERS,
     ADD_MEMBER,
     UPDATE_MEMBER,
-    REMOVE_MEMBER
+    REMOVE_MEMBER,
+    GET_MEMBER_BASE_INFO
 } from './types'
 
 const initState: MemberState = {
-    members: []
+    members: [],
+    memberInfo: {
+        baseInfo: null
+    }
 }
 
 export default function memberReducer(state = initState, action: MemberActionTypes): MemberState {
@@ -52,6 +56,15 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                 members: state.members.filter(member => {
                     return member.id != action.payload.id
                 })
+            }
+
+        case GET_MEMBER_BASE_INFO:
+            return  {
+                ...state,
+                memberInfo: {
+                    ...(state.memberInfo),
+                    baseInfo: action.payload.member
+                }
             }
 
         default:

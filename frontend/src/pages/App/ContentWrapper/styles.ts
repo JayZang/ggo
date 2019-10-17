@@ -5,7 +5,7 @@ import {
 } from 'utils/viewConfig'
 
 export default (theme: Theme) => createStyles({
-  appWrapper: {
+  contentWrapper: {
     display: 'flex',
     flexDirection: 'column',
     marginLeft: 'auto',

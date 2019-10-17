@@ -5,7 +5,7 @@ import RequestLoadingBar from 'components/RequestLoadingBar'
 import Header from 'components/Header'
 import MenuDrawer from 'components/MenuDrawer'
 import MobileBottomBar from 'components/MobileBottomBar'
-import Content from './Content'
+import ContentWrapper from './ContentWrapper'
 
 class App extends Component {
   render() {
@@ -15,7 +15,7 @@ class App extends Component {
         <RequestLoadingBar />
         <Header />
         <MenuDrawer />
-        <Content />
+        <ContentWrapper />
         <MobileBottomBar />
       </div>
     )

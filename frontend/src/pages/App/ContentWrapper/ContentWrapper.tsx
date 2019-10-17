@@ -4,18 +4,20 @@ import { withStyles, WithStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 
 import styles from './styles'
-import Members from 'pages/Members/Main'
+import Members from 'pages/Members'
 
 interface IProps extends WithStyles<typeof styles> {
     isLeftDrawerOpen: boolean
 }
 
-class AppWrapper extends Component<IProps> {
+class ContentWrapper extends Component<IProps> {
     render() {
-        const classes = this.props.classes
+        const {
+            classes
+        } = this.props
 
         return (
-            <div className={clsx(classes.appWrapper, {
+            <div className={clsx(classes.contentWrapper, {
                 'drawer-open': this.props.isLeftDrawerOpen
             })}>
                 <div className={classes.wrapper}>
@@ -30,4 +32,4 @@ class AppWrapper extends Component<IProps> {
     }
 }
 
-export default withStyles(styles)(AppWrapper)
+export default withStyles(styles)(ContentWrapper)

@@ -1,23 +1,24 @@
 @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f4f6f8;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
 }
 
 a,
 a:hover {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 h1,
@@ -27,16 +28,16 @@ h4,
 h5,
 h6,
 label {
-  margin: 0;
+    margin: 0;
 }
 
 button:focus {
-  outline: 0;
+    outline: 0;
 }
 
 @media screen and (display-mode: standalone) and (width: 375px) and (height: 768px),
-  screen and (display-mode: standalone) and (width: 724px) and (height: 375px),
-  screen and (display-mode: fullscreen) and (width: 375px) and (height: 768px),
-  screen and (display-mode: fullscreen) and (width: 724px) and (height: 375px) {
-  /* put css code for iPhoneX PWA here. */
+    screen and (display-mode: standalone) and (width: 724px) and (height: 375px),
+    screen and (display-mode: fullscreen) and (width: 375px) and (height: 768px),
+    screen and (display-mode: fullscreen) and (width: 724px) and (height: 375px) {
+    /* put css code for iPhoneX PWA here. */
 }

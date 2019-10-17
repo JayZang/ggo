@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
-import moment from 'moment'
 
 import * as memberAPI from 'api/member'
+import { regularizeMemberData } from './utils'
 import {
     GET_ALL_MEMBERS,
     CLEAR_MEMBERS,
@@ -9,6 +9,7 @@ import {
     UPDATE_MEMBER,
     REMOVE_MEMBER,
     MemberActionTypes,
+    GET_MEMBER_BASE_INFO,
 } from './types'
 
 export const fetchMembers = () => async (dispatch: Dispatch) => {
@@ -18,14 +19,7 @@ export const fetchMembers = () => async (dispatch: Dispatch) => {
         type: GET_ALL_MEMBERS,
         payload: {
             members: res.data.map(member => {
-                return {
-                    ...member,
-                    birthday: moment(member.birthday),
-                    take_office_date: moment(member.take_office_date),
-                    leave_office_date: member.leave_office_date !== null ? moment(member.leave_office_date) : null,
-                    create_at: moment(member.create_at),
-                    update_at: moment(member.update_at)
-                }
+                return regularizeMemberData(member)
             })
         }
     }
@@ -45,14 +39,7 @@ export const createMember = (data: any) => async (dispatch: Dispatch) => {
     const action: MemberActionTypes = {
         type: ADD_MEMBER,
         payload: {
-            member: {
-                ...(res.data),
-                birthday: moment(res.data.birthday),
-                take_office_date: moment(res.data.take_office_date),
-                leave_office_date: res.data.leave_office_date !== null ? moment(res.data.leave_office_date) : null,
-                create_at: moment(res.data.create_at),
-                update_at: moment(res.data.update_at)
-            }
+            member: regularizeMemberData(res.data)
         }
     }
 
@@ -65,14 +52,7 @@ export const updateMember = (id: number | string, data: any) => async (dispatch:
     const action: MemberActionTypes = {
         type: UPDATE_MEMBER,
         payload: {
-            member: {
-                ...(res.data),
-                birthday: moment(res.data.birthday),
-                take_office_date: moment(res.data.take_office_date),
-                leave_office_date: res.data.leave_office_date !== null ? moment(res.data.leave_office_date) : null,
-                create_at: moment(res.data.create_at),
-                update_at: moment(res.data.update_at)
-            }
+            member: regularizeMemberData(res.data)
         }
     }
 
@@ -86,6 +66,19 @@ export const removeMember = (id: number | string) => async (dispatch: Dispatch) 
         type: REMOVE_MEMBER,
         payload: {
             id
+        }
+    }
+
+    dispatch(action)
+}
+
+export const getMemberBaseInfo = (id: number | string) => async (dispatch: Dispatch) => {
+    const res = await memberAPI.getBaseInfo(id)
+
+    const action: MemberActionTypes = {
+        type: GET_MEMBER_BASE_INFO,
+        payload: {
+            member: regularizeMemberData(res.data)
         }
     }
 

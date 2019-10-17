@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import { WithStyles, withStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Avatar from '@material-ui/core/Avatar'
@@ -186,7 +187,7 @@ class MemberItem extends Component<IProps, IState> {
                             variant="outlined"
                             size="small"
                         >
-                            View
+                            <Link to={ `/members/${member.id}` }>View</Link>
                         </Button>
 
                         <IconButton onClick={this.handleOpenMenu}>
