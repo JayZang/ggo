@@ -9,7 +9,7 @@ export type IMember = {
   birthday: Moment
   avatar: string | null
   take_office_date: Moment 
-  leave_office_date?: Moment | null
+  leave_office_date: Moment | null
   status: MemberStatus
   create_at: Moment
   update_at: Moment

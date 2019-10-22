@@ -10,6 +10,7 @@ import {
     REMOVE_MEMBER,
     MemberActionTypes,
     GET_MEMBER_BASE_INFO,
+    CLEAR_MEMBER_INFO,
 } from './types'
 
 export const fetchMembers = () => async (dispatch: Dispatch) => {
@@ -83,4 +84,10 @@ export const getMemberBaseInfo = (id: number | string) => async (dispatch: Dispa
     }
 
     dispatch(action)
+}
+
+export const clearMemberInfo = () => {
+    return {
+        type: CLEAR_MEMBER_INFO
+    }
 }

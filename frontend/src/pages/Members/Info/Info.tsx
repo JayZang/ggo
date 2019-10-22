@@ -6,7 +6,8 @@ import MemberBaseInfoCard from 'components/Members/Info/BaseInfoCard'
 
 type IProps = {
     id: string | number
-    loadMember: (id: string | number) => Promise<void>
+    loadMember: (id: string | number) => Promise<void>,
+    clearMember: () => void
 }
 
 class MemberInfo extends Component<IProps> {
@@ -14,6 +15,10 @@ class MemberInfo extends Component<IProps> {
         this.props.loadMember(
             this.props.id
         )
+    }
+
+    componentWillUnmount() {
+        this.props.clearMember()
     }
 
     render() {
@@ -26,7 +31,7 @@ class MemberInfo extends Component<IProps> {
                     />
                 )}
             >
-                <MemberBaseInfoCard></MemberBaseInfoCard>
+                <MemberBaseInfoCard />
             </AppContent>
         )
     }

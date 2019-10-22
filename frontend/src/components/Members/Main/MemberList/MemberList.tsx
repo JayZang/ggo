@@ -1,17 +1,32 @@
 import React, { Component } from 'react'
 
 import MemberItem from './MemberItem'
+import MemberItemSkeleton from './MemberItem/Skeleton'
 import { IMember } from 'contracts/member'
 
-interface IProps {
-    fetchMembers: () => void,
+type IProps = {
+    fetchMembers: () => Promise<void>,
     clearMembers: () => void,
     members: IMember[]
 }
 
-class MemberList extends Component<IProps> {
+type IState = {
+    isFetched: boolean
+}
+
+class MemberList extends Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props)
+
+        this.state = {
+            isFetched: false
+        }
+    }
+
     componentDidMount() {
-        this.props.fetchMembers()
+        this.props.fetchMembers().then(() => {
+            this.setState({ isFetched: true })
+        })
     }
 
     componentWillUnmount() {
@@ -19,13 +34,27 @@ class MemberList extends Component<IProps> {
     }
 
     render() {
+        const isFetched = this.state.isFetched
+        const members = this.props.members
+
         return (
             <div style={{ marginTop: 30, position: 'relative' }}>
-                {
-                    this.props.members.map((m) => 
-                        <MemberItem member={m} key={m.id} />
-                    )
-                }
+                {(function() {
+                    if (!isFetched)
+                        return (
+                            <div>
+                                <MemberItemSkeleton />
+                                <MemberItemSkeleton />
+                                <MemberItemSkeleton />
+                                <MemberItemSkeleton />
+                            </div>
+                        )
+                    else {
+                        return members.map((m) =>
+                            <MemberItem member={m} key={m.id} />
+                        )
+                    }
+                })()}
             </div>
         )
     }

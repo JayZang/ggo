@@ -6,6 +6,7 @@ export const ADD_MEMBER             = 'ADD_MEMBER'
 export const UPDATE_MEMBER     = 'UPDATE_MEMBER'
 export const REMOVE_MEMBER    = 'REMOVE_MEMBER'
 export const GET_MEMBER_BASE_INFO = 'GET_MEMBER_BASE_INFO'
+export const CLEAR_MEMBER_INFO = 'CLEAR_MEMBER_INFO'
 
 export type MemberState = {
     /**
@@ -60,10 +61,15 @@ type GetMemberBaseInfo = {
     }
 }
 
+type ClearMemberInfo = {
+    type: typeof CLEAR_MEMBER_INFO
+}
+
 export type MemberActionTypes = 
     GetAllMemberAction | 
     ClearMembers | 
     AddMember | 
     UpdateMember | 
     RemoveMember |
-    GetMemberBaseInfo
+    GetMemberBaseInfo |
+    ClearMemberInfo
