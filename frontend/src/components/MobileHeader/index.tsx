@@ -47,7 +47,7 @@ class MobileHeader extends Component<IProps> {
                     )}
 
                     <div>
-                        <h1>{this.props.title}</h1>
+                        <h3>{this.props.title}</h3>
                     </div>
 
                     {this.props.children}

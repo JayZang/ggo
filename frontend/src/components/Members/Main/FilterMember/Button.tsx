@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { WithStyles, Theme, withStyles, createStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Fab from '@material-ui/core/Fab'
 import FilterListIcon from '@material-ui/icons/FilterList'
@@ -8,13 +7,7 @@ import BackIcon from '@material-ui/icons/ChevronLeft'
 import RightDrawerContainer from 'components/RightDrawerContainer'
 import MobileHeader from 'components/MobileHeader'
 
-const styles = (theme: Theme) => createStyles({
-    normalBtnIcon: {
-        marginRight: theme.spacing(1)
-    }
-})
-
-interface IProps extends WithStyles<typeof styles> {
+interface IProps {
     useFabBtn: boolean,
     className: string
 }
@@ -71,13 +64,16 @@ class FilterMemberBtn extends Component<IProps, IState> {
     }
 
     renderNormalBtn() {
-        const classes = this.props.classes
-
         return (
-            <Button color="primary" variant="contained" onClick={this.openDrawer} fullWidth>
-                <FilterListIcon className={classes.normalBtnIcon} />
+            <Button 
+                color="primary" 
+                variant="contained" 
+                startIcon={<FilterListIcon />} 
+                onClick={this.openDrawer} 
+                fullWidth
+            >
                過濾選項
-      </Button>
+            </Button>
         )
     }
 
@@ -90,8 +86,6 @@ class FilterMemberBtn extends Component<IProps, IState> {
     }
 
     renderFilterMenu() {
-        const classes = this.props.classes
-
         return (
             <div>
 
@@ -100,4 +94,4 @@ class FilterMemberBtn extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(FilterMemberBtn)
+export default FilterMemberBtn

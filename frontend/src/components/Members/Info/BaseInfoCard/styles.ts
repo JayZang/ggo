@@ -3,14 +3,14 @@ import { createStyles, Theme } from "@material-ui/core";
 export default (theme: Theme) => createStyles({
     root: {
         paddingTop: 90,
-        position: 'relative',
-        maxWidth: 800
+        position: 'relative'
     },
     avatar: {
         width: 130,
         height: 130,
         position: 'absolute',
-        top: 0
+        top: 0,
+        zIndex: 1
     },
     memberName: {
         position: 'absolute',
@@ -18,9 +18,14 @@ export default (theme: Theme) => createStyles({
         top: 30,
         marginLeft: 140
     },
+    editBtn: {
+        position: 'absolute',
+        right: 0,
+        top: 40
+    },
     papper: {
         position: 'relative',
-        zIndex: -1,
+        zIndex: 0,
         paddingTop: theme.spacing(5),
     },
     fieldsWrapper: {
@@ -49,7 +54,7 @@ export default (theme: Theme) => createStyles({
         padding: theme.spacing(0.5, 1),
         borderRadius: theme.shape.borderRadius,
         fontWeight: theme.typography.fontWeightMedium,
-        boxShadow: theme.shadows[2],
+        // boxShadow: theme.shadows[2],
         marginLeft: 'auto'
     }
 })

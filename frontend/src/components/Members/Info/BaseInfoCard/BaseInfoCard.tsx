@@ -5,7 +5,8 @@ import {
     Paper, 
     Avatar,
     Typography,
-    Divider
+    Divider,
+    Button
 } from '@material-ui/core'
 import {
     Phone as PhoneIcon,
@@ -13,7 +14,8 @@ import {
     Cake as CakeIcon,
     WorkOutlineOutlined as WorkOutlineOutlinedIcon,
     WorkOffOutlined as WorkOffOutlinedIcon,
-    Wc as WcIcon
+    Wc as WcIcon,
+    Edit as EditIcon
 } from '@material-ui/icons'
 import { Skeleton } from '@material-ui/lab'
 
@@ -21,12 +23,54 @@ import { IMember, MemberGender, MemberStatus } from 'contracts/member'
 import styles from './styles'
 import defaultManAvatar from 'assets/svgs/default-man-avatar.svg'
 import defaultWomanAvatar from 'assets/svgs/default-woman-avatar.svg'
+import MemberEditDrawer from 'components/Members/MemberEditPanel/MemberEditDrawer'
 
 type IProps = WithStyles<typeof styles> & {
     member: IMember | null
 }
 
-class MemberBaseInfoCard extends Component<IProps> {
+type IState = {
+    isEditing: boolean
+}
+
+class MemberBaseInfoCard extends Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props)
+
+        this.state ={ 
+            isEditing: false
+        }
+    }
+
+    renderAvatar() {
+        const {
+            member,
+            classes
+        } = this.props
+        
+        if (!member)
+            return <Skeleton className={classes.avatar} variant="circle" />
+
+        return <Avatar className={classes.avatar}
+            src={(() => {
+                if (!member.avatar) {
+                    switch (member.gender) {
+                        case MemberGender.male:
+                            return defaultManAvatar
+                        case MemberGender.female:
+                            return defaultWomanAvatar
+                        case MemberGender.other:
+                            return defaultManAvatar
+                        default:
+                            return defaultManAvatar
+                    }
+                } else {
+                    return member.avatar
+                }
+            })()}
+        />
+    }
+
     render() {
         const {
             classes,
@@ -35,32 +79,25 @@ class MemberBaseInfoCard extends Component<IProps> {
 
         return (
             <div className={classes.root}>
-                {(function () {
-                    if (!member)
-                        return <Skeleton className={classes.avatar} variant="circle" />
-                    
-                    return <Avatar className={classes.avatar}
-                        src={(() => {
-                            if (!member.avatar) {
-                                switch (member.gender) {
-                                    case MemberGender.male:
-                                        return defaultManAvatar
-                                    case MemberGender.female:
-                                        return defaultWomanAvatar
-                                    case MemberGender.other:
-                                        return defaultManAvatar
-                                    default:
-                                        return defaultManAvatar
-                                }
-                            } else {
-                                return member.avatar
-                            }
-                        })()}
-                    />
+                { this.renderAvatar() }
+
+                {(() => {
+                    if (member)
+                        return (
+                            <Button 
+                                className={classes.editBtn}
+                                variant="contained" 
+                                color="primary" 
+                                startIcon={<EditIcon />}
+                                onClick={() => { this.setState({ isEditing: true }) }}
+                            >
+                                編輯
+                            </Button>
+                        )
                 })()}
                
                 <Typography variant="h3" className={classes.memberName}>
-                    { member && member.name || <Skeleton width={200} height={40} variant="rect" />}
+                    { member ? member.name : <Skeleton width={200} height={40} variant="rect" />}
                 </Typography>
                 <Paper className={classes.papper}>
                     <div className={classes.fieldsWrapper}>
@@ -93,7 +130,7 @@ class MemberBaseInfoCard extends Component<IProps> {
                                 <PhoneIcon />
                                 <span className={classes.fieldName}>聯絡電話</span>
                             </div>
-                            <div>{member && member.phone || <Skeleton />}</div>
+                            <div>{member ? member.phone : <Skeleton />}</div>
                         </Typography>
 
                         <Typography className={classes.field} component="div">
@@ -101,7 +138,7 @@ class MemberBaseInfoCard extends Component<IProps> {
                                 <MailOutlineIcon />
                                 <span className={classes.fieldName}>Email</span>
                             </div>
-                            <div>{member && member.email || <Skeleton />}</div>
+                            <div>{member ? member.email : <Skeleton />}</div>
                         </Typography>
 
                         <Typography className={classes.field} component="div">
@@ -109,7 +146,7 @@ class MemberBaseInfoCard extends Component<IProps> {
                                 <CakeIcon />
                                 <span className={classes.fieldName}>生日</span>
                             </div>
-                            <div>{member && member.birthday.format('YYYY-MM-DD') || <Skeleton />}</div>
+                            <div>{member ? member.birthday.format('YYYY-MM-DD') : <Skeleton />}</div>
                         </Typography>
 
                         <Typography className={classes.field} component="div">
@@ -117,7 +154,7 @@ class MemberBaseInfoCard extends Component<IProps> {
                                 <WorkOutlineOutlinedIcon />
                                 <span className={classes.fieldName}>到職日</span>
                             </div>
-                            <div>{member && member.take_office_date.format('YYYY-MM-DD') || <Skeleton />}</div>
+                            <div>{member ? member.take_office_date.format('YYYY-MM-DD') : <Skeleton />}</div>
                         </Typography>
 
                         <Typography className={classes.field} component="div">
@@ -151,6 +188,13 @@ class MemberBaseInfoCard extends Component<IProps> {
                         })()}
                     </div>
                 </Paper>
+            
+                <MemberEditDrawer
+                    open={this.state.isEditing}
+                    onOpen={() => { this.setState({ isEditing: true }) }}
+                    onClose={() => { this.setState({ isEditing: false }) }}
+                    member={member || undefined}
+                />
             </div>
         )
     }

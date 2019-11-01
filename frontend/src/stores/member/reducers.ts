@@ -7,13 +7,17 @@ import {
     UPDATE_MEMBER,
     REMOVE_MEMBER,
     GET_MEMBER_BASE_INFO,
-    CLEAR_MEMBER_INFO
+    CLEAR_MEMBER_INFO,
+    GET_MEMBER_EMERGENCT_CONTACT,
+    ADD_EMERGENCY_CONTACT,
+    REMOVE_EMERGENCY_CONTACT
 } from './types'
 
 const initState: MemberState = {
     members: [],
     memberInfo: {
-        baseInfo: null
+        baseInfo: null,
+        emergenctContacts: null
     }
 }
 
@@ -48,14 +52,19 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                         return member
 
                     return action.payload.member
-                })
+                }),
+                memberInfo: {
+                    ...(state.memberInfo),
+                    baseInfo: action.payload.member.id === (state.memberInfo.baseInfo && state.memberInfo.baseInfo.id) ? 
+                        action.payload.member : null
+                }
             }
 
         case REMOVE_MEMBER:
             return {
                 ...state,
                 members: state.members.filter(member => {
-                    return member.id != action.payload.id
+                    return member.id !== action.payload.id
                 })
             }
 
@@ -68,11 +77,46 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                 }
             }
 
+        case GET_MEMBER_EMERGENCT_CONTACT:
+            return {
+                ...state,
+                memberInfo: {
+                    ...(state.memberInfo),
+                    emergenctContacts: action.payload.emergencyContacts
+                }
+            }
+
+        case ADD_EMERGENCY_CONTACT:
+            return {
+                ...state,
+                memberInfo: {
+                    ...(state.memberInfo),
+                    emergenctContacts: [
+                        ...(state.memberInfo.emergenctContacts || []),
+                        action.payload.emergencyContact
+                    ]
+                }
+            }
+
+        case REMOVE_EMERGENCY_CONTACT:
+            return {
+                ...state,
+                memberInfo: {
+                    ...(state.memberInfo),
+                    emergenctContacts: 
+                        state.memberInfo.emergenctContacts &&
+                        state.memberInfo.emergenctContacts.filter(emergencyContact => {
+                            return emergencyContact.id != action.payload.id
+                        })
+                }
+            }
+
         case CLEAR_MEMBER_INFO:
             return {
                 ...state,
                 memberInfo: {
-                    baseInfo: null
+                    baseInfo: null,
+                    emergenctContacts: null
                 }
             }
 

@@ -1,19 +1,11 @@
 import React, { Component } from 'react'
-import { WithStyles, Theme, withStyles, createStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
-import BackIcon from '@material-ui/icons/ChevronLeft'
 
-import RightDrawerContainer from 'components/RightDrawerContainer'
-import MobileHeader from 'components/MobileHeader'
-import MemberEditPanel from 'components/Members/MemberEditPanel'
+import MemberEditDrawer from 'components/Members/MemberEditPanel/MemberEditDrawer'
 
-const styles = (theme: Theme) => createStyles({
-
-})
-
-interface IProps extends WithStyles<typeof styles> {
+interface IProps {
     useFabBtn: boolean,
     className: string
 }
@@ -49,22 +41,11 @@ class AddMemberBtn extends Component<IProps, IState> {
             <div className={className}>
                 {this.props.useFabBtn ? this.renderFabBtn() : this.renderNormalBtn()}
 
-                <RightDrawerContainer
+                <MemberEditDrawer
                     open={this.state.isOpenDrawer}
                     onOpen={this.openDrawer}
                     onClose={this.closeDrawer}
-                    headComponent={(
-                        <MobileHeader
-                            title="Add Member"
-                            defaultHidden={true}
-                            leftComponent={(
-                                <BackIcon onClick={this.closeDrawer} />
-                            )}
-                        />
-                    )}
-                >
-                    <MemberEditPanel onSubmitSuccess={this.closeDrawer} />
-                </RightDrawerContainer>
+                />
             </div>
         )
     }
@@ -86,4 +67,4 @@ class AddMemberBtn extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(AddMemberBtn)
+export default AddMemberBtn

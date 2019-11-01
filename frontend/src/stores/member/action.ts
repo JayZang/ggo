@@ -11,7 +11,11 @@ import {
     MemberActionTypes,
     GET_MEMBER_BASE_INFO,
     CLEAR_MEMBER_INFO,
+    GET_MEMBER_EMERGENCT_CONTACT,
+    ADD_EMERGENCY_CONTACT,
+    REMOVE_EMERGENCY_CONTACT,
 } from './types'
+import { IEmergencyContactEditDTO } from 'contracts/member'
 
 export const fetchMembers = () => async (dispatch: Dispatch) => {
     const res = await memberAPI.all()
@@ -61,7 +65,7 @@ export const updateMember = (id: number | string, data: any) => async (dispatch:
 }
 
 export const removeMember = (id: number | string) => async (dispatch: Dispatch) => {
-    const res = await memberAPI.remove(id)
+    await memberAPI.remove(id)
 
     const action: MemberActionTypes = {
         type: REMOVE_MEMBER,
@@ -80,6 +84,45 @@ export const getMemberBaseInfo = (id: number | string) => async (dispatch: Dispa
         type: GET_MEMBER_BASE_INFO,
         payload: {
             member: regularizeMemberData(res.data)
+        }
+    }
+
+    dispatch(action)
+}
+
+export const getMemberEmergencyContacts = (id: number | string) => async (dispatch: Dispatch) => {
+    const res = await memberAPI.getEmergencyContacts(id)
+
+    const action: MemberActionTypes = {
+        type: GET_MEMBER_EMERGENCT_CONTACT,
+        payload: {
+            emergencyContacts: res.data
+        }
+    }
+
+    dispatch(action)
+}
+
+export const createEmergencyContact = (id: number | string, data: IEmergencyContactEditDTO) => async (dispatch: Dispatch) => {
+    const res = await memberAPI.createEmergencyContact(id, data)
+
+    const action: MemberActionTypes = {
+        type: ADD_EMERGENCY_CONTACT,
+        payload: {
+            emergencyContact: res.data
+        }
+    }
+
+    dispatch(action)
+}
+
+export const deleteEmergencyContact = (id: number | string) => async (dispatch: Dispatch) => {
+    await memberAPI.deleteEmergencyContact(id)
+
+    const action: MemberActionTypes = {
+        type: REMOVE_EMERGENCY_CONTACT,
+        payload: {
+            id
         }
     }
 

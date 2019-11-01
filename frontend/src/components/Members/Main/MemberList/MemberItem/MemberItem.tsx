@@ -14,16 +14,13 @@ import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
-import BackIcon from '@material-ui/icons/ChevronLeft'
 import { WithSnackbarProps, withSnackbar } from 'notistack'
 import clsx from 'clsx'
 
 import defaultManAvatar from 'assets/svgs/default-man-avatar.svg'
 import defaultWomanAvatar from 'assets/svgs/default-woman-avatar.svg'
 import { IMember, MemberStatus, MemberGender } from 'contracts/member'
-import RightDrawerContainer from 'components/RightDrawerContainer'
-import MobileHeader from 'components/MobileHeader'
-import MemberEditPanel from 'components/Members/MemberEditPanel'
+import MemberEditDrawer from 'components/Members/MemberEditPanel/MemberEditDrawer'
 import styles from './styles'
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
@@ -88,25 +85,12 @@ class MemberItem extends Component<IProps, IState> {
 
     renderEditMemberDrawer() {
         return (
-            <RightDrawerContainer
+            <MemberEditDrawer
                 open={this.state.isEditing}
                 onOpen={() => { this.setState({ isEditing: true }) }}
                 onClose={() => { this.setState({ isEditing: false }) }}
-                headComponent={(
-                    <MobileHeader
-                        title="Edit Member"
-                        defaultHidden={true}
-                        leftComponent={(
-                            <BackIcon onClick={() => { this.setState({ isEditing: false }) }} />
-                        )}
-                    />
-                )}
-            >
-                <MemberEditPanel 
-                    onSubmitSuccess={() => { this.setState({ isEditing: false }) }} 
-                    member={this.props.member}
-                />
-            </RightDrawerContainer>
+                member={this.props.member}
+            />
         )
     }
 
