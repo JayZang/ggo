@@ -3,6 +3,7 @@ import { getCustomRepository } from 'typeorm'
 import _ from 'lodash'
 
 import MemberRepo from '@/repository/MemberRepository'
+import EmergencyContactRepo from '@/repository/EmergencyContactRepository'
 
 @Service()
 export default class MemberService {
@@ -74,6 +75,69 @@ export default class MemberService {
             return await memberRepo.findOneOrFail(id)
         } catch (err) {
             console.log('Find member fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Create a Emergency Contact for a member
+     * 
+     * @param id        Member id
+     * @param data  Fields to update
+     */
+    public async createEmergencyContact(id: number | string, data: any) {
+        try {
+            const memberRepo = getCustomRepository(MemberRepo)
+            const emergencyContactRepo = getCustomRepository(EmergencyContactRepo)
+
+            const member = await memberRepo.findOneOrFail(id)
+            const emergenctContact = emergencyContactRepo.create()
+
+            emergenctContact.member_id = member.id
+            emergenctContact.name = data.name
+            emergenctContact.relationship = data.relationship
+            emergenctContact.phone = data.phone
+
+            return await emergencyContactRepo.save(emergenctContact)
+        } catch (err) {
+            console.log('Create emergency contact fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Get Member's Emergency Contacts
+     * 
+     * @param id    Member id
+     */
+    public async getEmergenctContactsById(id: number | string) {
+        try {
+            const emergencyContactRepo = getCustomRepository(EmergencyContactRepo)
+            return await emergencyContactRepo.find({
+                member_id: <any>id
+            })
+        } catch (err) {
+            console.log('Find emergency contact fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * 刪除指定緊急聯絡人
+     * 
+     * @param id    Emergency Contact id
+     */
+    public async deleteEmergencyContact(id: number | string) {
+        try {
+            const emergencyContactRepo = getCustomRepository(EmergencyContactRepo)
+            const emergenctContact = await emergencyContactRepo.findOneOrFail(id)
+            await emergencyContactRepo.remove(emergenctContact)
+            return emergenctContact
+        } catch (err) {
+            console.log('Delete emergency contact fail')
             console.log(err.toString())
             return null
         }
