@@ -5,6 +5,7 @@ import clsx from 'clsx'
 
 import styles from './styles'
 import Members from 'pages/Members'
+import Teams from 'pages/Teams'
 
 interface IProps extends WithStyles<typeof styles> {
     isLeftDrawerOpen: boolean
@@ -23,6 +24,7 @@ class ContentWrapper extends Component<IProps> {
                 <div className={classes.wrapper}>
                     <Switch>
                         <Route path="/members" component={Members} />
+                        <Route path="/teams" component={Teams} />
                         <Route path="/customers" />
                         <Route path="/outsourcing" />
                     </Switch>

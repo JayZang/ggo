@@ -5,10 +5,12 @@ import reduxThunk from 'redux-thunk'
 
 import viewReducer from './view/reducer'
 import memberReducer from './member/reducers'
+import teamReducer from './team/reducers'
 
 const rootReducer = combineReducers({
   view: viewReducer,
   member: memberReducer,
+  team: teamReducer,
   loadingBar: loadingBarReducer
 })
 

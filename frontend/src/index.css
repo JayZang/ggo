@@ -35,6 +35,38 @@ button:focus {
     outline: 0;
 }
 
+/*滾動條整體部分*/
+::-webkit-scrollbar{
+    width: 7px;
+    height: 7px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+}
+/*滾動條兩端的箭頭*/
+::-webkit-scrollbar-button{
+    display: none;
+}
+/*經測試好像並不能控制什麼*/
+::-webkit-scroll-track{
+    display: none;
+}
+/*滾動條內側部分去掉*/
+::-webkit-scrollbar-track-piece {
+    display: none;
+}
+/*滾動條中可以拖動的那部分*/
+::-webkit-scrollbar-thumb{
+    background-color: rgba(0, 0, 0, .1);
+    border-radius: 4px;
+}
+/*變角部分*/
+::-webkit-scrollbar-corner {
+    display: none;
+}
+::-webkit-resizer{
+    display: none;
+}
+
 @media screen and (display-mode: standalone) and (width: 375px) and (height: 768px),
     screen and (display-mode: standalone) and (width: 724px) and (height: 375px),
     screen and (display-mode: fullscreen) and (width: 375px) and (height: 768px),

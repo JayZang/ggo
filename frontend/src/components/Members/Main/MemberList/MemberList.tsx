@@ -41,14 +41,7 @@ class MemberList extends Component<IProps, IState> {
             <div style={{ marginTop: 30, position: 'relative' }}>
                 {(function() {
                     if (!isFetched)
-                        return (
-                            <div>
-                                <MemberItemSkeleton />
-                                <MemberItemSkeleton />
-                                <MemberItemSkeleton />
-                                <MemberItemSkeleton />
-                            </div>
-                        )
+                        return <MemberItemSkeleton />
                     else {
                         return members.map((m) =>
                             <MemberItem member={m} key={m.id} />

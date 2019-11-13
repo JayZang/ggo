@@ -7,7 +7,7 @@ export type IMember = {
     phone: string
     email: string
     birthday: Moment
-    avatar: string | null
+    avatar: string
     take_office_date: Moment
     leave_office_date: Moment | null
     status: MemberStatus
