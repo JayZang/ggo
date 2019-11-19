@@ -36,7 +36,9 @@ class MemberEditDrawer extends Component<IProps> {
                     />
                 }
             >
-                <TeamEditPanel />
+                <TeamEditPanel 
+                    onSubmitSuccess={onClose}
+                />
             </RightDrawerContainer>
         )
     }

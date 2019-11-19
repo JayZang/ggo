@@ -15,7 +15,7 @@ export default async () => {
     entities: [
       `${__dirname}/../entity/*.js`
     ],
-    synchronize: true,
+    // synchronize: true,
     logging: false
   })
   

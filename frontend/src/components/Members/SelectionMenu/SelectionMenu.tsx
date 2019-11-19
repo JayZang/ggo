@@ -1,8 +1,9 @@
-import React, { Component } from 'react' 
+import React, { Component, ChangeEvent } from 'react' 
 import { 
     List, 
     ListItem, 
     Checkbox, 
+    Radio,
     ListItemAvatar, 
     Avatar, 
     ListItemText, 
@@ -24,6 +25,7 @@ import styles from './styles'
 type IProps =  WithStyles<typeof styles> & {
     members: IMember[]
     multiple?: boolean
+    filtered?: IMember[]
     onChange?: (members: IMember[] | IMember | null) => void
 }
 
@@ -59,20 +61,26 @@ class MemberSelectionMenu extends Component<IProps, IState> {
 
         this.setState({
             checked: newChecked
+        }, () => {
+            this.triggerChangeEvent()
         })
+    }
 
+    triggerChangeEvent() {
         if (this.props.onChange) {
-            if (isMultiple)
-                this.props.onChange(newChecked)
-            else if (newChecked.length)
-                this.props.onChange(member)
-            else 
+            if (this.props.multiple)
+                this.props.onChange(this.state.checked)
+            else if (this.state.checked.length)
+                this.props.onChange(this.state.checked[0])
+            else
                 this.props.onChange(null)
         }
     }
 
     filterMembers() {
         return this.props.members.filter(member => {
+            if (this.props.filtered && this.props.filtered.includes(member))
+                return false
             return member.name.includes(this.state.searchInput) ||
                 member.email.includes(this.state.searchInput)
         })
@@ -81,7 +89,7 @@ class MemberSelectionMenu extends Component<IProps, IState> {
     render() {
         const {
             classes,
-            members
+            multiple
         } = this.props
         const {
             checked,
@@ -123,12 +131,20 @@ class MemberSelectionMenu extends Component<IProps, IState> {
                                     </Grid>
                                 } />
                                 <ListItemSecondaryAction>
-                                    <Checkbox
-                                        edge="end"
-                                        color="primary"
-                                        onChange={this.handleToggle.bind(this, member)}
-                                        checked={checked.includes(member)}
-                                    />
+                                    {multiple ? 
+                                        <Checkbox
+                                            edge="end"
+                                            color="primary"
+                                            onChange={this.handleToggle.bind(this, member)}
+                                            checked={checked.includes(member)}
+                                        /> :
+                                        <Radio 
+                                            edge="end"
+                                            color="primary"
+                                            onChange={this.handleToggle.bind(this, member)}
+                                            checked={checked.includes(member)}
+                                        />
+                                    }
                                 </ListItemSecondaryAction>
                             </ListItem>
                         )

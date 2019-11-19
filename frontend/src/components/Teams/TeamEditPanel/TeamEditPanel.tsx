@@ -21,9 +21,12 @@ import { IMember } from 'contracts/member'
 import MemberSelectionMenu from 'components/Members/SelectionMenu'
 import styles from './styles'
 import clsx from 'clsx'
+import { withSnackbar, WithSnackbarProps } from 'notistack'
 
-type IProps = WithStyles<typeof styles> & {
+type IProps = WithStyles<typeof styles> &  WithSnackbarProps & {
     load: () => Promise<void>
+    create: (data: any) => Promise<void>
+    onSubmitSuccess?: () => void
 }
 
 type Fields = {
@@ -35,7 +38,8 @@ type Fields = {
 
 type IState = {
     fields: Fields
-    errors: Record<keyof Fields, string>
+    errors: Record<keyof Fields, string>,
+    isSubmitting: boolean
 }
 
 class TeamEditPanel extends Component<IProps, IState> {
@@ -54,8 +58,23 @@ class TeamEditPanel extends Component<IProps, IState> {
                 description: '',
                 leader: '',
                 members: ''
-            }
+            },
+            isSubmitting: false
         }
+    }
+
+    get members() {
+        const {
+            leader,
+            members
+        } = this.state.fields
+
+        if (!leader)
+            return members
+        else
+            return members.filter(member => {
+                return member !== leader
+            })
     }
 
     onInputChange(propertyName: keyof Fields, event: ChangeEvent<HTMLInputElement>) {
@@ -72,6 +91,7 @@ class TeamEditPanel extends Component<IProps, IState> {
         const fields = this.state.fields
         fields.leader = member
         this.setState({ fields })
+        this.checkFields('leader')
     }
 
     handleMembersSelectionChange(members: IMember[] | IMember | null) {
@@ -81,6 +101,68 @@ class TeamEditPanel extends Component<IProps, IState> {
         const fields = this.state.fields
         fields.members = members
         this.setState({ fields })
+        this.checkFields('members')
+    }
+
+    checkFields(propertyName: keyof Fields) {
+        const errors = this.state.errors
+        let errMsg = ''
+
+        switch (propertyName) {
+            case 'name':
+            case 'description':
+                if (!this.state.fields[propertyName])
+                    errMsg = '不能為空'
+                break
+
+            case 'leader':
+                if (!this.state.fields.leader)
+                    errMsg = '必須指派團隊負責人'
+                break
+
+            case 'members':
+                if (this.members.length === 0)
+                    errMsg = '至少選擇一位團隊成員'
+                break
+        }
+
+        errors[propertyName] = errMsg
+        this.setState({ errors })
+
+        return !errMsg
+    }
+
+    handleSubmitClick() {
+        const {
+            fields
+        } = this.state
+        let isAllPass = true
+
+        Object.keys(fields).forEach((key: any) => {
+            isAllPass = this.checkFields(key) && isAllPass
+        })
+
+        if (!isAllPass)
+            return
+
+        this.setState({ isSubmitting: true })
+        this.props.create({
+            name: fields.name,
+            description: fields.description,
+            leader: fields.leader!.id,
+            members: fields.members.map(member => member.id)
+        }).then(() => {
+            this.props.enqueueSnackbar('新增團隊成功！', {
+                variant: 'success'
+            })
+            this.props.onSubmitSuccess && this.props.onSubmitSuccess()
+            this.setState({ isSubmitting: false })
+        }).catch(() => {
+            this.props.enqueueSnackbar('新增團隊失敗！', {
+                variant: 'error'
+            })
+            this.setState({ isSubmitting: false })
+        })
     }
 
     componentDidMount() {
@@ -101,14 +183,23 @@ class TeamEditPanel extends Component<IProps, IState> {
                 <Grid item className={classes.gridItem}>
                     <FormControl fullWidth>
                         <TextField
-                            error={!!errors.name} value={fields.name}
-                            onChange={this.onInputChange.bind(this, 'name')}
+                            value={fields.name}
                             label="團隊名稱" type="text" variant="outlined" fullWidth
+                            InputProps={{ margin: "dense" }}
                             InputLabelProps={{
                                 margin: 'dense',
                                 style: { fontSize: 14 },
                             }}
-                            InputProps={{ margin: "dense" }}
+                            onChange={(event) => {
+                                this.setState({
+                                    fields: {
+                                        ...this.state.fields,
+                                        name: event.target.value.trimLeft()
+                                    }
+                                }, () => {
+                                    this.checkFields('name')
+                                })
+                            }}
                         />
                         {errors.name ? (<FormHelperText>{errors.name}</FormHelperText>) : null}
                     </FormControl>
@@ -117,7 +208,22 @@ class TeamEditPanel extends Component<IProps, IState> {
                 <Grid item className={classes.gridItem}>
                     <FormControl fullWidth className="form-group">
                         <label className={classes.label}>描述</label>
-                        <textarea className={clsx("form-control", classes.textarea)} rows={3}></textarea>
+                        <textarea 
+                            rows={3}
+                            className={clsx("form-control", classes.textarea)}
+                            value={fields.description}
+                            onChange={(event) => {
+                                this.setState({
+                                    fields: {
+                                        ...this.state.fields,
+                                        description: event.target.value.trimLeft()
+                                    }
+                                }, () => {
+                                    this.checkFields('description')
+                                })
+                            }}
+                        />
+                        {errors.description ? (<FormHelperText>{errors.description}</FormHelperText>) : null}
                     </FormControl>
                 </Grid>
 
@@ -149,6 +255,7 @@ class TeamEditPanel extends Component<IProps, IState> {
                             />
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
+                    {errors.leader ? (<FormHelperText>{errors.leader}</FormHelperText>) : null}
                 </Grid>
 
                 <Grid item className={classes.gridItem}>
@@ -156,26 +263,38 @@ class TeamEditPanel extends Component<IProps, IState> {
                         <ExpansionPanelSummary
                             expandIcon={<ExpandMoreIcon />}
                         >
-                            <Typography>團隊成員 <span>{fields.members.length}</span> 人</Typography>
+                            <Typography>團隊成員 <span>{this.members.length}</span> 人</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails classes={{
                             root: classes.memberSelectionWrapper
                         }}>
                             <MemberSelectionMenu multiple 
+                                filtered={fields.leader ? [fields.leader] : undefined}
                                 onChange={this.handleMembersSelectionChange.bind(this)}
                             />
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
+                    {errors.members ? (<FormHelperText>{errors.members}</FormHelperText>) : null}
                 </Grid>
 
                 <Grid item className={classes.gridItem}></Grid>
 
                 <Grid item className={classes.gridItem}>
-                    <Button variant="contained" color="primary" fullWidth>儲存</Button>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        fullWidth
+                        onClick={this.handleSubmitClick.bind(this)}
+                        disabled={this.state.isSubmitting}
+                    >
+                        儲存
+                    </Button>
                 </Grid>
             </Grid>
         )
     }
 }
 
-export default withStyles(styles)(TeamEditPanel)
+export default withSnackbar(
+    withStyles(styles)(TeamEditPanel)
+)

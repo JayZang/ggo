@@ -2,7 +2,8 @@ import {
     TeamState,
     TeamActionType,
     GET_PERMANENT_TEAMS,
-    GET_TEMPORARAY_TEAMS
+    GET_TEMPORARAY_TEAMS,
+    ADD_PERMANENT_TEAM
 } from './types'
 
 const initState: TeamState = {
@@ -22,6 +23,15 @@ export default function teamReducer(state: TeamState = initState, action: TeamAc
             return {
                 ...state,
                 temporaryTeams: action.payload.teams
+            }
+
+        case ADD_PERMANENT_TEAM:
+            return {
+                ...state,
+                permanentTeams: state.permanentTeams && [
+                    ...state.permanentTeams,
+                    action.payload.team
+                ]
             }
 
         default:

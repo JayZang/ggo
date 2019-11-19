@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import TeamEditPanel from './TeamEditPanel'
 import { fetchMembers } from 'stores/member/action'
+import { createTeam, getTemporaryTeams, getPermanentTeams } from 'stores/team/action'
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     load: async function () {
@@ -12,6 +13,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
         ])
         
         return 
+    },
+    create: async function (data: any) {
+        await dispatch(createTeam(data))
     }
 })
 

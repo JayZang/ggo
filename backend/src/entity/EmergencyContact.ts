@@ -3,7 +3,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColu
 import Member from './Member'
 
 @Entity()
-export default class EmergencyContact extends BaseEntity {
+export default class EmergencyContact {
 
   @PrimaryGeneratedColumn()
   id: number 

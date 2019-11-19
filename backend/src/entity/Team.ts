@@ -35,11 +35,12 @@ export default class Team {
     create_at: Date
 
     @ManyToOne(type => Member, member => member.teams_as_leader, {
+        eager: true,
         nullable: false, 
-        onDelete: 'RESTRICT',
+        onDelete: 'NO ACTION',
         onUpdate: 'CASCADE'
     })
-    @JoinColumn({ name: 'leader_id' })
+    @JoinColumn({ name: 'leader_id' },)
     leader: Member
 
     @ManyToMany(type => Member, member => member.teams)
