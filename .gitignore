@@ -3,3 +3,6 @@ data
 
 # Frontend local develop environment proxy server configuration
 frontend/setupProxy.js
+
+# The upload files
+backend/uploads

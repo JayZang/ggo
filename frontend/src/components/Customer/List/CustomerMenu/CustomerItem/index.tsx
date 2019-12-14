@@ -7,16 +7,18 @@ import {
     Avatar,
     ExpansionPanel,
     ExpansionPanelSummary,
-    ExpansionPanelDetails
+    ExpansionPanelDetails,
+    Button
 } from '@material-ui/core'
 import {
     AccountBox as AccountBoxIcon,
     ExpandMore as ExpandMoreIcon,
     LocationOn as LocationOnIcon,
     Description as DescriptionIcon,
-    Language as WebIcon
+    Language as WebIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon
 } from '@material-ui/icons';
-import clsx from 'clsx';
 
 import styles from './styles'
 import { WithStyles } from '@material-ui/styles'

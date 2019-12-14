@@ -38,7 +38,9 @@ class TeamList extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.props.load()
+        if (!this.props.permanentTeams || 
+            !this.props.temporaryTeams)
+            this.props.load()
     }
 
     render() {
