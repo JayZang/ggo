@@ -89,12 +89,14 @@ function MenuDrawer(props: IProps) {
                     </ListItemIcon>
                     <ListItemText primary="財務管理" />
                 </ListItem>
-                <ListItem button onClick={handleMenuItemClick}>
-                    <ListItemIcon>
-                        <ProjectIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="專案/案件管理" />
-                </ListItem>
+                <Link to="/projects">
+                    <ListItem button onClick={handleMenuItemClick}>
+                        <ListItemIcon>
+                            <ProjectIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="專案/案件管理" />
+                    </ListItem>
+                </Link>
                 <TaskManagementListItem />
 
                 <Divider />

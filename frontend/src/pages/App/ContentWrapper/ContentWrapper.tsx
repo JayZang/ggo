@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Switch, Route } from 'react-router-dom'
 import { withStyles, WithStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 
 import styles from './styles'
-import Members from 'pages/Members'
-import Teams from 'pages/Teams'
-import Customer from 'pages/Customer'
+import MemberPage from 'pages/Members'
+import TeamPage from 'pages/Teams'
+import CustomerPage from 'pages/Customer'
+import ProjectPage from 'pages/Projects'
 
 interface IProps extends WithStyles<typeof styles> {
     isLeftDrawerOpen: boolean
@@ -23,12 +23,10 @@ class ContentWrapper extends Component<IProps> {
                 'drawer-open': this.props.isLeftDrawerOpen
             })}>
                 <div className={classes.wrapper}>
-                    <Switch>
-                        <Route path="/members" component={Members} />
-                        <Route path="/teams" component={Teams} />
-                        <Route path="/customers" component={Customer} />
-                        <Route path="/outsourcing" />
-                    </Switch>
+                    <MemberPage />
+                    <TeamPage />
+                    <CustomerPage />
+                    <ProjectPage />
                 </div>
             </div>
         )
