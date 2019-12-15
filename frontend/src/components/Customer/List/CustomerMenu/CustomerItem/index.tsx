@@ -29,45 +29,22 @@ type IProps = {
     customer: ICustomer
 } & WithStyles<typeof styles>
 
-type IState = {
-    isExpand: boolean
-}
-
-class CustomerItem extends Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props)
-
-        this.state = {
-            isExpand: false
-        }
-    }
-
+class CustomerItem extends Component<IProps> {
     render() {
         const {
             classes,
             customer
         } = this.props
-        const {
-            isExpand
-        } = this.state
 
         return (
             <ExpansionPanel>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon color="primary" />}
-                    expanded={isExpand}
-                    onChange={() => this.setState({ isExpand: !isExpand })}
                 >
                     <Grid item
                         className={classes.avatar}
                     >
-                        {
-                            customer.logo ? 
-                                <Avatar src={customer.logo} /> : 
-                                <Avatar>
-                                    <AccountBoxIcon />
-                                </Avatar>
-                        }
+                        <img src={customer.logo} style={{ width: '100%' }} />
                     </Grid>
 
                     <Grid container alignItems="center" justify="space-between">

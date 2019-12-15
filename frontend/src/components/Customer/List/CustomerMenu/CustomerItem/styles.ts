@@ -7,7 +7,9 @@ export default (theme: Theme) => createStyles({
     avatar: {
         marginRight: theme.spacing(3),
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: 48,
+        flexShrink: 0
     },
     fieldsWrapper: {
         marginRight: theme.spacing(2),

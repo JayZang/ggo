@@ -17,14 +17,30 @@ import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import { withStyles } from '@material-ui/styles'
 import ProjectMenu from 'components/Project/List/ProjectMenu'
+import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
 
 type IProps = WithStyles<typeof styles>
 
- class ProjectList extends Component<IProps> {
+type IState = {
+    openDrawer: boolean
+}
+
+class ProjectList extends Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props)
+
+        this.state = {
+            openDrawer: false
+        }
+    }
+
     render() {
         const {
             classes
         } = this.props
+        const {
+            openDrawer
+        } = this.state
 
         return (
             <AppContent
@@ -52,7 +68,7 @@ type IProps = WithStyles<typeof styles>
                             variant="contained"
                             color="primary"
                             startIcon={<AddIcon />}
-                            onClick={() => this.setState({ openEditPanel: true })}
+                            onClick={() => this.setState({ openDrawer: true })}
                         >
                             新增專案/案件
                         </Button>
@@ -61,6 +77,11 @@ type IProps = WithStyles<typeof styles>
 
                 <ProjectMenu />
 
+                <ProjectEditDrawer 
+                    open={openDrawer}
+                    onOpen={() => this.setState({ openDrawer: true })}
+                    onClose={() => this.setState({ openDrawer: false })}
+                />
             </AppContent>
         )
     }
