@@ -5,7 +5,7 @@ import {
 
 import RightDrawerContainer from 'components/RightDrawerContainer'
 import MobileHeader from 'components/MobileHeader'
-import CustomerEditPanel from './index'
+import ProjectEditPanel from './index'
 
 type IProp = {
     open: boolean,
@@ -36,8 +36,8 @@ export default class ProjectEditDrawer extends Component<IProp> {
                     />
                 }
             >
-                <CustomerEditPanel
-                    // onSubmitSuccess={onClose}
+                <ProjectEditPanel
+                    onSubmitSuccess={onClose}
                 />
             </RightDrawerContainer>
         )

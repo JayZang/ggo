@@ -2,14 +2,19 @@ import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
 
 import ProjectItem from './ProjectItem'
+import { IProject } from 'contracts/project'
 
-class ProjectMenu extends Component {
+type IProps = {
+    projects: IProject[]
+}
+
+class ProjectMenu extends Component<IProps> {
     render() {
+        const projects = this.props.projects
+
         return (
             <Grid container direction="column">
-                <ProjectItem />
-                <ProjectItem />
-                <ProjectItem />
+                {projects.map(project => <ProjectItem key={project.id} project={project} />)}
             </Grid>
         )
     }

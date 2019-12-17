@@ -10,6 +10,9 @@ export default (theme: Theme) => createStyles({
     searchBarIcon: {
         padding: theme.spacing(1)
     },
+    listWrapper: {
+        overflowY: 'auto'
+    },
     email: {
         color: theme.palette.text.hint
     }

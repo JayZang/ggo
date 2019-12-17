@@ -33,7 +33,7 @@ class RequestLoadingBar extends Component<IProps> {
                     setTimeout(() => {
                         resolve(response)
                     }, 200);
-                }, 1000)
+                }, 500)
             })
         }, (error) => {
             this.props.hideLoading()

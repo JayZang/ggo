@@ -26,6 +26,7 @@ type IProps = WithStyles<typeof styles> & {
     customers: ICustomer[]
     multiple?: boolean
     onChange?: (customer: ICustomer[] | ICustomer | null) => void
+    maxHeight?: number
 }
 
 type IState = {
@@ -87,7 +88,8 @@ class MemberSelectionMenu extends Component<IProps, IState> {
     render() {
         const {
             classes,
-            multiple
+            multiple,
+            maxHeight
         } = this.props
         const {
             checked,
@@ -112,7 +114,7 @@ class MemberSelectionMenu extends Component<IProps, IState> {
                         </Grid>
                     </Grid>
                 </Paper>
-                <List>
+                <List className={classes.listWrapper} style={{ maxHeight }}>
                     {this.filterCustomers().map(customer => {
                         return (
                             <ListItem button onClick={this.handleToggle.bind(this, customer)} key={customer.id}>
