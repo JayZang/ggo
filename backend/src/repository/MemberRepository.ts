@@ -1,8 +1,7 @@
 import { EntityRepository, Repository, getCustomRepository } from 'typeorm'
 import _ from 'lodash'
 
-import Member from '@/entity/Member'
-import { MemberStatus } from '@/contract/model/IMember'
+import Member, { MemberStatus } from '@/entity/Member'
 
 @EntityRepository(Member)
 class MemberRepository extends Repository<Member> {

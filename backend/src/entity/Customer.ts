@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm'
+import Project from './Project'
 
 @Entity()
 export default class Customer {
@@ -56,4 +57,9 @@ export default class Customer {
 
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
+
+    @OneToMany(type => Project, project => project.customer, {
+        cascade: true
+    })
+    projects: Project[]
 }

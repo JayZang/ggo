@@ -3,7 +3,7 @@ import { body } from 'express-validator'
 
 import validate from './validate'
 import datetimeValidator from './datetimeValidator'
-import { MemberGender } from '@/contract/model/IMember'
+import { MemberGender } from '@/entity/Member'
 
 export function CreateMemberValidator(): RequestHandler[] {
     return [

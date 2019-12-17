@@ -78,3 +78,14 @@ export default class Member {
     })
     teams_as_leader: Team[]
 }
+
+export enum MemberStatus {
+    inactive = 0,
+    active = 1
+}
+
+export enum MemberGender {
+    female = 0,
+    male = 1,
+    other = 2
+}

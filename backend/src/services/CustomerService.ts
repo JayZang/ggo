@@ -5,8 +5,8 @@ import moment from 'moment'
 import crypto from 'crypto'
 
 import CustomerRepo from '@/repository/CustomerRepository'
-import Customer from '@/entity/Customer'
 import { resource } from '@/config'
+import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
 
 @Service()
 export default class CustomerService {
@@ -27,7 +27,7 @@ export default class CustomerService {
             })
 
             return await customerRepo.createAndSave(data, filename)
-                .then(customer => this.regularizeCustomerData(customer))
+                .then(customer => regularizeCustomerData(customer))
         } catch (err) {
             console.log('Create Customer fail')
             console.log(err.toString())
@@ -42,21 +42,11 @@ export default class CustomerService {
         try {
             const customerRepo = getCustomRepository(CustomerRepo)
             return await customerRepo.find()
-                .then(customers => customers.map(customer => this.regularizeCustomerData(customer)))
+                .then(customers => customers.map(customer => regularizeCustomerData(customer)))
         } catch (err) {
             console.log('Get Customer fail')
             console.log(err.toString())
             return null
         }
-    }
-
-    /**
-     * Regularize customer data
-     */
-    private regularizeCustomerData(customer: Customer): Customer {
-        return {
-            ...customer,
-            logo: customer.logo && `${resource.customerLogo.dest}${customer.logo}`
-        } 
     }
 }
