@@ -40,10 +40,17 @@ export default class CustomerService {
     /**
      * Get projects
      */
-    public async get() {
+    public async get(option?: {
+        skip: number,
+        take: number,
+    }) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
-            return await projectRepo.find().then(projects => {
+            return await projectRepo.find({
+                relations: ['customer'],
+                order: {  id: 'DESC' },
+                ...option
+            }).then(projects => {
                 return projects.map(project => {
                     project.customer = project.customer && regularizeCustomerData(project.customer)
                     return project
@@ -53,6 +60,36 @@ export default class CustomerService {
             console.log('Get Projects fail')
             console.log(err.toString())
             return null
+        }
+    }
+
+    /**
+     * Get project total count
+     */
+    public async getTotalCount() {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            return await projectRepo.count()
+        } catch (err) {
+            console.log('Get Projects total count fail')
+            console.log(err.toString())
+            return 0
+        }
+    }
+
+    /**
+     * Get project count by source type
+     */
+    public async getCountBySrcType(type: ProjectSrcType) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            return await projectRepo.count({
+                source_type: type
+            })
+        } catch (err) {
+            console.log('Get Projects count by source type fail')
+            console.log(err.toString())
+            return 0
         }
     }
 }

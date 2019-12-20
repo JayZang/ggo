@@ -4,6 +4,7 @@ import { Grid, Paper, WithStyles, withStyles, Typography, Button } from '@materi
 import styles from './style'
 import { IProject, ProjectSrcType } from 'contracts/project'
 import clsx from 'clsx'
+import { Link } from 'react-router-dom'
 
 type IProps = WithStyles<typeof styles> & {
     project: IProject
@@ -77,7 +78,7 @@ class ProjectItem extends Component<IProps> {
                                     if (!project.customer)
                                         return <Typography className="badge badge-danger shadow">錯誤</Typography>
                                     return (
-                                        <Grid container direction="row" alignItems="center">
+                                        <Grid container direction="row" alignItems="center" wrap="nowrap">
                                             <Grid item className="mr-3">
                                                 <img src={project.customer!.logo} style={{ width: 48 }} />
                                             </Grid>
@@ -97,7 +98,9 @@ class ProjectItem extends Component<IProps> {
                     </Grid>
 
                     <Grid item className="d-flex align-items-center">
-                        <Button variant="outlined" color="primary">查看</Button>
+                        <Link to={`/projects/${project.id}`}>
+                            <Button variant="outlined" color="primary">查看</Button>
+                        </Link>
                     </Grid>
 
             </Paper>

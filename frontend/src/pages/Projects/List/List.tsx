@@ -11,7 +11,8 @@ import {
 import {
     Add as AddIcon,
     Search as SearchIcon,
-    Cached as CachedIcon
+    Cached as CachedIcon,
+    FilterList as FilterListIcon
 } from '@material-ui/icons'
 
 import styles from './styles'
@@ -21,12 +22,15 @@ import { withStyles } from '@material-ui/styles'
 import ProjectMenu from 'components/Project/List/ProjectMenu'
 import ProjectItemSkeleton from 'components/Project/List/ProjectMenu/ProjectItem/Skeleton'
 import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
+import ProjectCountBar from 'components/Project/List/ProjectCountBar'
 import { IProject } from 'contracts/project'
 
 type IProps = WithStyles<typeof styles> & {
     load: () => Promise<void>
     reload: () => Promise<void>
-    projects: IProject[] | null
+    getProject: () => Promise<void>
+    projects: IProject[] | null,
+    isProjectAllLoaded: boolean
 }
 
 type IState = {
@@ -37,6 +41,7 @@ class ProjectList extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
+        this.trackScrolling = this.trackScrolling.bind(this)
         this.state = {
             openDrawer: false
         }
@@ -44,12 +49,23 @@ class ProjectList extends Component<IProps, IState> {
 
     componentDidMount() {
         !this.props.projects && this.props.load()
+        document.addEventListener('scroll', this.trackScrolling);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('scroll', this.trackScrolling);
+    }
+
+    async trackScrolling() {
+        if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight)
+            this.props.getProject()
     }
 
     render() {
         const {
             classes,
-            projects
+            projects,
+            isProjectAllLoaded
         } = this.props
         const {
             openDrawer
@@ -76,6 +92,16 @@ class ProjectList extends Component<IProps, IState> {
                                     placeholder="搜尋專案/案件"
                                 />
                             </Paper>
+
+                            <Tooltip title="過濾設置">
+                                <IconButton 
+                                    size="small"
+                                    color="primary"
+                                >
+                                    <FilterListIcon />
+                                </IconButton>
+                            </Tooltip>
+                            
                             {(() => {
                                 return projects ? 
                                     <Tooltip title="重新載入">
@@ -103,7 +129,12 @@ class ProjectList extends Component<IProps, IState> {
                     </Grid>
                 </Grid>
 
-                {projects ? <ProjectMenu projects={projects} /> : <ProjectItemSkeleton />}
+                <ProjectCountBar 
+                    className="mb-3" 
+                />
+
+                {projects && <ProjectMenu projects={projects} />}
+                {isProjectAllLoaded ? null : <ProjectItemSkeleton />}
 
                 <ProjectEditDrawer 
                     open={openDrawer}

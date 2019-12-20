@@ -42,11 +42,7 @@ class TeamMenu extends Component<IProps> {
     renderLoading() {
         if (this.props.teams) return null
 
-        return [
-            this.renderLoadingItem(),
-            this.renderLoadingItem(),
-            this.renderLoadingItem()
-        ]
+        return this.renderLoadingItem()
     }
 
     renderLoadingItem() {

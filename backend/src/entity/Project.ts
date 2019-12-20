@@ -54,9 +54,7 @@ export default class Project {
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
 
-    @ManyToOne(type => Customer, customer => customer.projects, {
-        eager: true
-    })
+    @ManyToOne(type => Customer, customer => customer.projects)
     @JoinColumn({ name: 'customer_id' })
     customer: Customer
 }

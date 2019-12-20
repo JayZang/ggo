@@ -2,7 +2,15 @@ import axios from 'axios'
 
 const URL = '/api/projects'
 
-export function get() {
+export function get(option: {
+    offset: number
+    count: number
+}) {
+    const {
+        offset,
+        count
+    } = option
+
     return axios.get<{
         id: string
         name: string
@@ -16,5 +24,5 @@ export function get() {
         customer: Object | null
         remark: string | null
         create_at: string
-    }[]>(URL)
+    }[]>(`${URL}?offset=${offset}&count=${count}`)
 }

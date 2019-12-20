@@ -1,27 +1,26 @@
 import { IProject } from 'contracts/project'
 import { ICustomer } from 'contracts/customer'
 
-export const ADD_PROJECT = 'ADD_PROJECT'
-export const GET_PROJECT = 'GET_PROJECT'
+export const ADD_PROJECTS = 'ADD_PROJECTS'
 export const CLEAR_PROJECT = 'CLEAR_PROJECT'
 export const GET_CUSTOMER_SELECTION_MENU = 'GET_CUSTOMER_SELECTION_MENU'
+export const GET_COUNT_STATISTIC = 'GET_COUNT_STATISTIC'
 
 export type ProjectState = {
-    projectMenu: IProject[] | null,
+    projectMenu: IProject[] | null
     customerSelectionMenu: ICustomer[] | null
-}
-
-type AddProject = {
-    type: typeof ADD_PROJECT,
-    payload: {
-        project: IProject
+    statistics: {
+        totalCount: number
+        srcTypeInternalCount: number
+        srcTypeCustomerCount: number
     }
 }
 
-type GetProject = {
-    type: typeof GET_PROJECT,
+type AddProjects = {
+    type: typeof ADD_PROJECTS,
     payload: {
         projects: IProject[]
+        prepend?: boolean
     }
 }
 
@@ -36,8 +35,17 @@ type GetCustomerSelectionMenu = {
     }
 }
 
+type GetCountStatistic = {
+    type: typeof GET_COUNT_STATISTIC,
+    payload: {
+        totalCount: number
+        srcTypeInternalCount: number
+        srcTypeCustomerCount: number
+    }
+}
+
 export type ProjectActionType = 
-    AddProject |
-    GetProject |
+    AddProjects |
     ClearProject |
-    GetCustomerSelectionMenu
+    GetCustomerSelectionMenu |
+    GetCountStatistic

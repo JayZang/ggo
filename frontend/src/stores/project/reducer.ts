@@ -1,25 +1,27 @@
-import { ProjectState, ProjectActionType, ADD_PROJECT, GET_PROJECT, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT } from "./types"
+import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC } from "./types"
 
 const initState: ProjectState = {
     projectMenu: null,
-    customerSelectionMenu: null
+    customerSelectionMenu: null,
+    statistics: {
+        totalCount: 0,
+        srcTypeInternalCount: 0,
+        srcTypeCustomerCount: 0,
+    }
 }
 
 export default function customerReducer(state: ProjectState = initState, action: ProjectActionType): ProjectState {
     switch (action.type) {
-        case ADD_PROJECT:
+        case ADD_PROJECTS:
             return {
                 ...state,
-                projectMenu: [
+                projectMenu: action.payload.prepend ? [
+                    ...action.payload.projects,
+                    ...(state.projectMenu || [])
+                ] : [
                     ...(state.projectMenu || []),
-                    action.payload.project
+                    ...action.payload.projects
                 ]
-            }
-
-        case GET_PROJECT:
-            return {
-                ...state,
-                projectMenu: action.payload.projects
             }
 
         case CLEAR_PROJECT:
@@ -32,6 +34,17 @@ export default function customerReducer(state: ProjectState = initState, action:
             return {
                 ...state,
                 customerSelectionMenu: action.payload.customers
+            }
+
+        case GET_COUNT_STATISTIC:
+            return {
+                ...state,
+                statistics: {
+                    ...state.statistics,
+                    totalCount: action.payload.totalCount,
+                    srcTypeInternalCount: action.payload.srcTypeInternalCount,
+                    srcTypeCustomerCount: action.payload.srcTypeCustomerCount
+                }
             }
 
         default:

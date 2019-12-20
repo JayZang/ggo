@@ -25,7 +25,7 @@ export default (theme: Theme) => createStyles({
         maxWidth: 100
     },
     fieldSrcType: {
-        maxWidth: 200,
+        maxWidth: 230,
         display: 'flex'
     }
 })
