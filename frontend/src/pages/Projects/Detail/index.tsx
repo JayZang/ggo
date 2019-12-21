@@ -1,28 +1,21 @@
-import React, { Component } from "react";
-import { Box, Grid } from "@material-ui/core";
+import { connect } from "react-redux";
 
-import AppContent from 'pages/App/Content'
-import MobileHeader from 'components/MobileHeader'
+import ProjectDetail from './Detail'
+import { RootState } from "stores";
+import { ThunkDispatch } from "redux-thunk";
+import { fetchProjectBaseInfo } from "stores/project/action";
 
-class ProjectDetail extends Component {
-    render() {
-        return (
-            <AppContent
-                mobileHeader={
-                    <MobileHeader
-                        title="專案/案件詳細資訊"
-                        defaultHidden={false}
-                    />
-                }
-            >
-                <Grid container className="align-items-center mb-3">
-                    <Grid item>
-                        <h3>專案/案件名稱</h3>
-                    </Grid>
-                </Grid>
-            </AppContent>
-        )
+const mapStateToProps = (state: RootState) =>({
+    project: state.project.projectDetail.baseInfo
+})
+
+const mapActionToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
+    load: async (id: string) => {
+        await dispatch(fetchProjectBaseInfo(id))
     }
-}
+})
 
-export default ProjectDetail
+export default connect(
+    mapStateToProps,
+    mapActionToProps
+)(ProjectDetail)

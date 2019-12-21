@@ -6,8 +6,10 @@ import {
 import RightDrawerContainer from 'components/RightDrawerContainer'
 import MobileHeader from 'components/MobileHeader'
 import ProjectEditPanel from './index'
+import { IProject } from 'contracts/project'
 
 type IProp = {
+    project?: IProject
     open: boolean,
     onOpen: () => void,
     onClose: () => void
@@ -16,6 +18,7 @@ type IProp = {
 export default class ProjectEditDrawer extends Component<IProp> {
     render() {
         const {
+            project,
             open,
             onOpen,
             onClose
@@ -37,6 +40,7 @@ export default class ProjectEditDrawer extends Component<IProp> {
                 }
             >
                 <ProjectEditPanel
+                    project={project}
                     onSubmitSuccess={onClose}
                 />
             </RightDrawerContainer>

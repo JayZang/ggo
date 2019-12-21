@@ -19,7 +19,7 @@ export default (theme: Theme) => createStyles({
         fontSize: 14
     },
     fieldProjectName: {
-        maxWidth: 200
+        maxWidth: 230
     },
     fieldDate: {
         maxWidth: 100

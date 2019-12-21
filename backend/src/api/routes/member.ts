@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 
 import MemberService from '@/services/MemberService'
-import { CreateMemberValidator, UpdateMemberValidator, CreateEmergenctContact } from '@/api/validators/member'
+import { CreateAndEditMember, CreateEmergenctContact } from '@/api/validators/member'
 
 const router = Router()
 const memberService = Container.get(MemberService)
@@ -10,7 +10,7 @@ const memberService = Container.get(MemberService)
 export default (app: Router) => {
     app.use('/members', router)
 
-    router.post('', CreateMemberValidator(), async (req: Request, res: Response) => {
+    router.post('', CreateAndEditMember(), async (req: Request, res: Response) => {
         const member = await memberService.create(req.body)
 
         return member ?
@@ -24,7 +24,7 @@ export default (app: Router) => {
         return res.json(members)
     })
 
-    router.patch('/:id', UpdateMemberValidator(), async (req: Request, res: Response) => {
+    router.patch('/:id', CreateAndEditMember(), async (req: Request, res: Response) => {
         const member = await memberService.update(
             req.params.id,
             req.body

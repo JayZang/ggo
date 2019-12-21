@@ -9,7 +9,7 @@ export default class ProjectsPage extends Component {
         return (
             <Switch>
                 <Route exact path="/projects" component={ProjectList} />
-                <Route exact path="/projects/:id" component={ProjectDetail} />
+                <Route exact path="/projects/:id" render={props => <ProjectDetail id={props.match.params.id} />} />
             </Switch>
         )
     }

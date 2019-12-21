@@ -39,8 +39,8 @@ class MemberSelectionMenu extends Component<IProps, IState> {
         super(props)
 
         this.state = {
-            checked: [],
-            searchInput: ''
+            searchInput: '',
+            checked: []
         }
     }
 

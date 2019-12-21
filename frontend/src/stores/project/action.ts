@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 import * as projectApi from 'api/project'
 import * as customerApi from 'api/customer'
-import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC } from "./types";
+import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT } from "./types";
 import { regularizeProjectData } from "./utils";
 import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
@@ -19,6 +19,19 @@ export const createProject = (data: any) => async (dispatch : Dispatch) => {
    }
 
    dispatch(action)
+}
+
+export const updateProject = (id: string | number, data: any) => async (dispatch: Dispatch) => {
+    const res = await projectApi.update(id, data)
+
+    const action: ProjectActionType = {
+        type: UPDATE_PROJECT,
+        payload: {
+            project: regularizeProjectData(res.data)
+        }
+    }
+
+    dispatch(action)
 }
 
 export const getProject = () => async (dispatch: Dispatch, getState: () => RootState) => {
@@ -72,6 +85,19 @@ export const getCountStatistic = () => async (dispatch: Dispatch) => {
             totalCount: res.data.totalCount,
             srcTypeInternalCount: res.data.srcTypeInternalCount,
             srcTypeCustomerCount: res.data.srcTypeCustomerCount
+        }
+   }
+
+   dispatch(action)
+}
+
+export const fetchProjectBaseInfo = (id: string) => async (dispatch: Dispatch) => {
+    const res = await projectApi.getBaseInfo(id)
+
+    const action: ProjectActionType = {
+        type: GET_PROJECT_BASE_INFO,
+        payload: {
+            project: regularizeProjectData(res.data)
         }
    }
 

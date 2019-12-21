@@ -6,7 +6,7 @@ import validate from './validate'
 import datetimeValidator from './datetimeValidator'
 import { ProjectSrcType } from '@/entity/Project'
 
-export function CreateProject(): RequestHandler[] {
+export function CreateAndEditProject(): RequestHandler[] {
     return [
         body('name').exists({ checkFalsy: true }).isString(),
         body('description').optional().exists({ checkFalsy: true }).isString(),

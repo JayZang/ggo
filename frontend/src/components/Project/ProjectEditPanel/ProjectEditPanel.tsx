@@ -1,12 +1,12 @@
 import React, { Component, ChangeEvent } from 'react'
-import { Grid, FormControl, TextField, FormHelperText, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Paper } from '@material-ui/core'
+import { Grid, FormControl, TextField, FormHelperText, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Paper, Typography, Box } from '@material-ui/core'
 import { DatePicker, MaterialUiPickersDate } from '@material-ui/pickers'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 import CustomerSelectionMenu from 'components/Customer/SelectionMenu/SelectionMenu'
 import { Moment } from 'moment'
 import { ICustomer } from 'contracts/customer'
-import { ProjectSrcType } from 'contracts/project'
+import { ProjectSrcType, IProject } from 'contracts/project'
 
 class FieldItem extends Component<{
     label: string,
@@ -77,7 +77,7 @@ type Fields = {
     description?: string
     start_datetime?: Moment
     deadline_datetime?: Moment
-    quote?: string
+    quote?: number
     source_type?: ProjectSrcType
     customer?: ICustomer | null
     remark?: string
@@ -86,8 +86,10 @@ type Fields = {
 type IProps = WithSnackbarProps & {
     load: () => void
     createProject: (data: any) => Promise<void>
+    updateProject: (id: string | number, data: any) => Promise<void>
     onSubmitSuccess?: () => void
-    customers: ICustomer[] | null
+    customers: ICustomer[] | null,
+    project?: IProject
 }
 
 type IState = {
@@ -100,16 +102,18 @@ class ProjectEditPanel extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
+        const project = props.project
+
         this.state = {
             fields: {
-                name: undefined,
-                description: undefined,
-                start_datetime: undefined,
-                deadline_datetime: undefined,
-                quote: undefined,
-                source_type: ProjectSrcType.Internal,
-                customer: null,
-                remark: undefined,
+                name: project ? project.name : undefined,
+                description: project && project.description ? project.description : undefined,
+                start_datetime: project ? project.start_datetime : undefined,
+                deadline_datetime: project ? project.deadline_datetime : undefined,
+                quote: project && project.quote ? project.quote : undefined,
+                source_type: project ? project.source_type : ProjectSrcType.Internal,
+                customer: project ? project.customer : null,
+                remark: project && project.remark ? project.remark : undefined,
             },
             errors: {
                 name: '',
@@ -178,19 +182,30 @@ class ProjectEditPanel extends Component<IProps, IState> {
             return
 
         this.setState({ isSending: true })
-        this.props.createProject({
+        let submitFunction = null
+        let action = ''
+
+        if (this.props.project) {
+            submitFunction = this.props.updateProject.bind(this, this.props.project.id)
+            action = '編輯'
+        } else {
+            submitFunction = this.props.createProject
+            action = '新增'
+        }
+
+        submitFunction({
             ...fields,
             customer: undefined,
             customer_id: fields.customer ? fields.customer.id : undefined
         }).then(() => {
-            this.props.enqueueSnackbar('新增專案/案件成功！', {
+            this.props.enqueueSnackbar(`${action}專案/案件成功！`, {
                 variant: 'success'
             })
             this.props.onSubmitSuccess && this.props.onSubmitSuccess()
         })
         .catch(() => {
             this.setState({ isSending: false })
-            this.props.enqueueSnackbar('新增專案/案件失敗！', {
+            this.props.enqueueSnackbar(`${action}專案/案件失敗！`, {
                 variant: 'error'
             })
         })
@@ -236,6 +251,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
     }
 
     render() {
+        const project = this.props.project
         const {
             fields,
             errors,
@@ -287,20 +303,49 @@ class ProjectEditPanel extends Component<IProps, IState> {
             <Grid item className="mb-3">
                 <Paper className="p-3">
                     <FormControl fullWidth>
-                        <FormLabel>專案來源 *</FormLabel>
-                        <RadioGroup 
-                            row 
-                            name="project_source" 
-                            value={fields.source_type} 
-                            onChange={this.handleFieldChange.bind(this, 'source_type')}
-                        >
-                            <FormControlLabel control={<Radio color="primary" />} label="內部" value={ProjectSrcType.Internal} />
-                            <FormControlLabel control={<Radio color="primary" />} label="客戶" value={ProjectSrcType.Customer} />
-                        </RadioGroup>
+                        <Grid container justify="space-between" alignItems="center">
+                            <Grid item>
+                                <FormLabel>專案來源 *</FormLabel>
+                                <RadioGroup 
+                                    row 
+                                    name="project_source" 
+                                    value={fields.source_type} 
+                                    onChange={this.handleFieldChange.bind(this, 'source_type')}
+                                >
+                                    <FormControlLabel control={<Radio color="primary" />} label="內部" value={ProjectSrcType.Internal} />
+                                    <FormControlLabel control={<Radio color="primary" />} label="客戶" value={ProjectSrcType.Customer} />
+                                </RadioGroup>
+                            </Grid>
+                            <Grid item>
+                                {(() => {
+                                    if (fields.source_type === ProjectSrcType.Customer && fields.customer) return (
+                                        <Box
+                                            p={1}
+                                            marginBottom={2}
+                                            borderRadius={8}
+                                            border="1px solid rgba(0, 0, 0, .1)"
+                                        >
+                                            <Grid container direction="row" alignItems="center" wrap="nowrap">
+                                                <Grid item className="mr-3">
+                                                    <img src={fields.customer!.logo} style={{ width: 48 }} />
+                                                </Grid>
+                                                <Grid item>
+                                                    <Typography>{ fields.customer.company_name }</Typography>
+                                                    <Box color="text.hint">
+                                                        { fields.customer.contact } / { fields.customer.phone }
+                                                    </Box>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                    )
+                                })()}
+                            </Grid>
+                        </Grid>
+                        
                     </FormControl>
 
                     {fields.source_type == ProjectSrcType.Customer ? 
-                        <CustomerSelectionMenu 
+                        <CustomerSelectionMenu
                             maxHeight={300}
                             customers={this.props.customers || []}
                             onChange={this.handleCustomerSelect.bind(this)}

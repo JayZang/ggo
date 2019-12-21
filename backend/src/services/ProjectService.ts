@@ -38,6 +38,33 @@ export default class CustomerService {
     }
 
     /**
+     * Update one project
+     */
+    public  async update(id: string, data: any) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            const customerRepo = getCustomRepository(CustomerRepo)
+            let customer: Customer | null = null
+
+            if (data.source_type == ProjectSrcType.Customer) {
+                customer = await customerRepo.findOne(data.customer_id)
+                if (!customer)
+                    throw new Error(`None customer with id ${data.customer_id}`)
+                customer = regularizeCustomerData(customer)
+            }
+
+            return await projectRepo.updateById(id, {
+                ...data,
+                customer
+            })
+        } catch (err) {
+            console.log('Create Project fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
      * Get projects
      */
     public async get(option?: {
@@ -60,6 +87,27 @@ export default class CustomerService {
             console.log('Get Projects fail')
             console.log(err.toString())
             return null
+        }
+    }
+
+    /**
+     * Get project by id
+     * 
+     * @param id 
+     */
+    public async getById(id: string) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            return await projectRepo.findOne(id, {
+                relations: ['customer']
+            }).then(project => {
+                project.customer = project.customer && regularizeCustomerData(project.customer)
+                return project
+            })
+        } catch (err) {
+            console.log('Get Projects by id fail')
+            console.log(err.toString())
+            return 0
         }
     }
 
