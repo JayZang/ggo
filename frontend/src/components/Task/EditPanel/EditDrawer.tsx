@@ -5,20 +5,17 @@ import {
 
 import RightDrawerContainer from 'components/RightDrawerContainer'
 import MobileHeader from 'components/MobileHeader'
-import ProjectEditPanel from './index'
-import { IProject } from 'contracts/project'
+import TaskEditPanel from './index'
 
 type IProp = {
-    project?: IProject
     open: boolean,
     onOpen: () => void,
     onClose: () => void
 }
 
-export default class ProjectEditDrawer extends Component<IProp> {
+export default class TaskEditDrawer extends Component<IProp> {
     render() {
         const {
-            project,
             open,
             onOpen,
             onClose
@@ -26,13 +23,13 @@ export default class ProjectEditDrawer extends Component<IProp> {
 
         return (
             <RightDrawerContainer
-                title="新增案件/專案"
+                title="新增工作任務"
                 open={open}
                 onOpen={onOpen}
                 onClose={onClose}
                 headComponent={
                     <MobileHeader
-                        title="新增案件/專案"
+                        title="新增工作任務"
                         defaultHidden={true}
                         leftComponent={(
                             <BackIcon onClick={onClose} />
@@ -40,9 +37,9 @@ export default class ProjectEditDrawer extends Component<IProp> {
                     />
                 }
             >
-                <ProjectEditPanel
-                    project={project}
-                    onSubmitSuccess={onClose}
+                <TaskEditPanel
+                    // project={project}
+                    // onSubmitSuccess={onClose}
                 />
             </RightDrawerContainer>
         )

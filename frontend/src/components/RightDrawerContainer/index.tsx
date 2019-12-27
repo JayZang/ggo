@@ -3,6 +3,7 @@ import { WithStyles, Theme, withStyles, createStyles } from '@material-ui/core/s
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import Button from '@material-ui/core/Button'
 import CloseIcon from '@material-ui/icons/Close'
+import { Typography, Box, Grid } from '@material-ui/core'
 
 const styles = (theme: Theme) => createStyles({
     drawerRoot: {
@@ -22,21 +23,23 @@ const styles = (theme: Theme) => createStyles({
         }
     },
     closeBtn: {
+        marginRight: theme.spacing(1),
         [theme.breakpoints.down('xs')]: {
             display: 'none'
         }
     },
     content: {
-        marginTop:theme.spacing(2),
+        marginTop:theme.spacing(3),
         padding: theme.spacing(0, 2)
     }
 })
 
 interface IProps extends WithStyles<typeof styles> {
+    title?: string
     open: boolean,
     onOpen: () => void,
     onClose: () => void,
-    headComponent?: any
+    headComponent?: JSX.Element
 }
 
 class RightDrawerContainer extends Component<IProps> {
@@ -65,11 +68,14 @@ class RightDrawerContainer extends Component<IProps> {
                 >
                     {this.props.headComponent}
 
-                    <div>
+                    <Grid alignItems="center"  container>
                         <Button className={classes.closeBtn} onClick={this.props.onClose}>
                             <CloseIcon />
                         </Button>
-                    </div>
+                        <Typography variant="h5">
+                            {this.props.title}
+                        </Typography>
+                    </Grid>
 
                     <div className={classes.content}>
                         {this.props.children}

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
 import Customer from './Customer'
+import Task from './Task'
 
 @Entity()
 export default class Project {
@@ -57,6 +58,9 @@ export default class Project {
     @ManyToOne(type => Customer, customer => customer.projects)
     @JoinColumn({ name: 'customer_id' })
     customer: Customer
+
+    @OneToMany(type => Task, task => task.project)
+    tasks: Task
 }
 
 export enum ProjectSrcType {

@@ -2,11 +2,13 @@ import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 
 import ProjectService from '@/services/ProjectService'
+import TaskService from '@/services/TaskService'
 import { CreateAndEditProject } from '../validators/project'
 import { ProjectSrcType } from '@/entity/Project'
 
 const router = Router()
 const projectService = Container.get(ProjectService)
+const taskService = Container.get(TaskService)
 
 export default (app: Router) => {
     app.use('/projects', router)
@@ -51,6 +53,14 @@ export default (app: Router) => {
         
         return project ?
             res.json(project) :
+            res.status(400).end()
+    })
+    
+    router.get('/:id/tasks', async (req: Request, res: Response) => {
+        const tasks = await taskService.getByProjectId(parseInt(req.params.id))
+        
+        return tasks ?
+            res.json(tasks) :
             res.status(400).end()
     })
     

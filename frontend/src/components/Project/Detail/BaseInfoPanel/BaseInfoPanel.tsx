@@ -72,30 +72,51 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                     <Box className={clsx(classes.datesBoxRoot, 'shadow-sm')}>
                         <Grid container>
                             <Grid item className={classes.datesBoxItem}>
-                                <Typography align="center">
-                                    {project && project.start_datetime.format('YYYY-MM-DD')}
-                                </Typography>
+                                {(() => {
+                                    if (project) return (
+                                        <Typography align="center">
+                                            {project.start_datetime.format('YYYY-MM-DD')}
+                                        </Typography>
+                                    ) 
+                                    else return (
+                                        <Box width={150} marginX="auto">
+                                            <Skeleton />
+                                        </Box>
+                                    )
+                                })()}
                                 <Typography variant="h6" align="center">起始日期</Typography>
                             </Grid>
                             <Divider orientation="vertical" style={{height: 'auto'}} />
                             <Grid item className={classes.datesBoxItem}>
-                                <Typography align="center">
-                                    {project && project.deadline_datetime.format('YYYY-MM-DD')}
-                                </Typography>
+                                {(() => {
+                                    if (project) return (
+                                        <Typography align="center">
+                                            {project.deadline_datetime.format('YYYY-MM-DD')}
+                                        </Typography>
+                                    ) 
+                                    else return (
+                                        <Box width={150} marginX="auto">
+                                            <Skeleton />
+                                        </Box>
+                                    )
+                                })()}
                                 <Typography variant="h6" align="center">最後期限日期</Typography>
                             </Grid>
                             <Divider orientation="vertical" style={{height: 'auto'}} />
                             <Grid item className={classes.datesBoxItem}>
-                                <Typography align="center">
-                                    {(() => {
-                                        if (project) {
-                                            if (project.finish_datetime)
-                                                return project.finish_datetime.format('YYYY-MM-DD')
-                                            else
-                                                return '尚未完成'
-                                        }
-                                    })()}
-                                </Typography>
+                                {(() => {
+                                    if (project) {
+                                        return (
+                                            <Typography align="center">
+                                                {project.finish_datetime ? project.finish_datetime.format('YYYY-MM-DD') : '尚未完成'}
+                                            </Typography>
+                                        )
+                                    } else return (
+                                        <Box width={150} marginX="auto">
+                                            <Skeleton />
+                                        </Box>
+                                    )
+                                })()}
                                 <Typography variant="h6" align="center">完成日期</Typography>
                             </Grid>
                         </Grid>
@@ -106,22 +127,25 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                             <Box flexGrow={1} flexBasis={0} className="mr-4">
                                 <Box>
                                     <Typography variant="h6">報價</Typography>
-                                    <Typography>
-                                        <Box fontWeight={500} className="mr-1" component="span">$</Box>
-                                        {(() => {
-                                            if (project) {
-                                                if (project.quote)
-                                                    return project.quote
-                                                else
-                                                    return '無報價'
-                                            }
-                                        })()}
-                                    </Typography>
+                                    {(() => {
+                                        if (project) {
+                                            return (
+                                                <Typography>
+                                                    <Box fontWeight={500} className="mr-1" component="span">$</Box>
+                                                    {project.quote || '無報價'}
+                                                </Typography>
+                                            )
+                                        } else return (
+                                            <Box component="span" width="auto">
+                                                <Skeleton width={150} />
+                                            </Box>
+                                        )
+                                    })()}
                                 </Box>
                                 <Divider className="my-3" />
                                 <Box>
                                     <Typography variant="h6">專案來源</Typography>
-                                    <Typography component="div">
+                                    <Box>
                                         {(() => {
                                             if (project) {
                                                 switch (project.source_type) {
@@ -147,9 +171,13 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                                             </Grid>
                                                         )
                                                 }
-                                            }
+                                            } else return (
+                                                <Box component="span" width="auto">
+                                                    <Skeleton width={150} />
+                                                </Box>
+                                            )
                                         })()}
-                                    </Typography>
+                                    </Box>
                                 </Box>
                             </Box>
                             <Box flexGrow={1} flexBasis={0}>

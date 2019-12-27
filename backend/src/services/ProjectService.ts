@@ -8,7 +8,7 @@ import Customer from '@/entity/Customer'
 import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
 
 @Service()
-export default class CustomerService {
+export default class ProjectService {
 
     /**
      * Create one project
