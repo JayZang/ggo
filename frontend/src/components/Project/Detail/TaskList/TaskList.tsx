@@ -1,77 +1,18 @@
 import React, { Component } from 'react'
-import { Paper, Box, Divider, Typography, Grid, withStyles, WithStyles, Checkbox, Button } from '@material-ui/core'
+import { Paper, Box, Divider, Typography, Grid, Button } from '@material-ui/core'
 import {
     Add as AddIcon,
-    Assignment as TaskIcon
+    Assignment as TaskIcon,
 } from '@material-ui/icons'
 import { Skeleton } from '@material-ui/lab'
 
-import { projectItemStyle } from './style'
+import ProjectTaskItem from './TaskItem'
 import TaskEditDrawer from 'components/Task/EditPanel/EditDrawer'
 import { ITask } from 'contracts/task'
-
-const ProjectTaskItem = withStyles(projectItemStyle)
-    (class _ProjectTaskItem  extends Component<WithStyles<typeof projectItemStyle> & {
-        task: ITask
-    }> {
-    render() {
-        const {
-            task,
-            classes
-        } = this.props
-
-        return (
-            <Box className="p-3 pr-4">
-                <Grid container justify="space-between" alignItems="center">
-                    <Grid item className="d-flex">
-                        <Checkbox 
-                            color="primary"
-                        />
-                        <Box marginLeft={1}>
-                            <Typography>
-                                {task.name}
-                            </Typography>
-                            <Typography className={classes.fieldHint}>
-                                任務名稱
-                            </Typography>
-                        </Box>
-                    </Grid>
-                    <Grid item>
-                        <Typography>
-                            {task.start_datetime.format('YYYY-MM-DD')}
-                        </Typography>
-                        <Typography className={classes.fieldHint}>
-                            起始日期
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography>
-                            {task.deadline_datetime.format('YYYY-MM-DD')}
-                        </Typography>
-                        <Typography className={classes.fieldHint}>
-                            最後期限日期
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography>
-                            成員1號
-                        </Typography>
-                        <Typography className={classes.fieldHint}>
-                            負責對象
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography>
-                            {task.status}
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </Box>
-        )
-    }
-})
+import { IProject } from 'contracts/project'
 
 type IProps = {
+    project: IProject | null
     tasks: ITask[] | null
 }
 
@@ -90,6 +31,7 @@ class ProjectTaskList extends Component<IProps, IState> {
 
     render() {
         const {
+            project,
             tasks
         } = this.props
 
@@ -110,7 +52,7 @@ class ProjectTaskList extends Component<IProps, IState> {
                                 startIcon={<AddIcon />}
                                 onClick={() => this.setState({ openCreateDrawer: true })}
                             >
-                                新增
+                                新增工作任務
                             </Button>
                         </Grid>
                     </Grid>
@@ -119,7 +61,7 @@ class ProjectTaskList extends Component<IProps, IState> {
                 <Divider />
                 <Divider />
 
-                <Box maxHeight={389} style={{ overflowY: 'auto' }}>
+                <Box maxHeight={390} style={{ overflowY: 'auto' }}>
                     {(() => {
                         if (tasks) {
                             return tasks.length ? tasks.map(task => (
@@ -150,6 +92,7 @@ class ProjectTaskList extends Component<IProps, IState> {
                 </Box>
 
                 <TaskEditDrawer 
+                    project={project || undefined}
                     open={this.state.openCreateDrawer}
                     onOpen={() => this.setState({ openCreateDrawer: true })}
                     onClose={() => this.setState({ openCreateDrawer: false })}

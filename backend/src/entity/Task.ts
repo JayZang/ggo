@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm'
 import Project from './Project'
+import TaskAssignment from './TaskAssignment'
 
 @Entity()
 export default class Task {
@@ -14,7 +15,8 @@ export default class Task {
     name: string
 
     @Column({
-        type: 'text'
+        type: 'text',
+        nullable: true
     })
     description: string
 
@@ -34,6 +36,12 @@ export default class Task {
     })
     status: number
 
+    @Column({
+        type: 'text',
+        nullable: true
+    })
+    remark: string
+
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
     
@@ -43,4 +51,16 @@ export default class Task {
     @ManyToOne(type => Project, project => project.tasks)
     @JoinColumn({ name: 'project_id' })
     project: Project
+
+    @OneToOne(type => TaskAssignment, taskAssignment => taskAssignment.task, {
+        cascade: true
+    })
+    assignment: TaskAssignment
+}
+
+export enum TaskStatus {
+    Normal = 0,
+    Pause = 1,
+    Terminated = 2,
+    Completed = 3
 }

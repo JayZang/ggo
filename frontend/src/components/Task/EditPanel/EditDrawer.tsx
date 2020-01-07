@@ -6,16 +6,19 @@ import {
 import RightDrawerContainer from 'components/RightDrawerContainer'
 import MobileHeader from 'components/MobileHeader'
 import TaskEditPanel from './index'
+import { IProject } from 'contracts/project'
 
 type IProp = {
-    open: boolean,
-    onOpen: () => void,
+    project?: IProject
+    open: boolean
+    onOpen: () => void
     onClose: () => void
 }
 
 export default class TaskEditDrawer extends Component<IProp> {
     render() {
         const {
+            project,
             open,
             onOpen,
             onClose
@@ -38,8 +41,8 @@ export default class TaskEditDrawer extends Component<IProp> {
                 }
             >
                 <TaskEditPanel
-                    // project={project}
-                    // onSubmitSuccess={onClose}
+                    project={project}
+                    onSubmitSuccess={onClose}
                 />
             </RightDrawerContainer>
         )

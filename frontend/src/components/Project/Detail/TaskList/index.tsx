@@ -4,7 +4,8 @@ import ProjectTaskList from './TaskList'
 import { RootState } from "stores";
 
 const mapStateToProps = (state: RootState) => ({
-    tasks: state.project.projectDetail.tasks
+    project: state.project.projectDetail.baseInfo,
+    tasks: state.task.tasksOfProject
 })
 
 export default connect(mapStateToProps)(ProjectTaskList)

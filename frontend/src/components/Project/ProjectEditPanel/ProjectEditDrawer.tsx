@@ -23,16 +23,17 @@ export default class ProjectEditDrawer extends Component<IProp> {
             onOpen,
             onClose
         } = this.props
-
+        const title = project ? "編輯案件/專案" : "新增案件/專案"
+        
         return (
             <RightDrawerContainer
-                title="新增案件/專案"
+                title={title}
                 open={open}
                 onOpen={onOpen}
                 onClose={onClose}
                 headComponent={
                     <MobileHeader
-                        title="新增案件/專案"
+                        title={title}
                         defaultHidden={true}
                         leftComponent={(
                             <BackIcon onClick={onClose} />

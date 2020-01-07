@@ -56,19 +56,19 @@ export default (app: Router) => {
             res.status(400).end()
     })
     
+    router.patch('/:id', CreateAndEditProject(), async (req: Request, res: Response) => {
+        const project = await projectService.update(req.params.id, req.body)
+        
+        return project ?
+        res.json(project) :
+        res.status(400).end()
+    })
+    
     router.get('/:id/tasks', async (req: Request, res: Response) => {
         const tasks = await taskService.getByProjectId(parseInt(req.params.id))
         
         return tasks ?
             res.json(tasks) :
-            res.status(400).end()
-    })
-    
-    router.patch('/:id', CreateAndEditProject(), async (req: Request, res: Response) => {
-        const project = await projectService.update(req.params.id, req.body)
-        
-        return project ?
-            res.json(project) :
             res.status(400).end()
     })
 }

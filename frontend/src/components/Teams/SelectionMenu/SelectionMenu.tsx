@@ -17,25 +17,27 @@ import {
     Paper,
     Typography
 } from '@material-ui/core'
-import { Search as SearchIcon } from '@material-ui/icons'
+import { 
+    Search as SearchIcon ,
+    Group as GroupIcon
+} from '@material-ui/icons'
 
-import { IMember } from 'contracts/member'
+import { ITeam } from 'contracts/team'
 import styles from './styles'
 
 type IProps =  WithStyles<typeof styles> & {
-    members: IMember[]
+    teams: ITeam[]
     multiple?: boolean
-    filtered?: IMember[]
-    onChange?: (members: IMember[] | IMember | null) => void
-    fetchMember?: () => Promise<void>
+    onChange?: (teams: ITeam[] | ITeam | null) => void
+    fetchTeam?: () => Promise<void>
 }
 
 type IState = {
-    checked: IMember[]
+    checked: ITeam[]
     searchInput: string
 }
 
-class MemberSelectionMenu extends Component<IProps, IState> {
+class TeamSelectionMenu extends Component<IProps, IState> {
     constructor (props: IProps) {
         super(props)
 
@@ -46,20 +48,20 @@ class MemberSelectionMenu extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.props.fetchMember && !this.props.members.length && this.props.fetchMember()
+        this.props.fetchTeam && !this.props.teams.length && this.props.fetchTeam()
     }
 
-    handleToggle(member: IMember) {
+    handleToggle(team: ITeam) {
         const isMultiple = this.props.multiple
         const checked = this.state.checked
-        const currentIndex = checked.indexOf(member);
+        const currentIndex = checked.indexOf(team);
         let newChecked = [...checked]
 
         if (currentIndex === -1) {
             if (isMultiple)
-                newChecked.push(member)
+                newChecked.push(team)
             else 
-                newChecked = [member]
+                newChecked = [team]
         } else {
             newChecked.splice(currentIndex, 1);
         }
@@ -82,12 +84,9 @@ class MemberSelectionMenu extends Component<IProps, IState> {
         }
     }
 
-    filterMembers() {
-        return this.props.members.filter(member => {
-            if (this.props.filtered && this.props.filtered.includes(member))
-                return false
-            return member.name.includes(this.state.searchInput) ||
-                member.email.includes(this.state.searchInput)
+    filterTeams() {
+        return this.props.teams.filter(team => {
+            return team.name.includes(this.state.searchInput)
         })
     }
 
@@ -111,28 +110,25 @@ class MemberSelectionMenu extends Component<IProps, IState> {
                         <Divider orientation="vertical" />
                         <Grid item>
                             <InputBase
-                                placeholder="搜尋成員名稱或 Email"
+                                placeholder="搜尋團隊名稱"
                                 value={searchInput}
                                 onChange={(event) => this.setState({ searchInput: event.target.value })}
                             />
                         </Grid>
                     </Grid>
                 </Paper>
-                <List>
-                    {this.filterMembers().map(member => {
+                <List className={classes.listWrapper}>
+                    {this.filterTeams().map(team => {
                         return (
-                            <ListItem button onClick={this.handleToggle.bind(this, member)} key={member.id}>
+                            <ListItem button onClick={this.handleToggle.bind(this, team)} key={team.id}>
                                 <ListItemAvatar>
-                                    <Avatar
-                                        src={member.avatar}
-                                    />
+                                    <Avatar>
+                                        <GroupIcon />
+                                    </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText primary={
                                     <Grid container direction="column">
-                                        <Grid item>{member.name}</Grid>
-                                        <Grid item>
-                                            <Typography className={classes.email} variant="body2">{member.email}</Typography>
-                                        </Grid>
+                                        <Grid item>{team.name}</Grid>
                                     </Grid>
                                 } />
                                 <ListItemSecondaryAction>
@@ -140,14 +136,14 @@ class MemberSelectionMenu extends Component<IProps, IState> {
                                         <Checkbox
                                             edge="end"
                                             color="primary"
-                                            onChange={this.handleToggle.bind(this, member)}
-                                            checked={checked.includes(member)}
+                                            onChange={this.handleToggle.bind(this, team)}
+                                            checked={checked.includes(team)}
                                         /> :
                                         <Radio 
                                             edge="end"
                                             color="primary"
-                                            onChange={this.handleToggle.bind(this, member)}
-                                            checked={checked.includes(member)}
+                                            onChange={this.handleToggle.bind(this, team)}
+                                            checked={checked.includes(team)}
                                         />
                                     }
                                 </ListItemSecondaryAction>
@@ -160,4 +156,4 @@ class MemberSelectionMenu extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(MemberSelectionMenu)
+export default withStyles(styles)(TeamSelectionMenu)

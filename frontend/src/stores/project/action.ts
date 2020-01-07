@@ -2,7 +2,8 @@ import { Dispatch } from "redux";
 
 import * as projectApi from 'api/project'
 import * as customerApi from 'api/customer'
-import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, GET_PROJECT_TASKS, CLEAR_PROJECT_DETAIL } from "./types";
+import * as taskApi from 'api/task'
+import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, ADD_PROJECT_TASK } from "./types";
 import { regularizeProjectData } from "./utils";
 import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
@@ -105,13 +106,16 @@ export const fetchProjectBaseInfo = (id: string) => async (dispatch: Dispatch) =
    dispatch(action)
 }
 
-export const fetchProjectTasks = (id: string) => async (dispatch: Dispatch) => {
-    const res = await projectApi.getTasksByProjectId(id)
+export const createProjectTask = (id: number | string, data: any) => async (dispatch: Dispatch) => {
+    const res = await taskApi.create({
+        project_id: id,
+        ...data
+    })
 
     const action: ProjectActionType = {
-        type: GET_PROJECT_TASKS,
+        type: ADD_PROJECT_TASK,
         payload: {
-            tasks: res.data.map(task => regularizeTaskData(task))
+            task: regularizeTaskData(res.data)
         }
    }
 

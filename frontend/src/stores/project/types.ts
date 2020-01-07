@@ -8,7 +8,7 @@ export const CLEAR_PROJECT = 'CLEAR_PROJECT'
 export const GET_CUSTOMER_SELECTION_MENU = 'GET_CUSTOMER_SELECTION_MENU'
 export const GET_COUNT_STATISTIC = 'GET_COUNT_STATISTIC'
 export const GET_PROJECT_BASE_INFO = 'GET_PROJECT_BASE_INFO'
-export const GET_PROJECT_TASKS = 'GET_PROJECT_TASKS'
+export const ADD_PROJECT_TASK = 'ADD_PROJECT_TASK'
 export const CLEAR_PROJECT_DETAIL = 'CLEAR_PROJECT_DETAIL'
 
 export type ProjectState = {
@@ -20,8 +20,7 @@ export type ProjectState = {
         srcTypeCustomerCount: number
     },
     projectDetail: {
-        baseInfo: IProject | null,
-        tasks: ITask[] | null
+        baseInfo: IProject | null
     }
 }
 
@@ -67,10 +66,10 @@ type GetProjectBaseInfo = {
     }
 }
 
-type GetProjectTasks = {
-    type: typeof GET_PROJECT_TASKS,
+type AddProjectTasks = {
+    type: typeof ADD_PROJECT_TASK,
     payload: {
-        tasks: ITask[]
+        task: ITask
     }
 }
 
@@ -85,5 +84,5 @@ export type ProjectActionType =
     GetCustomerSelectionMenu |
     GetCountStatistic |
     GetProjectBaseInfo |
-    GetProjectTasks | 
+    AddProjectTasks |
     ClearProjectDetail

@@ -1,4 +1,4 @@
-import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, GET_PROJECT_TASKS, CLEAR_PROJECT_DETAIL } from "./types"
+import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, ADD_PROJECT_TASK } from "./types"
 
 const initState: ProjectState = {
     projectMenu: null,
@@ -9,8 +9,7 @@ const initState: ProjectState = {
         srcTypeCustomerCount: 0,
     },
     projectDetail: {
-        baseInfo: null,
-        tasks: null
+        baseInfo: null
     }
 }
 
@@ -76,21 +75,11 @@ export default function customerReducer(state: ProjectState = initState, action:
                 }
             }
             
-        case GET_PROJECT_TASKS:
-            return {
-                ...state,
-                projectDetail: {
-                    ...state.projectDetail,
-                    tasks: action.payload.tasks
-                }
-            }
-            
         case CLEAR_PROJECT_DETAIL:
             return {
                 ...state,
                 projectDetail: {
-                    baseInfo: null,
-                    tasks: null
+                    baseInfo: null
                 }
             }
 
