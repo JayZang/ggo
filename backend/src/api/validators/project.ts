@@ -23,3 +23,10 @@ export function CreateAndEditProject(): RequestHandler[] {
         validate()
     ]
 }
+
+export function FinishProject(): RequestHandler[] {
+    return [
+        body('date').exists({ checkFalsy: true }).custom(datetimeValidator()),
+        validate()
+    ]
+}

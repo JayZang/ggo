@@ -3,11 +3,12 @@ import { Dispatch } from "redux";
 import * as projectApi from 'api/project'
 import * as customerApi from 'api/customer'
 import * as taskApi from 'api/task'
-import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, ADD_PROJECT_TASK } from "./types";
+import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, ADD_PROJECT_TASK, UPDATE_PROJECT_FINISH_DATE } from "./types";
 import { regularizeProjectData } from "./utils";
 import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
 import { regularizeTaskData } from "stores/task/utils";
+import { Moment } from "moment";
 
 export const createProject = (data: any) => async (dispatch : Dispatch) => {
    const res = await projectApi.create(data)
@@ -30,6 +31,20 @@ export const updateProject = (id: string | number, data: any) => async (dispatch
         type: UPDATE_PROJECT,
         payload: {
             project: regularizeProjectData(res.data)
+        }
+    }
+
+    dispatch(action)
+}
+
+export const finishProject = (id: number | string, date: Moment) => async (dispatch: Dispatch) => {
+    await projectApi.finish(id, date.toString())
+
+    const action: ProjectActionType = {
+        type: UPDATE_PROJECT_FINISH_DATE,
+        payload: {
+            projectId: id,
+            date
         }
     }
 

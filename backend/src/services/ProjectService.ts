@@ -6,6 +6,7 @@ import CustomerRepo from '@/repository/CustomerRepository'
 import { ProjectSrcType } from '@/entity/Project'
 import Customer from '@/entity/Customer'
 import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
+import moment = require('moment')
 
 @Service()
 export default class ProjectService {
@@ -136,6 +137,31 @@ export default class ProjectService {
             })
         } catch (err) {
             console.log('Get Projects count by source type fail')
+            console.log(err.toString())
+            return 0
+        }
+    }
+
+    /**
+     * Finish the project
+     * 
+     * @param id 
+     * @param date 
+     */
+    public async finish(id: string | number, date: string) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            const project = await projectRepo.findOneOrFail(id) 
+
+            if (project.finish_datetime)
+                throw new Error('The project has been set finish date !')
+            else if (moment(date).isBefore(project.start_datetime))
+                throw new Error('Finish date can not before project start date !')
+
+            project.finish_datetime = new Date(date)
+            return projectRepo.save(project)
+        } catch (err) {
+            console.log('Finish Projects fail')
             console.log(err.toString())
             return 0
         }

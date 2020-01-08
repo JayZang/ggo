@@ -40,6 +40,12 @@ export default class TaskService {
         }
     }
 
+    /**
+     * Update task status
+     * 
+     * @param taskId 
+     * @param status 
+     */
     public async updateStatus(taskId: string | number, status: TaskStatus) {
         try {
             const taskRepo = getCustomRepository(TaskRepo)

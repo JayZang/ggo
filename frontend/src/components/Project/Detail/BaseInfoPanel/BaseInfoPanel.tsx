@@ -1,30 +1,64 @@
 import React, { Component } from 'react'
-import { Box, Typography, Paper, Grid, WithStyles, withStyles, Divider, Button } from '@material-ui/core'
+import { Box, Typography, Paper, Grid, WithStyles, withStyles, Divider, Button, Dialog, DialogTitle, DialogContent, DialogActions, Slide } from '@material-ui/core'
+import { KeyboardDatePicker, MaterialUiPickersDate } from '@material-ui/pickers'
+import { TransitionProps } from '@material-ui/core/transitions'
 import { Skeleton } from '@material-ui/lab'
 import {
-    Edit as EditIcon
+    Edit as EditIcon,
+    Done as DoneIcon
 } from '@material-ui/icons'
+import moment, { Moment } from 'moment'
+import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 import { IProject, ProjectSrcType } from 'contracts/project'
 import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
 import styles from './style'
 import clsx from 'clsx'
 
-type IProps = WithStyles<typeof styles> & {
+type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     project: IProject | null
+    finishProject: (id: number | string, date: Moment) => Promise<void>
 }
 
 type IState = {
     openEditDrawer: boolean
+    openFinishProjectConfigDialog: boolean
+    finishProjectDate: Moment | null
 }
+
+const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
 class ProjectBaseInfoPanel extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
         this.state= {
-            openEditDrawer: false
+            openEditDrawer: false,
+            openFinishProjectConfigDialog: false,
+            finishProjectDate: moment()
         }
+    }
+
+    handleFinishProjectBtnClick() {
+        if (!this.props.project || !this.state.finishProjectDate)
+            return
+
+        this.props.finishProject(
+            this.props.project.id,
+            this.state.finishProjectDate
+        ).then(() => {
+            this.props.enqueueSnackbar(`結案成功！`, {
+                variant: 'success'
+            })
+            this.setState({ openFinishProjectConfigDialog: false })
+        })
+        .catch(() => {
+            this.props.enqueueSnackbar(`結案失敗，請重新整理！`, {
+                variant: 'error'
+            })
+        })
     }
 
     render() {
@@ -58,6 +92,18 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                         })()}
                     </Grid>
                     <Grid item>
+                        {(() => {
+                            if (project && !project.finish_datetime) return (
+                                <Button 
+                                    className="bg-success text-white mr-3"
+                                    variant="contained" 
+                                    startIcon={<DoneIcon />}
+                                    onClick={() => this.setState({ openFinishProjectConfigDialog: true })}
+                                >
+                                    <Box whiteSpace="noWrap">結案</Box>
+                                </Button>
+                            )
+                        })()}
                         <Button 
                             color="primary" 
                             variant="contained" 
@@ -190,6 +236,52 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                     </Box>
                 </Paper>
 
+                <Dialog
+                    open={this.state.openFinishProjectConfigDialog}
+                    onClose={() => this.setState({ openFinishProjectConfigDialog: false })}
+                    keepMounted
+                    maxWidth="sm"
+                    TransitionComponent={Transition}
+                >
+                    <DialogTitle>結案日期設置</DialogTitle>
+                    <DialogContent>
+                        <Box
+                            border="1px solid rgba(0, 0, 0, .2)"
+                            borderRadius={10}
+                            overflow="hidden"
+                        >
+                            <KeyboardDatePicker 
+                                minDate={project ? project.start_datetime.clone().add(1, 'days') : undefined}
+                                format="YYYY-MM-DD" 
+                                variant="static"
+                                value={this.state.finishProjectDate}
+                                onChange={date => this.setState({ finishProjectDate: date })}
+                            />
+                        </Box>
+                    </DialogContent>
+                    <DialogActions>
+                        <Box flexGrow={1} flexBasis={0} marginBottom={1} marginLeft={2}>
+                            <Button
+                                fullWidth
+                                variant="contained" 
+                                onClick={() => this.setState({ openFinishProjectConfigDialog: false })}
+                            >
+                                <Box whiteSpace="noWrap">取消</Box>
+                            </Button>
+                        </Box>
+                        <Box flexGrow={1} flexBasis={0} marginBottom={1} marginRight={2}>
+                            <Button 
+                                fullWidth
+                                className="bg-success text-white"
+                                variant="contained" 
+                                onClick={this.handleFinishProjectBtnClick.bind(this)}
+                            >
+                                <Box whiteSpace="noWrap">確認結案</Box>
+                            </Button>
+                        </Box>
+                    </DialogActions>
+                </Dialog>
+
                 <ProjectEditDrawer 
                     project={project || undefined}
                     open={this.state.openEditDrawer}
@@ -201,4 +293,6 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(ProjectBaseInfoPanel)
+export default withSnackbar(
+    withStyles(styles)(ProjectBaseInfoPanel)
+)

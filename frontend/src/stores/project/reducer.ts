@@ -1,4 +1,5 @@
-import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, ADD_PROJECT_TASK } from "./types"
+import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, ADD_PROJECT_TASK, UPDATE_PROJECT_FINISH_DATE } from "./types"
+import _ from 'lodash'
 
 const initState: ProjectState = {
     projectMenu: null,
@@ -40,6 +41,27 @@ export default function customerReducer(state: ProjectState = initState, action:
                     baseInfo: state.projectDetail.baseInfo && state.projectDetail.baseInfo.id === action.payload.project.id ? 
                         action.payload.project :
                         state.projectDetail.baseInfo
+                }
+            }
+
+        case UPDATE_PROJECT_FINISH_DATE:
+            return {
+                ...state,
+                projectMenu: state.projectMenu && state.projectMenu.map(project => {
+                    if (project.id === action.payload.projectId)
+                        project.finish_datetime = action.payload.date
+                    return project
+                }),
+                projectDetail: {
+                    ...state.projectDetail,
+                    baseInfo: (() => {
+                        let baseInfo = state.projectDetail.baseInfo
+                        if (baseInfo && baseInfo.id === action.payload.projectId) {
+                            baseInfo = _.cloneDeep(baseInfo)
+                            baseInfo.finish_datetime = action.payload.date
+                        }
+                        return baseInfo
+                    })()
                 }
             }
 

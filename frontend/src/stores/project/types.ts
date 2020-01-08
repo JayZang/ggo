@@ -1,9 +1,11 @@
 import { IProject } from 'contracts/project'
 import { ICustomer } from 'contracts/customer'
 import { ITask } from 'contracts/task'
+import { Moment } from 'moment'
 
 export const ADD_PROJECTS = 'ADD_PROJECTS'
 export const UPDATE_PROJECT = 'UPDATE_PROJECT'
+export const UPDATE_PROJECT_FINISH_DATE = 'UPDATE_PROJECT_FINISH_DATE'
 export const CLEAR_PROJECT = 'CLEAR_PROJECT'
 export const GET_CUSTOMER_SELECTION_MENU = 'GET_CUSTOMER_SELECTION_MENU'
 export const GET_COUNT_STATISTIC = 'GET_COUNT_STATISTIC'
@@ -36,6 +38,14 @@ type UpdateProject = {
     type: typeof UPDATE_PROJECT,
     payload: {
         project: IProject
+    }
+}
+
+type UpdateProjectFinishDate = {
+    type: typeof UPDATE_PROJECT_FINISH_DATE,
+    payload: {
+        projectId: string | number,
+        date: Moment
     }
 }
 
@@ -80,6 +90,7 @@ type ClearProjectDetail = {
 export type ProjectActionType = 
     AddProjects |
     UpdateProject |
+    UpdateProjectFinishDate |
     ClearProject |
     GetCustomerSelectionMenu |
     GetCountStatistic |
