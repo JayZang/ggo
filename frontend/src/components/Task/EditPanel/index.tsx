@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
 import TaskEditPanel from './EditPanel'
-import { createProjectTask } from "stores/project/action";
+import { createProjectTask } from "stores/task/action";
 import { clearMemberSelection, clearTeamSelection } from "stores/task/action";
 import { ThunkDispatch } from "redux-thunk";
 

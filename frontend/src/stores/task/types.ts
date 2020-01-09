@@ -3,6 +3,7 @@ import { ITeam } from 'contracts/team'
 import { TaskStatus, ITask } from 'contracts/task'
 
 export const GET_PROJECT_TASKS = 'GET_PROJECT_TASKS'
+export const ADD_PROJECT_TASK = 'ADD_PROJECT_TASK'
 export const UPDATE_TASK_STATUS = 'UPDATE_TASK_STATUS'
 export const ADD_MEMBER_SELECTION_LIST = 'ADD_MEMBER_SELECTION_LIST'
 export const CLEAR_MEMBER_SELECTION_LIST = 'CLEAR_MEMBER_SELECTION_LIST'
@@ -21,6 +22,13 @@ type GetProjectTasks = {
     type: typeof GET_PROJECT_TASKS,
     payload: {
         tasks: ITask[]
+    }
+}
+
+type AddProjectTasks = {
+    type: typeof ADD_PROJECT_TASK,
+    payload: {
+        task: ITask
     }
 }
 
@@ -56,6 +64,7 @@ type ClearTeamSelectionList = {
 
 export type TaskActionType = 
     GetProjectTasks |
+    AddProjectTasks |
     UpdateTaskStatus |
     AddMemberSelectionList | 
     ClearMemberSelectionList |

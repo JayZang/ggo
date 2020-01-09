@@ -1,6 +1,5 @@
 import { IProject } from 'contracts/project'
 import { ICustomer } from 'contracts/customer'
-import { ITask } from 'contracts/task'
 import { Moment } from 'moment'
 
 export const ADD_PROJECTS = 'ADD_PROJECTS'
@@ -10,7 +9,6 @@ export const CLEAR_PROJECT = 'CLEAR_PROJECT'
 export const GET_CUSTOMER_SELECTION_MENU = 'GET_CUSTOMER_SELECTION_MENU'
 export const GET_COUNT_STATISTIC = 'GET_COUNT_STATISTIC'
 export const GET_PROJECT_BASE_INFO = 'GET_PROJECT_BASE_INFO'
-export const ADD_PROJECT_TASK = 'ADD_PROJECT_TASK'
 export const CLEAR_PROJECT_DETAIL = 'CLEAR_PROJECT_DETAIL'
 
 export type ProjectState = {
@@ -76,13 +74,6 @@ type GetProjectBaseInfo = {
     }
 }
 
-type AddProjectTasks = {
-    type: typeof ADD_PROJECT_TASK,
-    payload: {
-        task: ITask
-    }
-}
-
 type ClearProjectDetail = {
     type: typeof CLEAR_PROJECT_DETAIL
 }
@@ -95,5 +86,4 @@ export type ProjectActionType =
     GetCustomerSelectionMenu |
     GetCountStatistic |
     GetProjectBaseInfo |
-    AddProjectTasks |
     ClearProjectDetail
