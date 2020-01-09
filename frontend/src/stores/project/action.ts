@@ -2,12 +2,10 @@ import { Dispatch } from "redux";
 
 import * as projectApi from 'api/project'
 import * as customerApi from 'api/customer'
-import * as taskApi from 'api/task'
 import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, UPDATE_PROJECT_FINISH_DATE } from "./types";
 import { regularizeProjectData } from "./utils";
 import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
-import { regularizeTaskData } from "stores/task/utils";
 import { Moment } from "moment";
 
 export const createProject = (data: any) => async (dispatch : Dispatch) => {

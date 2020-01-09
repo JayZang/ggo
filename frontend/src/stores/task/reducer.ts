@@ -1,4 +1,4 @@
-import { TaskState, ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, UPDATE_TASK_STATUS, GET_PROJECT_TASKS, ADD_PROJECT_TASK } from "./types";
+import { TaskState, ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, UPDATE_TASK_STATUS, GET_PROJECT_TASKS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK } from "./types";
 import _ from 'lodash'
 
 const initState: TaskState = {
@@ -37,6 +37,12 @@ export default function taskReducer(state: TaskState = initState, action: TaskAc
                     }
                     return task
                 })
+            }
+
+        case CLEAR_PROJECT_TASK:
+            return {
+                ...state,
+                tasksOfProject: null
             }
 
         case ADD_MEMBER_SELECTION_LIST:

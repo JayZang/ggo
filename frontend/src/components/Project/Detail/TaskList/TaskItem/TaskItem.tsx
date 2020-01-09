@@ -22,6 +22,7 @@ import TaskStatusLabel from 'components/Task/StatusLabel'
 
 type IProps = WithStyles<typeof styles> & {
     task: ITask,
+    isEditable: boolean
     updateStatus: (id: string | number, status: TaskStatus) => Promise<void>
 }
 
@@ -53,6 +54,7 @@ class ProjectTaskItem  extends Component<IProps, IState> {
     render() {
         const {
             task,
+            isEditable,
             classes
         } = this.props
         const {
@@ -137,9 +139,13 @@ class ProjectTaskItem  extends Component<IProps, IState> {
                         })()}
                     </Grid>
                     <Grid item>
-                        <Button disableRipple disableFocusRipple onClick={event => this.setState({
-                            statusBtnAnchorEl: event.currentTarget
-                        })}>
+                        <Button 
+                            disableRipple 
+                            disabled={!isEditable}
+                            disableFocusRipple onClick={event => this.setState({
+                                statusBtnAnchorEl: event.currentTarget
+                            })
+                        }>
                             <TaskStatusLabel status={task.status} />
                         </Button>
                         <Menu

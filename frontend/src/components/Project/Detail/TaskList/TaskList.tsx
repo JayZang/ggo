@@ -45,16 +45,19 @@ class ProjectTaskList extends Component<IProps, IState> {
                                 <Box component="span">工作任務</Box>
                             </Typography>
                         </Grid>
-                        <Grid item>
-                            <Button 
-                                color="primary" 
-                                variant="contained"
-                                startIcon={<AddIcon />}
-                                onClick={() => this.setState({ openCreateDrawer: true })}
-                            >
-                                新增工作任務
-                            </Button>
-                        </Grid>
+                        {project && !project.finish_datetime ? (
+                            <Grid item>
+                                <Button 
+                                    color="primary" 
+                                    variant="contained"
+                                    startIcon={<AddIcon />}
+                                    onClick={() => this.setState({ openCreateDrawer: true })}
+                                >
+                                    新增工作任務
+                                </Button>
+                            </Grid>
+                        ) : null}
+                        
                     </Grid>
                 </Box>
 
@@ -66,7 +69,7 @@ class ProjectTaskList extends Component<IProps, IState> {
                         if (tasks) {
                             return tasks.length ? tasks.map(task => (
                                 <Box key={task.id}>
-                                    <ProjectTaskItem task={task} />
+                                    <ProjectTaskItem task={task} isEditable={!!project && !project.finish_datetime}/>
                                     <Divider />
                                 </Box>
                             )) : (

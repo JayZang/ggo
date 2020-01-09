@@ -7,6 +7,8 @@ import { ProjectSrcType } from '@/entity/Project'
 import Customer from '@/entity/Customer'
 import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
 import moment = require('moment')
+import task from '@/api/routes/task'
+import { TaskStatus } from '@/entity/Task'
 
 @Service()
 export default class ProjectService {
@@ -151,14 +153,23 @@ export default class ProjectService {
     public async finish(id: string | number, date: string) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
-            const project = await projectRepo.findOneOrFail(id) 
+            const project = await projectRepo.findOneOrFail(id)
 
             if (project.finish_datetime)
                 throw new Error('The project has been set finish date !')
             else if (moment(date).isBefore(project.start_datetime))
                 throw new Error('Finish date can not before project start date !')
 
-            project.finish_datetime = new Date(date)
+            const tasks = await project.tasks
+            const isAllCompletedOrTerminated = tasks.reduce((status, task) => {
+                return status && (task.status === TaskStatus.Completed || task.status === TaskStatus.Terminated)
+            }, true)
+
+            if (!isAllCompletedOrTerminated)
+                throw new Error('Not all tasks are completed or terminated !')
+
+            project.finish_datetime = date
+
             return projectRepo.save(project)
         } catch (err) {
             console.log('Finish Projects fail')

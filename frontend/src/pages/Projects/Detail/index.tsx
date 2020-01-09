@@ -4,7 +4,7 @@ import ProjectDetail from './Detail'
 import { RootState } from "stores";
 import { ThunkDispatch } from "redux-thunk";
 import { fetchProjectBaseInfo, clearProjectDetail } from "stores/project/action";
-import { fetchProjectTasks } from "stores/task/action";
+import { fetchProjectTasks, clearProjectTask } from "stores/task/action";
 
 const mapStateToProps = (state: RootState) =>({
     project: state.project.projectDetail.baseInfo
@@ -19,6 +19,7 @@ const mapActionToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     },
     leave: () => {
         dispatch(clearProjectDetail())
+        dispatch(clearProjectTask())
     }
 })
 

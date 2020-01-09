@@ -48,7 +48,9 @@ export default class Task {
     @Column()
     project_id: number
 
-    @ManyToOne(type => Project, project => project.tasks)
+    @ManyToOne(type => Project, project => project.tasks, {
+        lazy: true
+    })
     @JoinColumn({ name: 'project_id' })
     project: Project
 

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
 import Customer from './Customer'
 import Task from './Task'
+import { Moment } from 'moment'
 
 @Entity()
 export default class Project {
@@ -27,9 +28,10 @@ export default class Project {
     deadline_datetime: Date
 
     @Column({
+        type: 'datetime',
         nullable: true
     })
-    finish_datetime: Date
+    finish_datetime: Date | string
 
     @Column({
         nullable: true
@@ -59,8 +61,10 @@ export default class Project {
     @JoinColumn({ name: 'customer_id' })
     customer: Customer
 
-    @OneToMany(type => Task, task => task.project)
-    tasks: Task
+    @OneToMany(type => Task, task => task.project, {
+        lazy: true
+    })
+    tasks: Task[]
 }
 
 export enum ProjectSrcType {

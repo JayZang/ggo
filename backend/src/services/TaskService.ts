@@ -50,6 +50,11 @@ export default class TaskService {
         try {
             const taskRepo = getCustomRepository(TaskRepo)
             const task = await taskRepo.findOneOrFail(taskId)
+            const project = await task.project
+
+            if (project.finish_datetime)
+                throw new Error('The project that the task belongs to is finished !')
+
             task.status = status
             return await taskRepo.save(task)
         } catch (err) {

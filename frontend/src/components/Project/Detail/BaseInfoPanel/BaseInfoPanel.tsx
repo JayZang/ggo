@@ -17,7 +17,8 @@ import clsx from 'clsx'
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     project: IProject | null
-    finishProject: (id: number | string, date: Moment) => Promise<void>
+    finishProject: (id: number | string, date: Moment) => Promise<void>,
+    isCanBeFinished: boolean
 }
 
 type IState = {
@@ -75,8 +76,15 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                             if (project) return (
                                 <Box>
                                     <Typography variant="h4" component="div" className="mb-1">
-                                        <Box fontWeight={500}>
-                                            {project.name}
+                                        <Box display="flex" alignItems="center">
+                                            <Box fontWeight={500} component="span">
+                                                {project.name}
+                                            </Box>
+                                            {project.finish_datetime ? (
+                                                <Typography variant="h6" component="span" className="badge badge-success ml-3">
+                                                    已結案
+                                                </Typography>
+                                            ): null }
                                         </Box>
                                     </Typography>
                                     <Typography variant="subtitle2" component="div">
@@ -91,28 +99,32 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                             )
                         })()}
                     </Grid>
-                    <Grid item>
-                        {(() => {
-                            if (project && !project.finish_datetime) return (
+                    {(() => {
+                        if (project && !project.finish_datetime) return (
+                            <Grid item>
+                                {(() => {
+                                    if (this.props.isCanBeFinished) return (
+                                        <Button 
+                                            className="bg-success text-white mr-3"
+                                            variant="contained" 
+                                            startIcon={<DoneIcon />}
+                                            onClick={() => this.setState({ openFinishProjectConfigDialog: true })}
+                                        >
+                                            <Box whiteSpace="noWrap">結案設置</Box>
+                                        </Button>
+                                    )
+                                })()}
                                 <Button 
-                                    className="bg-success text-white mr-3"
+                                    color="primary" 
                                     variant="contained" 
-                                    startIcon={<DoneIcon />}
-                                    onClick={() => this.setState({ openFinishProjectConfigDialog: true })}
+                                    startIcon={<EditIcon />}
+                                    onClick={() => this.setState({ openEditDrawer: true})}
                                 >
-                                    <Box whiteSpace="noWrap">結案</Box>
+                                    <Box whiteSpace="noWrap">編輯</Box>
                                 </Button>
-                            )
-                        })()}
-                        <Button 
-                            color="primary" 
-                            variant="contained" 
-                            startIcon={<EditIcon />}
-                            onClick={() => this.setState({ openEditDrawer: true})}
-                        >
-                            <Box whiteSpace="noWrap">編輯</Box>
-                        </Button>
-                    </Grid>
+                            </Grid>
+                        )
+                    })()}
                 </Grid>
                 <Paper className="p-4 mt-2">
                     <Box className={clsx(classes.datesBoxRoot, 'shadow-sm')}>
@@ -243,7 +255,10 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                     maxWidth="sm"
                     TransitionComponent={Transition}
                 >
-                    <DialogTitle>結案日期設置</DialogTitle>
+                    <DialogTitle>
+                        <Box textAlign="center">結案設置</Box>
+                    </DialogTitle>
+                    <Divider />
                     <DialogContent>
                         <Box
                             border="1px solid rgba(0, 0, 0, .2)"
@@ -258,6 +273,9 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                 onChange={date => this.setState({ finishProjectDate: date })}
                             />
                         </Box>
+                        <Typography className="alert alert-warning mt-3">
+                            注意：結案後不能編輯專案及所屬工作任務！
+                        </Typography>
                     </DialogContent>
                     <DialogActions>
                         <Box flexGrow={1} flexBasis={0} marginBottom={1} marginLeft={2}>
