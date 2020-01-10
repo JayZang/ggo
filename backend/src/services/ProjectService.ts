@@ -161,7 +161,7 @@ export default class ProjectService {
                 throw new Error('Finish date can not before project start date !')
 
             const tasks = await project.tasks
-            const isAllCompletedOrTerminated = tasks.reduce((status, task) => {
+            const isAllCompletedOrTerminated = !!tasks.length && tasks.reduce((status, task) => {
                 return status && (task.status === TaskStatus.Completed || task.status === TaskStatus.Terminated)
             }, true)
 
