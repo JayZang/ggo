@@ -109,6 +109,7 @@ class EmergencyContactMenu extends Component<IProps, IState> {
                              else {
                                 return emergencyContacts.map(function (emergencyContact) {
                                     return <ListItem 
+                                        key={emergencyContact.id}
                                         disableGutters={true}
                                         classes={{
                                             root: classes.cardItem

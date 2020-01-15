@@ -7,7 +7,7 @@ export const UPDATE_PROJECT = 'UPDATE_PROJECT'
 export const UPDATE_PROJECT_FINISH_DATE = 'UPDATE_PROJECT_FINISH_DATE'
 export const CLEAR_PROJECT = 'CLEAR_PROJECT'
 export const GET_CUSTOMER_SELECTION_MENU = 'GET_CUSTOMER_SELECTION_MENU'
-export const GET_COUNT_STATISTIC = 'GET_COUNT_STATISTIC'
+export const GET_PROJECT_COUNT_STATISTIC = 'GET_PROJECT_COUNT_STATISTIC'
 export const GET_PROJECT_BASE_INFO = 'GET_PROJECT_BASE_INFO'
 export const CLEAR_PROJECT_DETAIL = 'CLEAR_PROJECT_DETAIL'
 
@@ -59,7 +59,7 @@ type GetCustomerSelectionMenu = {
 }
 
 type GetCountStatistic = {
-    type: typeof GET_COUNT_STATISTIC,
+    type: typeof GET_PROJECT_COUNT_STATISTIC,
     payload: {
         totalCount: number
         srcTypeInternalCount: number

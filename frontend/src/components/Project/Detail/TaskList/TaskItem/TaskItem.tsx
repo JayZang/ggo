@@ -19,6 +19,7 @@ import { ITask, TaskAssignType, TaskStatus } from 'contracts/task'
 import { IMember } from 'contracts/member'
 import { ITeam } from 'contracts/team'
 import TaskStatusLabel from 'components/Task/StatusLabel'
+import AssignmentLabel from 'components/Task/AssignmentLabel'
 
 type IProps = WithStyles<typeof styles> & {
     task: ITask,
@@ -94,95 +95,10 @@ class ProjectTaskItem  extends Component<IProps, IState> {
                         </Typography>
                     </Grid>
                     <Grid item>
-                        {(() => {
-                            switch (task.assignment.type) {
-                                case TaskAssignType.Member:
-                                    const member = task.assignment.target as IMember
-                                    return (
-                                        <Link to={`/members/${member.id}`}>
-                                            <Grid container alignItems="center" spacing={2}>
-                                                <Avatar src={member.avatar} />
-                                                <Grid item>
-                                                    <Grid container direction="column">
-                                                        <Typography component="div">
-                                                            <Box fontWeight="bold">{member.name}</Box>
-                                                        </Typography>
-                                                        <Typography  variant="body2" component="div">
-                                                            <Box color="text.hint">負責對象：成員</Box>
-                                                        </Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Link>
-                                    )
-
-                                case TaskAssignType.Team:
-                                    const team = task.assignment.target as ITeam
-                                    return (
-                                        <Link to={`/teams/${team.id}`}>
-                                            <Grid container alignItems="center" spacing={2}>
-                                                <Avatar><GroupIcon /></Avatar>
-                                                <Grid item>
-                                                    <Grid container direction="column">
-                                                        <Typography component="div">
-                                                            <Box fontWeight="bold">{team.name}</Box>
-                                                        </Typography>
-                                                        <Typography  variant="body2" component="div">
-                                                            <Box color="text.hint">負責對象：團隊</Box>
-                                                        </Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Link>
-                                    )
-                            }
-                        })()}
+                        <AssignmentLabel task={task} />
                     </Grid>
                     <Grid item>
-                        <Button 
-                            disableRipple 
-                            disabled={!isEditable}
-                            disableFocusRipple onClick={event => this.setState({
-                                statusBtnAnchorEl: event.currentTarget
-                            })
-                        }>
-                            <TaskStatusLabel status={task.status} />
-                        </Button>
-                        <Menu
-                            anchorEl={statusBtnAnchorEl}
-                            keepMounted
-                            open={Boolean(statusBtnAnchorEl)}
-                            onClose={() => this.setState({ statusBtnAnchorEl: null })}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                            transformOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'center',
-                            }}
-                        >
-                            <MenuItem disableRipple
-                                onClick={this.handleUpdateStatusClick.bind(this, TaskStatus.Normal)}
-                            >
-                                執行
-                            </MenuItem>
-                            <MenuItem disableRipple
-                                onClick={this.handleUpdateStatusClick.bind(this, TaskStatus.Pause)}
-                            >
-                                暫停
-                            </MenuItem>
-                            <MenuItem disableRipple
-                                onClick={this.handleUpdateStatusClick.bind(this, TaskStatus.Terminated)}
-                            >
-                                終止
-                            </MenuItem>
-                            <MenuItem disableRipple
-                                onClick={this.handleUpdateStatusClick.bind(this, TaskStatus.Completed)}
-                            >
-                                完成
-                            </MenuItem>
-                        </Menu>
+                        <TaskStatusLabel task={task} editable={isEditable} />
                     </Grid>
                 </Grid>
             </Box>

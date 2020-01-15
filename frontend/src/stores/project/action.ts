@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 import * as projectApi from 'api/project'
 import * as customerApi from 'api/customer'
-import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, UPDATE_PROJECT_FINISH_DATE } from "./types";
+import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_PROJECT_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, UPDATE_PROJECT_FINISH_DATE } from "./types";
 import { regularizeProjectData } from "./utils";
 import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
@@ -95,7 +95,7 @@ export const getCountStatistic = () => async (dispatch: Dispatch) => {
     const res = await projectApi.getCountStatistic()
 
     const action: ProjectActionType = {
-        type: GET_COUNT_STATISTIC,
+        type: GET_PROJECT_COUNT_STATISTIC,
         payload: {
             totalCount: res.data.totalCount,
             srcTypeInternalCount: res.data.srcTypeInternalCount,

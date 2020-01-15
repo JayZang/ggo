@@ -29,9 +29,7 @@ export default class TaskAssignment {
     @JoinColumn({ name: 'task_id' })
     task: Task
 
-    @ManyToOne(type => Member, {
-        eager: true
-    })
+    @ManyToOne(type => Member)
     @JoinColumn({ name: 'distributor_id' })
     distributor: Member
 

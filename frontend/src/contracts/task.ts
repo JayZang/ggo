@@ -24,7 +24,7 @@ export type ITaskAssignment = {
     target_id: number | string
     distributor_id: number | string
     type: TaskAssignType,
-    distributor: IMember,
+    distributor?: IMember,
     target: IMember | ITeam
 }
 

@@ -8,6 +8,7 @@ import TaskIcon from '@material-ui/icons/Assignment';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 
 const styles = (theme: Theme) => createStyles({
   collapse: {
@@ -55,9 +56,11 @@ class TaskManagementListItem extends Component<IProps, IStates> {
         </ListItem>
         <Collapse in={open} timeout="auto" unmountOnExit className={this.props.classes.collapse}>
           <List component="div" disablePadding>
-            <ListItem button>
-              <ListItemText primary="任務項目" />
-            </ListItem>
+            <Link to="/tasks">
+                <ListItem button>
+                    <ListItemText primary="任務項目" />
+                </ListItem>
+            </Link>
             <ListItem button>
               <ListItemText primary="工作報告" />
             </ListItem>

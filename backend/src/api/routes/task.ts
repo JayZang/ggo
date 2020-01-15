@@ -3,12 +3,33 @@ import { Container } from 'typedi'
 
 import TaskService from '@/services/TaskService'
 import { CreateAndEditTask, UpdateTaskStatus } from '../validators/task'
+import { isNull } from 'util'
 
 const router = Router()
 const taskService = Container.get(TaskService)
 
 export default (app: Router) => {
     app.use('/tasks', router)
+
+    router.get('', async (req, res) => {
+        const tasks = await taskService.get({
+            skip: req.query.offset || 0,
+            take: req.query.count || 10
+        })
+        return tasks ?
+            res.json(tasks) :
+            res.status(400).end()
+    })
+
+    router.get('/count-statistic', async (req, res) => {
+        const totalCount = await taskService.getTotalCount()
+        
+        return !isNull(totalCount) ?
+            res.json({
+                totalCount
+            }) :
+            res.status(400).end()
+    })
 
     router.post('', CreateAndEditTask(), async (req: Request, res: Response) => {
         const task = await taskService.create(req.body)

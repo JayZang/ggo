@@ -31,7 +31,7 @@ const mapActionToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
         ])
     },
     getProject: async () => {
-        dispatch(getProject())
+        await dispatch(getProject())
     }
 })
 

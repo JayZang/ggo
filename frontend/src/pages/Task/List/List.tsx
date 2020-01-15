@@ -1,15 +1,6 @@
 import React, { Component } from 'react'
+import { Grid, Paper, IconButton, InputBase, Tooltip, Button, WithStyles } from '@material-ui/core'
 import {
-    Grid, 
-    Button, 
-    Paper,
-    IconButton,
-    InputBase,
-    Tooltip,
-    WithStyles
-} from '@material-ui/core'
-import {
-    Add as AddIcon,
     Search as SearchIcon,
     Cached as CachedIcon,
     FilterList as FilterListIcon
@@ -18,42 +9,38 @@ import {
 import styles from './styles'
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
+import { ITask } from 'contracts/task'
 import { withStyles } from '@material-ui/styles'
-import ProjectMenu from 'components/Project/List/ProjectMenu'
-import ProjectItemSkeleton from 'components/Project/List/ProjectMenu/ProjectItem/Skeleton'
-import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
-import ProjectCountBar from 'components/Project/List/ProjectCountBar'
-import { IProject } from 'contracts/project'
+import TaskMenu from 'components/Task/List/TaskMenu'
+import TaskItemSkeleton from 'components/Task/List/TaskMenu/TaskItem/Skeleton'
 
 type IProps = WithStyles<typeof styles> & {
+    tasks: ITask[] | null
+    isAllTasksLoaded: boolean
     load: () => Promise<void>
+    fetchTasks: () => Promise<void>
     reload: () => Promise<void>
-    getProject: () => Promise<void>
-    projects: IProject[] | null,
-    isProjectAllLoaded: boolean
 }
 
-type IState = {
-    openDrawer: boolean,
-    isProjectFetching: boolean
+type IStatus = {
+    isTaskFetching: boolean
 }
 
-class ProjectList extends Component<IProps, IState> {
+class TaskList extends Component<IProps, IStatus> {
     constructor(props: IProps) {
         super(props)
 
         this.trackScrolling = this.trackScrolling.bind(this)
         this.state = {
-            openDrawer: false,
-            isProjectFetching: false
+            isTaskFetching: false
         }
     }
 
     componentDidMount() {
-        if (!this.props.projects) {
-            this.setState({ isProjectFetching: true }, () => {
+        if (!this.props.tasks) {
+            this.setState({ isTaskFetching: true }, () => {
                 this.props.load().finally(() => {
-                    this.setState({ isProjectFetching: false })
+                    this.setState({ isTaskFetching: false })
                 })
             })
         }
@@ -65,13 +52,13 @@ class ProjectList extends Component<IProps, IState> {
     }
 
     async trackScrolling() {
-        if (this.state.isProjectFetching)
+        if (this.state.isTaskFetching)
             return
-            
+
         if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
-            this.setState({ isProjectFetching: true }, () => {
-                this.props.getProject().finally(() => {
-                    this.setState({ isProjectFetching: false })
+            this.setState({ isTaskFetching: true }, () => {
+                this.props.fetchTasks().finally(() => {
+                    this.setState({ isTaskFetching: false })
                 })
             })
         }
@@ -79,33 +66,30 @@ class ProjectList extends Component<IProps, IState> {
 
     render() {
         const {
+            tasks,
             classes,
-            projects,
-            isProjectAllLoaded
+            isAllTasksLoaded
         } = this.props
-        const {
-            openDrawer
-        } = this.state
 
         return (
             <AppContent
                 mobileHeader={(
                     <MobileHeader
-                        title="專案/案件列表"
+                        title="工作任務列表"
                         defaultHidden={false}
                     />
                 )}
             >
                 <Grid container className="align-items-center mb-3">
                     <Grid item>
-                        <h3>專案/案件管理</h3>
+                        <h3>工作任務項目</h3>
                         <div className="d-flex mt-1 align-items-center">
                             <Paper className={classes.searchPaper}>
                                 <IconButton size="small" >
                                     <SearchIcon />
                                 </IconButton>
                                 <InputBase
-                                    placeholder="搜尋專案/案件"
+                                    placeholder="搜尋工作任務"
                                 />
                             </Paper>
 
@@ -119,7 +103,7 @@ class ProjectList extends Component<IProps, IState> {
                             </Tooltip>
                             
                             {(() => {
-                                return projects ? 
+                                return tasks ? 
                                     <Tooltip title="重新載入">
                                         <IconButton 
                                             size="small"
@@ -133,33 +117,13 @@ class ProjectList extends Component<IProps, IState> {
                             })()}
                         </div>
                     </Grid>
-                    <Grid item className="ml-auto">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<AddIcon />}
-                            onClick={() => this.setState({ openDrawer: true })}
-                        >
-                            新增專案/案件
-                        </Button>
-                    </Grid>
                 </Grid>
 
-                <ProjectCountBar 
-                    className="mb-3" 
-                />
-
-                {projects && <ProjectMenu projects={projects} />}
-                {isProjectAllLoaded ? null : <ProjectItemSkeleton />}
-
-                <ProjectEditDrawer 
-                    open={openDrawer}
-                    onOpen={() => this.setState({ openDrawer: true })}
-                    onClose={() => this.setState({ openDrawer: false })}
-                />
+                {tasks && <TaskMenu  tasks={tasks} />}
+                {isAllTasksLoaded ? null : <TaskItemSkeleton />}
             </AppContent>
         )
     }
 }
 
-export default withStyles(styles)(ProjectList)
+export default withStyles(styles)(TaskList)

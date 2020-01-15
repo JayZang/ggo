@@ -5,7 +5,8 @@ import { TransitionProps } from '@material-ui/core/transitions'
 import { Skeleton } from '@material-ui/lab'
 import {
     Edit as EditIcon,
-    Done as DoneIcon
+    Done as DoneIcon,
+    ErrorOutline as ErrorOutlineIcon
 } from '@material-ui/icons'
 import moment, { Moment } from 'moment'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
@@ -266,6 +267,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                             overflow="hidden"
                         >
                             <KeyboardDatePicker 
+                                fullWidth
                                 minDate={project ? project.start_datetime.clone().add(1, 'days') : undefined}
                                 format="YYYY-MM-DD" 
                                 variant="static"
@@ -273,8 +275,9 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                 onChange={date => this.setState({ finishProjectDate: date })}
                             />
                         </Box>
-                        <Typography className="alert alert-warning mt-3">
-                            注意：結案後不能編輯專案及所屬工作任務！
+                        <Typography className="alert alert-warning mt-3 d-flex" component="div">
+                            <ErrorOutlineIcon fontSize="small" className="mr-2 mt-1" />
+                            <span>結案後不能編輯專案及其工作任務！</span>
                         </Typography>
                     </DialogContent>
                     <DialogActions>

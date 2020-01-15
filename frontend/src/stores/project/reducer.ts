@@ -1,4 +1,4 @@
-import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, UPDATE_PROJECT_FINISH_DATE } from "./types"
+import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, UPDATE_PROJECT_FINISH_DATE, GET_PROJECT_COUNT_STATISTIC } from "./types"
 import _ from 'lodash'
 
 const initState: ProjectState = {
@@ -77,7 +77,7 @@ export default function customerReducer(state: ProjectState = initState, action:
                 customerSelectionMenu: action.payload.customers
             }
 
-        case GET_COUNT_STATISTIC:
+        case GET_PROJECT_COUNT_STATISTIC:
             return {
                 ...state,
                 statistics: {
