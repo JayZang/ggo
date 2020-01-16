@@ -16,5 +16,5 @@ export type ITeam = {
     leader_id: number | string,
     create_at: Moment,
     members_count: number
-    leader: IMember
+    leader?: IMember
 }

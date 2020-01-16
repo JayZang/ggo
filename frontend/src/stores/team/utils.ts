@@ -7,6 +7,6 @@ export function regularizeTeamData(data: any): ITeam {
     return {
         ...data,
         create_at: mement(data.create_at),
-        leader: regularizeMemberData(data.leader)
+        leader: data.leader && regularizeMemberData(data.leader)
     }
 }

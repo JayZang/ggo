@@ -166,13 +166,15 @@ class MemberItem extends Component<IProps, IState> {
                     </Typography>
 
                     <div>
-                        <Button
-                            color="primary"
-                            variant="outlined"
-                            size="small"
-                        >
-                            <Link to={ `/members/${member.id}` }>View</Link>
-                        </Button>
+                        <Link to={ `/members/${member.id}` }>
+                            <Button
+                                color="primary"
+                                variant="outlined"
+                                size="small"
+                            >
+                                View
+                            </Button>
+                        </Link>
 
                         <IconButton onClick={this.handleOpenMenu}>
                             <MoreVertIcon />

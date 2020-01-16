@@ -47,19 +47,21 @@ class TeamItem extends Component<IProps> {
                         {team.description}
                     </Typography>
 
-                    <div className={classes.leaderWrapper}>
-                        {this.renderLeaderAvatar()}
-                        <div className={classes.leaderInfoWrapper}>
-                            <Typography variant="h6" className={classes.leaderName}>
-                                <Link to={`/members/${team.leader.id}`}>
-                                    {team.leader.name}
-                                </Link>
-                            </Typography>
-                            <Typography className={classes.leaderEamil} >
-                                {team.leader.email}
-                            </Typography>
+                    {team.leader && (
+                        <div className={classes.leaderWrapper}>
+                            <Avatar className={classes.leaderAvatar}  src={team.leader.avatar} />
+                            <div className={classes.leaderInfoWrapper}>
+                                <Typography variant="h6" className={classes.leaderName}>
+                                    <Link to={`/members/${team.leader.id}`}>
+                                        {team.leader.name}
+                                    </Link>
+                                </Typography>
+                                <Typography className={classes.leaderEamil} >
+                                    {team.leader.email}
+                                </Typography>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </CardContent>
                 <Divider />
                 <CardContent>
@@ -81,26 +83,6 @@ class TeamItem extends Component<IProps> {
                 <Divider />
             </Card>
         )
-    }
-
-    renderLeaderAvatar() {
-        const { team, classes } = this.props
-        const leader = team.leader
-
-        return <Avatar className={classes.leaderAvatar}  src={(() => {
-            if (leader.avatar)
-                return leader.avatar
-            else {
-                switch (leader.gender) {
-                    case MemberGender.female:
-                        return defaultWomanAvatar
-
-                    case MemberGender.male:
-                    default:
-                        return defaultManAvatar
-                }
-            }
-        })()} />
     }
 }
 

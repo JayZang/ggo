@@ -2,7 +2,7 @@ import { Theme, createStyles } from '@material-ui/core'
 
 export default (theme: Theme) => createStyles({
     cardHeaderRoot: {
-        padding: theme.spacing(1)
+        padding: theme.spacing(1, 1, 1, 2)
     },
     cardHeaderAction: {
         marginTop: 0,

@@ -44,4 +44,25 @@ export default class TeamService {
         const teamRepo = getCustomRepository(TeamRepo)
         return await teamRepo.getMany(true)
     }
+
+    /**
+     * Get teams by member
+     */
+    public async getByMember(id: string | number) {
+        try {
+            const memberRepo = getCustomRepository(MemberRepository)
+            const member = await memberRepo.findOneOrFail(id, {
+                relations: ['teams', 'teams_as_leader']
+            })
+            return [
+                ...member.teams_as_leader,
+                ...member.teams
+            ]
+        } catch (err) {
+            console.log('Get teams by member fail')
+            console.log(err.toString())
+            return null
+        }
+
+    }
 }

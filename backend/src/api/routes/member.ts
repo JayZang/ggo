@@ -2,10 +2,12 @@ import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 
 import MemberService from '@/services/MemberService'
+import TeamService from '@/services/TeamService'
 import { CreateAndEditMember, CreateEmergenctContact } from '@/api/validators/member'
 
 const router = Router()
 const memberService = Container.get(MemberService)
+const teamService = Container.get(TeamService)
 
 export default (app: Router) => {
     app.use('/members', router)
@@ -74,6 +76,14 @@ export default (app: Router) => {
 
         return emergencyContact ?
             res.json(emergencyContact) :
+            res.status(400).end()
+    })
+
+    router.get('/:id/teams', async (req, res) => {
+        const teams = await teamService.getByMember(req.params.id)
+
+        return teams ? 
+            res.json(teams) :
             res.status(400).end()
     })
 }

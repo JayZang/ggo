@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import { 
     withStyles,
-    WithStyles
+    WithStyles,
+    Box
 } from '@material-ui/core'
 
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import MemberBaseInfoCard from 'components/Members/Info/BaseInfoCard'
 import EmergencyContactMenu from 'components/Members/Info/EmergencyContactMenu'
+import TeamMenu from 'components/Members/Info/TeamMenu'
 import styles from './styles'
 
 type IProps = WithStyles<typeof styles> & {
@@ -48,6 +50,8 @@ class MemberInfo extends Component<IProps> {
                     </div>
                     <div className={classes.emergencyContactMenuWrapper}>
                         <EmergencyContactMenu memberId={id}/>
+                        <Box className="mt-4" />
+                        <TeamMenu memberId={id} />
                     </div>
                 </div>
             </AppContent>

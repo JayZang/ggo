@@ -35,7 +35,6 @@ export default class Team {
     create_at: Date
 
     @ManyToOne(type => Member, member => member.teams_as_leader, {
-        eager: true,
         nullable: false, 
         onDelete: 'NO ACTION',
         onUpdate: 'CASCADE'

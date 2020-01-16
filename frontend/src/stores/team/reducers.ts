@@ -3,12 +3,15 @@ import {
     TeamActionType,
     GET_PERMANENT_TEAMS,
     GET_TEMPORARAY_TEAMS,
-    ADD_PERMANENT_TEAM
+    ADD_PERMANENT_TEAM,
+    GET_TEAMS_OF_MEMBER,
+    CLEAR_TEAMS_OF_MEMBER
 } from './types'
 
 const initState: TeamState = {
     permanentTeams: null,
-    temporaryTeams: null
+    temporaryTeams: null,
+    teamsOfMember: null
 }
 
 export default function teamReducer(state: TeamState = initState, action: TeamActionType): TeamState {
@@ -32,6 +35,18 @@ export default function teamReducer(state: TeamState = initState, action: TeamAc
                     ...state.permanentTeams,
                     action.payload.team
                 ]
+            }
+
+        case GET_TEAMS_OF_MEMBER:
+            return {
+                ...state,
+                teamsOfMember: action.payload.teams
+            }
+
+        case CLEAR_TEAMS_OF_MEMBER:
+            return {
+                ...state,
+                teamsOfMember: null
             }
 
         default:
