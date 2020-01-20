@@ -12,12 +12,14 @@ export default (theme: Theme) => createStyles({
     },
     headerBtnsContainer: {
         width: 156,
+        display: 'flex',
+        alignItems: 'center',
         [theme.breakpoints.down('xs')]: {
             width: 0
         }
     },
     headerTitle: {
-        marginBottom: theme.spacing(2),
+        marginBottom: theme.spacing(1),
         [theme.breakpoints.down('xs')]: {
             display: 'none'
         }

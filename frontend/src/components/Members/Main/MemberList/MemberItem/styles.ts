@@ -10,10 +10,7 @@ export default (theme: Theme) => createStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        transition: '.2s',
-        '&:hover': {
-            transform: 'scale(1.02)'
-        }
+        transition: '.2s'
     },
     field: {
         marginLeft: theme.spacing(3)

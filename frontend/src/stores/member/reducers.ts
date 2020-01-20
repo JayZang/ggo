@@ -1,20 +1,25 @@
 import {
     MemberState,
     MemberActionTypes,
-    GET_ALL_MEMBERS,
     CLEAR_MEMBERS,
-    ADD_MEMBER,
+    ADD_MEMBER_LIST,
     UPDATE_MEMBER,
     REMOVE_MEMBER,
     GET_MEMBER_BASE_INFO,
     CLEAR_MEMBER_INFO,
-    GET_MEMBER_EMERGENCT_CONTACT,
+    GET_MEMBER_EMERGENCY_CONTACT,
     ADD_EMERGENCY_CONTACT,
-    REMOVE_EMERGENCY_CONTACT
+    REMOVE_EMERGENCY_CONTACT,
+    GET_MEMBER_COUNT_STATISTIC
 } from './types'
 
 const initState: MemberState = {
-    members: [],
+    members: {
+        list: null,
+        totalCount: 0,
+        activeCount: 0,
+        inactiveCount: 0
+    },
     memberInfo: {
         baseInfo: null,
         emergenctContacts: null
@@ -23,36 +28,50 @@ const initState: MemberState = {
 
 export default function memberReducer(state = initState, action: MemberActionTypes): MemberState {
     switch (action.type) {
-        case GET_ALL_MEMBERS:
-            return {
-                ...state,
-                members: action.payload.members
-            }
-
         case CLEAR_MEMBERS:
             return {
                 ...state,
-                members: []
+                members: {
+                    list: null,
+                    totalCount: 0,
+                    activeCount: 0,
+                    inactiveCount: 0
+                }
             }
 
-        case ADD_MEMBER:
+        case GET_MEMBER_COUNT_STATISTIC:
             return {
                 ...state,
-                members: [
+                members: {
                     ...state.members,
-                    action.payload.member
-                ]
+                    ...action.payload
+                }
+            }
+
+        case ADD_MEMBER_LIST:
+            return {
+                ...state,
+                members: {
+                    ...state.members,
+                    list: [
+                        ...(state.members.list || []),
+                        ...action.payload.members
+                    ]
+                }
             }
 
         case UPDATE_MEMBER:
             return {
                 ...state,
-                members: state.members.map(member => {
-                    if (action.payload.member.id !== member.id)
-                        return member
-
-                    return action.payload.member
-                }),
+                members: {
+                    ...(state.members),
+                    list: state.members.list && state.members.list.map(member => {
+                        if (action.payload.member.id !== member.id)
+                            return member
+    
+                        return action.payload.member
+                    })
+                },
                 memberInfo: {
                     ...(state.memberInfo),
                     baseInfo: action.payload.member.id === (state.memberInfo.baseInfo && state.memberInfo.baseInfo.id) ? 
@@ -63,9 +82,13 @@ export default function memberReducer(state = initState, action: MemberActionTyp
         case REMOVE_MEMBER:
             return {
                 ...state,
-                members: state.members.filter(member => {
-                    return member.id !== action.payload.id
-                })
+                members: {
+                    ...(state.members),
+                    list: state.members.list && state.members.list.filter(member => {
+                        return member.id !== action.payload.id
+                    }),
+                    totalCount: state.members.totalCount - 1
+                }
             }
 
         case GET_MEMBER_BASE_INFO:
@@ -77,7 +100,7 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                 }
             }
 
-        case GET_MEMBER_EMERGENCT_CONTACT:
+        case GET_MEMBER_EMERGENCY_CONTACT:
             return {
                 ...state,
                 memberInfo: {

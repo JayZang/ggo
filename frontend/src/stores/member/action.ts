@@ -3,25 +3,52 @@ import { Dispatch } from 'redux'
 import * as memberAPI from 'api/member'
 import { regularizeMemberData } from './utils'
 import {
-    GET_ALL_MEMBERS,
     CLEAR_MEMBERS,
-    ADD_MEMBER,
+    ADD_MEMBER_LIST,
     UPDATE_MEMBER,
     REMOVE_MEMBER,
     MemberActionTypes,
     GET_MEMBER_BASE_INFO,
     CLEAR_MEMBER_INFO,
-    GET_MEMBER_EMERGENCT_CONTACT,
+    GET_MEMBER_EMERGENCY_CONTACT,
     ADD_EMERGENCY_CONTACT,
     REMOVE_EMERGENCY_CONTACT,
+    GET_MEMBER_COUNT_STATISTIC,
 } from './types'
 import { IEmergencyContactEditDTO } from 'contracts/member'
+import { RootState } from 'stores'
 
-export const fetchMembers = () => async (dispatch: Dispatch) => {
-    const res = await memberAPI.all()
+export const fetchMemberCountStatistic = () => async (dispatch: Dispatch) => {
+    const res = await memberAPI.getCountStatistic()
 
     const action: MemberActionTypes = {
-        type: GET_ALL_MEMBERS,
+        type: GET_MEMBER_COUNT_STATISTIC,
+        payload: {
+            totalCount: res.data.total,
+            activeCount: res.data.active,
+            inactiveCount: res.data.inactive
+        }
+    }
+
+    dispatch(action)
+}
+
+export const fetchMembers = () => async (dispatch: Dispatch, getState: () => RootState) => {
+    const {
+        list: memberList,
+        totalCount
+    } = getState().member.members
+
+    if (memberList && memberList.length >= totalCount)
+        return
+
+    const res = await memberAPI.get({
+        offset: memberList ? memberList.length : 0,
+        count: 10
+    })
+
+    const action: MemberActionTypes = {
+        type: ADD_MEMBER_LIST,
         payload: {
             members: res.data.map(member => {
                 return regularizeMemberData(member)
@@ -38,13 +65,13 @@ export function clearMembers(): MemberActionTypes {
     }
 }
 
-export const createMember = (data: any) => async (dispatch: Dispatch) => {
+export const createMember = (data: any) => async (dispatch: Dispatch, getState: () => RootState) => {
     const res = await memberAPI.create(data)
 
     const action: MemberActionTypes = {
-        type: ADD_MEMBER,
+        type: ADD_MEMBER_LIST,
         payload: {
-            member: regularizeMemberData(res.data)
+            members: [regularizeMemberData(res.data)]
         }
     }
 
@@ -94,7 +121,7 @@ export const getMemberEmergencyContacts = (id: number | string) => async (dispat
     const res = await memberAPI.getEmergencyContacts(id)
 
     const action: MemberActionTypes = {
-        type: GET_MEMBER_EMERGENCT_CONTACT,
+        type: GET_MEMBER_EMERGENCY_CONTACT,
         payload: {
             emergencyContacts: res.data
         }

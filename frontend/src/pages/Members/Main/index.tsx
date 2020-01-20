@@ -1,46 +1,36 @@
-import React from 'react'
-import { useTheme, WithStyles, withStyles } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
-import AppContent from 'pages/App/Content'
-import MobileHeader from 'components/MobileHeader'
-import MemberSearchBar from 'components/Members/Main/SearchBar'
-import MemberDataCards from 'components/Members/Main/MemberDataCards'
-import AddMemberBtn from 'components/Members/Main/AddMember/Button'
-import MemberFilterBtn from 'components/Members/Main/FilterMember/Button'
-import MemberList from 'components/Members/Main/MemberList'
-import styles from './styles'
+import MemberList from './Main'
+import { clearMembers, fetchMembers, fetchMemberCountStatistic } from 'stores/member/action';
+import { RootState } from 'stores';
 
-interface IProps extends WithStyles<typeof styles> { }
-
-function Members(props: IProps) {
-    const theme = useTheme()
-    const classes = props.classes
-    const useFabBtn = useMediaQuery(theme.breakpoints.down('xs'))
-
-    return (
-        <AppContent
-            mobileHeader={
-                <MobileHeader
-                    title="Member"
-                    defaultHidden={false}
-                />
-            }
-        >
-            <div className={classes.header}>
-                <div className={classes.headerLeft}>
-                    <h3 className={classes.headerTitle}>成員管理</h3>
-                    <MemberSearchBar />
-                </div>
-                <div className={classes.headerBtnsContainer}>
-                    <AddMemberBtn useFabBtn={useFabBtn} className={classes.addMemberBtn} />
-                    <MemberFilterBtn useFabBtn={useFabBtn} className={classes.memberFilterBtn} />
-                </div>
-            </div>
-            <MemberDataCards />
-            <MemberList />
-        </AppContent>
-    )
+const mapStateToProps = (state: RootState) => {
+    const members = state.member.members
+    return {
+        members: members.list,
+        isAllMemberFetched: !!members.list && members.list.length >= members.totalCount
+    }
 }
 
-export default withStyles(styles)(Members)
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
+    load: async () => {
+        await dispatch<Promise<void>>(fetchMemberCountStatistic()).then(() => {
+            return dispatch(fetchMembers())
+        })
+    },
+    reload: async () => {
+        dispatch(clearMembers())
+        await dispatch<Promise<void>>(fetchMemberCountStatistic()).then(() => {
+            return dispatch(fetchMembers())
+        })
+    },
+    fetchMembers: async () => {
+        await dispatch(fetchMembers())
+    }
+})
+
+export default connect(
+    mapStateToProps, 
+    mapDispatchToProps
+)(MemberList)

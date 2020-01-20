@@ -1,18 +1,21 @@
 import React, { Component } from 'react'
 import Card from '@material-ui/core/Card'
+import Circle from 'react-circle';
 import { withStyles, WithStyles, Theme, createStyles } from '@material-ui/core/styles'
 import PersonIcon from '@material-ui/icons/Person'
 import clsx from 'clsx'
+import { Box, Tooltip } from '@material-ui/core';
 
 const styles = (theme: Theme) => createStyles({
     root: {
         display: 'flex',
-        marginTop: theme.spacing(3)
+        marginTop: theme.spacing(2)
     },
     card: {
         display: 'flex',
         alignItems: 'center',
         flexGrow: 1,
+        flexBasis: 0,
         padding: theme.spacing(2),
         '& + *': {
             marginLeft: theme.spacing(3)
@@ -56,14 +59,21 @@ const styles = (theme: Theme) => createStyles({
 })
 
 interface IProps extends WithStyles<typeof styles> {
-    totalMembers: number,
-    activeMembers: number,
+    totalMembers: number
+    activeMembers: number
     inactiveMembers: number
+    loadedMembers: number
 }
 
 class MemberDataCards extends Component<IProps> {
     render() {
-        const classes = this.props.classes
+        const {
+            classes,
+            totalMembers,
+            activeMembers,
+            inactiveMembers,
+            loadedMembers
+        } = this.props
 
         return (
             <div className={classes.root}>
@@ -72,11 +82,23 @@ class MemberDataCards extends Component<IProps> {
                         <PersonIcon className={classes.icon} />
                     </div>
                     <div>
-                        <div className={classes.title}>成員總數</div>
+                        <div className={classes.title}>總數</div>
                         <div className={classes.number}>
-                            {this.props.totalMembers}
+                            {totalMembers}
                         </div>
                     </div>
+                    <Tooltip
+                        title={`載入筆數：${loadedMembers} / ${totalMembers}`}
+                        placement="bottom"
+                    >
+                        <Box marginLeft="auto" textAlign="center">
+                            <Circle 
+                                progress={parseInt((loadedMembers / totalMembers * 100) as any) || 0}
+                                roundedStroke
+                                size="60"
+                            />
+                        </Box>
+                    </Tooltip>
                 </Card>
                 <Card className={clsx(classes.card, classes.activeMemberCard)}>
                     <div className={clsx(classes.iconContainer, 'bg-success')}>
@@ -85,7 +107,7 @@ class MemberDataCards extends Component<IProps> {
                     <div>
                         <div className={classes.title}>可用成員數</div>
                         <div className={classes.number}>
-                            {this.props.activeMembers}
+                            {activeMembers}
                         </div>
                     </div>
                 </Card>
@@ -96,7 +118,7 @@ class MemberDataCards extends Component<IProps> {
                     <div>
                         <div className={classes.title}>非可用成員數</div>
                         <div className={classes.number}>
-                            {this.props.inactiveMembers}
+                            {inactiveMembers}
                         </div>
                     </div>
                 </Card>

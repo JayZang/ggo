@@ -4,6 +4,7 @@ import _ from 'lodash'
 
 import MemberRepo from '@/repository/MemberRepository'
 import EmergencyContactRepo from '@/repository/EmergencyContactRepository'
+import { MemberStatus } from '@/entity/Member'
 
 @Service()
 export default class MemberService {
@@ -23,11 +24,30 @@ export default class MemberService {
     }
 
     /**
-     * Get All Members
+     * Get Members
      */
-    public async all() {
+    public async get(option?: {
+        skip: number,
+        take: number,
+    }) {
         const memberRepo = getCustomRepository(MemberRepo)
-        return memberRepo.find()
+        return await memberRepo.find(option)
+    }
+
+    /**
+     * Get Members
+     */
+    public async getCountStatistic() {
+        const memberRepo = getCustomRepository(MemberRepo)
+        const [totalMemberCount, activeMemberCount] =  await Promise.all([
+            memberRepo.count(),
+            memberRepo.count({ status: MemberStatus.active }),
+        ])
+        return {
+            total: totalMemberCount,
+            active: activeMemberCount,
+            inactive: totalMemberCount - activeMemberCount
+        }
     }
 
     /**

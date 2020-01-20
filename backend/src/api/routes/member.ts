@@ -21,9 +21,17 @@ export default (app: Router) => {
     })
 
     router.get('', async (req, res) => {
-        const members = await memberService.all()
+        const members = await memberService.get({
+            skip: req.query.offset || 0,
+            take: req.query.count || 10
+        })
 
         return res.json(members)
+    })
+
+    router.get('/count-statistic', async (req, res) => {
+        const countStatistic = await memberService.getCountStatistic()
+        return res.json(countStatistic)
     })
 
     router.patch('/:id', CreateAndEditMember(), async (req: Request, res: Response) => {

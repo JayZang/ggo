@@ -1,14 +1,8 @@
 import { connect } from 'react-redux'
 
 import MemberList from './MemberList'
-import { fetchMembers, clearMembers } from 'stores/member/action'
-import { RootState } from 'stores'
+import { fetchMembers } from 'stores/member/action'
 
-const mapStateToProps = (state: RootState) => ({
-  members: state.member.members
-})
-
-export default connect(mapStateToProps, { 
-  fetchMembers, 
-  clearMembers 
+export default connect(null, { 
+    fetchMembers
 })(MemberList)

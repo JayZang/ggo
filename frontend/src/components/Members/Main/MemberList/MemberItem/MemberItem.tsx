@@ -112,7 +112,7 @@ class MemberItem extends Component<IProps, IState> {
                         <Typography className={clsx(classes.field)} component="div">
                             {member.name}
                             <Box className={classes.fieldHint}>
-                                Name
+                                姓名
                             </Box>
                         </Typography>
                     </div>
@@ -124,28 +124,28 @@ class MemberItem extends Component<IProps, IState> {
                                     member.gender === MemberGender.other ? '其他' : ''
                         }
                         <Box className={classes.fieldHint}>
-                            Gender
+                            性別
                         </Box>
                     </Typography>
 
                     <Typography className={clsx(classes.phone, classes.field)} component="div">
                         {member.phone}
                         <Box className={classes.fieldHint}>
-                            Phone
+                            聯絡電話
                         </Box>
                     </Typography>
 
                     <Typography className={clsx(classes.email, classes.field)} component="div">
                         {member.email}
                         <Box className={classes.fieldHint}>
-                            Email
+                            電子郵件
                         </Box>
                     </Typography>
 
                     <Typography className={clsx(classes.birthday, classes.field)} component="div">
                         {member.birthday.format('YYYY-MM-DD')}
                         <Box className={classes.fieldHint}>
-                            Birthday
+                            生日
                         </Box>
                     </Typography>
 
@@ -161,7 +161,7 @@ class MemberItem extends Component<IProps, IState> {
                             }
                         })()}
                         <Box className={classes.fieldHint}>
-                            Status
+                            狀態
                         </Box>
                     </Typography>
 
@@ -172,7 +172,7 @@ class MemberItem extends Component<IProps, IState> {
                                 variant="outlined"
                                 size="small"
                             >
-                                View
+                                查看
                             </Button>
                         </Link>
 

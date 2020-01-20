@@ -105,7 +105,10 @@ export const updateTaskStatus = (id: string | number, status: TaskStatus) => asy
 }
 
 export const fetchMemberSelection = () => async (dispatch : Dispatch) => {
-    const res = await memberApi.all()
+    const res = await memberApi.get({
+        offset: 0,
+        count: 1
+    })
  
     const action: TaskActionType = {
         type: ADD_MEMBER_SELECTION_LIST,
