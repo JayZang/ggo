@@ -8,7 +8,8 @@ import {
     Typography,
     Avatar,
     Divider,
-    Grid
+    Grid,
+    Tooltip
 } from '@material-ui/core'
 import { 
     Group as GroupIcon,
@@ -18,9 +19,6 @@ import clsx from 'clsx'
 
 import styles from './styles'
 import { ITeam } from 'contracts/team'
-import { MemberGender } from 'contracts/member'
-import defaultManAvatar from 'assets/svgs/default-man-avatar.svg'
-import defaultWomanAvatar from 'assets/svgs/default-woman-avatar.svg'
 
 type IProps = WithStyles<typeof styles> & {
     team: ITeam
@@ -48,19 +46,19 @@ class TeamItem extends Component<IProps> {
                     </Typography>
 
                     {team.leader && (
-                        <div className={classes.leaderWrapper}>
-                            <Avatar className={classes.leaderAvatar}  src={team.leader.avatar} />
-                            <div className={classes.leaderInfoWrapper}>
-                                <Typography variant="h6" className={classes.leaderName}>
-                                    <Link to={`/members/${team.leader.id}`}>
-                                        {team.leader.name}
-                                    </Link>
-                                </Typography>
-                                <Typography className={classes.leaderEamil} >
-                                    {team.leader.email}
-                                </Typography>
-                            </div>
-                        </div>
+                        <Tooltip title="檢視隊長" placement="bottom-start">
+                            <Link to={`/members/${team.leader.id}`} className={classes.leaderWrapper}>
+                                <Avatar className={classes.leaderAvatar}  src={team.leader.avatar} />
+                                <div className={classes.leaderInfoWrapper}>
+                                    <Typography variant="h6" className={classes.leaderName}>
+                                            {team.leader.name}
+                                    </Typography>
+                                    <Typography className={classes.leaderEamil} >
+                                        {team.leader.email}
+                                    </Typography>
+                                </div>
+                            </Link>
+                        </Tooltip>
                     )}
                 </CardContent>
                 <Divider />

@@ -5,10 +5,9 @@ import {
 
 export default (theme: Theme) => createStyles({
     root: {
-        width: 300,
-        margin: theme.spacing(2),
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        width: '100%'
     },
     topCardContent: {
         display: 'flex',
@@ -30,17 +29,22 @@ export default (theme: Theme) => createStyles({
         marginTop: theme.spacing(2)
     },
     leaderInfoWrapper: {
-        marginLeft: theme.spacing(1)
+        marginLeft: theme.spacing(1),
+        overflow: 'hidden'
     },
     leaderAvatar: {
         width: 60,
         height: 60
     },
     leaderName: {
-        fontSize: 18
+        fontSize: 18,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
     leaderEamil: {
-        color: theme.palette.text.hint
+        color: theme.palette.text.hint,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
     countWrapper: {
         display: 'flex',

@@ -46,7 +46,12 @@ function Members(props: IProps) {
 
     // componentDidMount
     useEffect(() => {
-        members || props.load()
+        members || (() => {
+            isFetching = true
+            props.load().finally(() => {
+                isFetching = false
+            })
+        })()
         document.addEventListener('scroll', trackScrolling);
 
         return () => {

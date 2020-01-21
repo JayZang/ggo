@@ -3,7 +3,8 @@ import {
     withStyles,
     WithStyles,
     Card,
-    CardContent
+    CardContent,
+    Box
 } from '@material-ui/core'
 import {
     Skeleton
@@ -35,7 +36,9 @@ class TeamMenu extends Component<IProps> {
         if (!this.props.teams) return null
 
         return this.props.teams.map(team => (
-            <TeamItem team={team} key={team.id}/>
+            <Box className={this.props.classes.item} key={team.id}>
+                <TeamItem team={team}/>
+            </Box>
         ))
     }
 
@@ -47,24 +50,26 @@ class TeamMenu extends Component<IProps> {
 
     renderLoadingItem() {
         return (
-            <Card className={this.props.classes.item}>
-                <CardContent>
-                    <Skeleton height={10} />
-                    <Skeleton height={10} width="50%" />
-                    <div className="mt-4">
-                        <Skeleton height={10} />
+            <Box className={this.props.classes.item}>
+                <Card style={{ width: '100%' }}>
+                    <CardContent>
                         <Skeleton height={10} />
                         <Skeleton height={10} width="50%" />
-                    </div>
-                    <div className="d-flex mt-4">
-                        <Skeleton variant="circle" height={50} width={50} />
-                        <div className="flex-grow-1 ml-3">
+                        <div className="mt-4">
+                            <Skeleton height={10} />
                             <Skeleton height={10} />
                             <Skeleton height={10} width="50%" />
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
+                        <div className="d-flex mt-4">
+                            <Skeleton variant="circle" height={50} width={50} />
+                            <div className="flex-grow-1 ml-3">
+                                <Skeleton height={10} />
+                                <Skeleton height={10} width="50%" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </Box>
         )
     }
 }
