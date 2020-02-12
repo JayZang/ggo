@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm'
 import _ from 'lodash'
 
 import Team from '@/entity/Team'
+import TaskAssignment, { TaskAssignmentType } from '@/entity/TaskAssignment'
 
 @EntityRepository(Team)
 class TeamRepository extends Repository<Team> {
@@ -27,12 +28,11 @@ class TeamRepository extends Repository<Team> {
      * @param isTemporary 
      */
     public async getMany(isTemporary: boolean) {
-        return this.find({ 
-            where: {
-                is_temporary: isTemporary
-            },
-            relations: ['leader'] 
-        })
+        return this.createQueryBuilder('team')
+            .leftJoinAndMapMany('team.task_assignments', TaskAssignment, 'taskAssignment', 'taskAssignment.target_id = team.id AND taskAssignment.type = :type', { type: TaskAssignmentType.Team })
+            .leftJoinAndSelect('team.leader', 'leader')
+            .where('is_temporary = :isTemporary', { isTemporary })
+            .getMany()
     }
 }
 

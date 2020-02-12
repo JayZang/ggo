@@ -46,13 +46,18 @@ export default (theme: Theme) => createStyles({
         overflow: 'hidden',
         textOverflow: 'ellipsis'
     },
+    footerCardContent: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(1.5, 2)
+    },
     countWrapper: {
         display: 'flex',
         alignItems: 'center',
         color: theme.palette.primary.main
     },
     countNumber: {
-        fontSize: 20,
+        fontSize: 16,
         marginLeft: theme.spacing(0.5)
     }
 })

@@ -1,6 +1,8 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable, ManyToOne, RelationCount, JoinColumn, CreateDateColumn } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable, ManyToOne, RelationCount, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm'
 
 import Member from './Member'
+import Task from './Task'
+import TaskAssignment from './TaskAssignment'
 
 @Entity()
 export default class Team {
@@ -50,4 +52,6 @@ export default class Team {
 
     @RelationCount((team: Team) => team.members)
     members_count: number
+
+    task_assignments: TaskAssignment[]
 }
