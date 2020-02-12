@@ -1,38 +1,41 @@
 import React, { Component } from 'react'
 import { Box, Typography, Grid, Divider } from '@material-ui/core'
 import styled from 'styled-components'
+import { ITeam } from 'contracts/team'
 
 type IProps = {
-    className?: string
+    className?: string,
+    team: ITeam | null
 }
 
 class TeamBaseInfo extends Component<IProps> {
     render() {
         const {
-            className
+            className,
+            team
         } = this.props
 
         return (
             <Box className={className}>
                 <Typography className="team-name" variant="h5">
-                    團隊名稱
+                    {team && team.name}
                 </Typography>
                 <Typography  className="team-description mt-2" variant="body1">
-                    團隊說明
+                    {team && team.description}
                 </Typography>
                 <Box className="status-bar mt-3">
                     <Grid container spacing={2} >
                         <Grid item xs={4} className="status-block">
                             <Typography variant="h6">狀態</Typography>
-                            <Typography>啟用中</Typography>
+                            <Typography>{team && team.status_name}</Typography>
                         </Grid>
                         <Grid item xs={4} className="status-block">
                             <Typography variant="h6">創建時間</Typography>
-                            <Typography>2020-01-01 16:18</Typography>
+                            <Typography>{team && team.create_at.format('YYYY-MM-DD HH:mm')}</Typography>
                         </Grid>
                         <Grid item xs={4} className="status-block">
                             <Typography variant="h6">臨時團隊</Typography>
-                            <Typography>否</Typography>
+                            <Typography>{team ? (team.is_temporary ? '是' : '否') : ''}</Typography>
                         </Grid>
                     </Grid>
                 </Box>

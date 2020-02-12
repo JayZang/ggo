@@ -18,5 +18,6 @@ export type ITeam = {
     create_at: Moment,
     members_count: number
     leader?: IMember,
-    task_assignments?: ITaskAssignment[]
+    task_assignments?: ITaskAssignment[],
+    status_name: string
 }

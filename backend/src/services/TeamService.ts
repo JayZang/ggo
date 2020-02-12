@@ -63,6 +63,21 @@ export default class TeamService {
             console.log(err.toString())
             return null
         }
+    }
 
+    /**
+     * Get team by team id
+     */
+    public async getById(id: string | number) {
+        try {
+            const teamRepo = getCustomRepository(TeamRepo)
+            return await teamRepo.findOneOrFail(id,{
+                relations: ['leader']
+            })
+        } catch (err) {
+            console.log('Get team by id fail')
+            console.log(err.toString())
+            return null
+        }
     }
 }

@@ -5,11 +5,13 @@ export const GET_TEMPORARAY_TEAMS = 'GET_TEMPORARAY_TEAMS'
 export const ADD_PERMANENT_TEAM = 'ADD_PERMANENT_TEAM'
 export const GET_TEAMS_OF_MEMBER = 'GET_TEAMS_OF_MEMBER'
 export const CLEAR_TEAMS_OF_MEMBER = 'CLEAR_TEAMS_OF_MEMBER'
+export const GET_TEAM_DETAIL_INFO = 'GET_TEAM_DETAIL_INFO'
 
 export type TeamState = {
     permanentTeams: ITeam[] | null,
     temporaryTeams: ITeam[] | null,
-    teamsOfMember: ITeam[] | null
+    teamsOfMember: ITeam[] | null,
+    teamDetail: ITeam | null
 }
 
 type GetPermanentTeams = {
@@ -44,9 +46,17 @@ type ClearTeamsOfMember = {
     type: typeof CLEAR_TEAMS_OF_MEMBER,
 }
 
+type GetTeamDetailInfo = {
+    type: typeof GET_TEAM_DETAIL_INFO,
+    payload: {
+        team: ITeam
+    }
+}
+
 export type TeamActionType = 
     GetPermanentTeams |
     GetTemporaryTeams | 
     AddPermanentTeam |
     GetTeamsOfMember | 
-    ClearTeamsOfMember
+    ClearTeamsOfMember |
+    GetTeamDetailInfo

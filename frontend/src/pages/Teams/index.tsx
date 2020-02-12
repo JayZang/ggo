@@ -9,7 +9,7 @@ export default class TeamPage extends Component {
         return (
             <Switch>
                 <Route exact path="/teams" component={TeamList} />
-                <Route path="/teams/:id" render={props => <TeamDetail id={props.match.params.id} />} />
+                <Route exact path="/teams/:id" render={props => <TeamDetail id={props.match.params.id} />} />
             </Switch>
         )
     }

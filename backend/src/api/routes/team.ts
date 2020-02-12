@@ -26,4 +26,11 @@ export default (app: Router) => {
         const teams = await teamService.getTemporaryTeams()
         return res.json(teams)
     })
+
+    router.get('/:id', async (req, res) => {
+        const team = await teamService.getById(req.params.id)
+        return team ?
+            res.json(team) :
+            res.status(400).end()
+    })
 }

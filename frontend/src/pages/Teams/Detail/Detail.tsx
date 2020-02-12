@@ -8,57 +8,36 @@ import MobileHeader from 'components/MobileHeader'
 import TeamLeaderCard from 'components/Teams/Detail/LeaderCard'
 import TeamBaseInfo from 'components/Teams/Detail/BaseInfo'
 import styles from './style'
+import { ITeam } from 'contracts/team'
 
 type IProps = WithStyles<typeof styles> & RouteComponentProps & {
     id: number | string
+    load: (id: string | number) => Promise<void>,
+    team: ITeam | null
 }
 
 type IState = {
-    tabIndex: number
+    tabIndex: number,
+    team: ITeam | null
 }
 
 class TeamDetail extends Component<IProps, IState> {
-    defaultPath = ''
-    membersPath = ''
-    tasksPath = ''
-
     constructor(props: IProps) {
         super(props)
 
-        let tabIndex = 0
-        this.defaultPath = props.match.path
-        this.membersPath = `${props.match.path}/members`
-        this.tasksPath = `${props.match.path}/tasks`
-
-        if (matchPath(props.location.pathname, {
-            path: this.membersPath,
-            exact: true
-        }))
-            tabIndex = 1
-        else if (matchPath(props.location.pathname, {
-            path: this.tasksPath,
-            exact: true
-        }))
-            tabIndex = 2
-
         this.state = {
-            tabIndex
+            tabIndex: 0,
+            team: null
         }
     }
 
-    handleTabChange(event: React.ChangeEvent<{}>, value: any) {
-        const {
-            match
-        } = this.props
-
-        this.setState({ tabIndex: value })
-
-        if (value === 0)
-            this.props.history.push(`${match.url}`)
-        else if (value === 1)
-            this.props.history.push(`${match.url}/members`)
-        else if (value === 2)
-            this.props.history.push(`${match.url}/tasks`)
+    componentDidMount() {
+        this.props.load(this.props.id)
+            .then(() => {
+                this.setState({
+                    team: this.props.team
+                })
+            })
     }
 
     render() {
@@ -66,13 +45,9 @@ class TeamDetail extends Component<IProps, IState> {
             classes
         } = this.props
         const {
-            tabIndex
+            tabIndex,
+            team
         } = this.state
-        const {
-            defaultPath,
-            membersPath,
-            tasksPath
-        } = this
 
         return (
             <AppContent
@@ -85,13 +60,13 @@ class TeamDetail extends Component<IProps, IState> {
             >
                 <Grid container spacing={3}>
                     <Grid item className={classes.leftBlock}>
-                        <TeamLeaderCard />
+                        <TeamLeaderCard leader={(team && team.leader) ? team.leader : null} />
                     </Grid>
                     <Grid item className={classes.rightBlock}>
                         <Card>
                             <Tabs 
                                 value={tabIndex}
-                                onChange={this.handleTabChange.bind(this)}
+                                onChange={(event, value) => this.setState({ tabIndex: value })}
                                 indicatorColor="primary"
                                 textColor="primary"
                             >
@@ -103,11 +78,9 @@ class TeamDetail extends Component<IProps, IState> {
                             <Divider />
 
                             <CardContent>
-                                <Switch>
-                                    <Route exact path={defaultPath} component={TeamBaseInfo}/>
-                                    <Route exact path={membersPath} />
-                                    <Route exact path={tasksPath} />
-                                </Switch>
+                                {(() => {
+                                    return tabIndex === 0 ? <TeamBaseInfo  team={team} /> : ''
+                                })()}
                             </CardContent>
                         </Card>
                     </Grid>
