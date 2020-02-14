@@ -10,7 +10,8 @@ import {
     GET_MEMBER_EMERGENCY_CONTACT,
     ADD_EMERGENCY_CONTACT,
     REMOVE_EMERGENCY_CONTACT,
-    GET_MEMBER_COUNT_STATISTIC
+    GET_MEMBER_COUNT_STATISTIC,
+    GET_TEAM_MEMBERS
 } from './types'
 
 const initState: MemberState = {
@@ -23,7 +24,8 @@ const initState: MemberState = {
     memberInfo: {
         baseInfo: null,
         emergenctContacts: null
-    }
+    },
+    teamMembers: null
 }
 
 export default function memberReducer(state = initState, action: MemberActionTypes): MemberState {
@@ -141,6 +143,12 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                     baseInfo: null,
                     emergenctContacts: null
                 }
+            }
+
+        case GET_TEAM_MEMBERS:
+            return {
+                ...state,
+                teamMembers: action.payload.members
             }
 
         default:

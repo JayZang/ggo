@@ -3,9 +3,11 @@ import { Container } from 'typedi'
 
 import TeamService from '@/services/TeamService'
 import { CreateTeamValidator } from '@/api/validators/team'
+import MemberService from '@/services/MemberService'
 
 const router = Router()
 const teamService = Container.get(TeamService)
+const memberService = Container.get(MemberService)
 
 export default (app: Router) => {
     app.use('/teams', router)
@@ -31,6 +33,13 @@ export default (app: Router) => {
         const team = await teamService.getById(req.params.id)
         return team ?
             res.json(team) :
+            res.status(400).end()
+    })
+
+    router.get('/:id/members', async (req, res) => {
+        const members = await memberService.getMembersByTeam(req.params.id)
+        return members ?
+            res.json(members) :
             res.status(400).end()
     })
 }

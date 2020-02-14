@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
 
 import * as memberAPI from 'api/member'
+import * as teamAPI from 'api/team'
 import { regularizeMemberData } from './utils'
 import {
     CLEAR_MEMBERS,
@@ -14,6 +15,7 @@ import {
     ADD_EMERGENCY_CONTACT,
     REMOVE_EMERGENCY_CONTACT,
     GET_MEMBER_COUNT_STATISTIC,
+    GET_TEAM_MEMBERS,
 } from './types'
 import { IEmergencyContactEditDTO } from 'contracts/member'
 import { RootState } from 'stores'
@@ -160,4 +162,17 @@ export const clearMemberInfo = () => {
     return {
         type: CLEAR_MEMBER_INFO
     }
+}
+
+export const fetchMembersByTeam = (id: string | number) => async (dispatch: Dispatch) => {
+    const res = await teamAPI.getMembersByTeam(id)
+
+    const action: MemberActionTypes = {
+        type: GET_TEAM_MEMBERS,
+        payload: {
+            members: res.data.map(member => regularizeMemberData(member))
+        }
+    }
+
+    dispatch(action)
 }

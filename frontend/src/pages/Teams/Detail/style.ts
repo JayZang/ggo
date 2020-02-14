@@ -8,5 +8,8 @@ export default (theme: Theme) => createStyles({
     },
     rightBlock: {
         flexGrow: 1
+    },
+    contentWrapper: {
+        padding: 0
     }
 }) 

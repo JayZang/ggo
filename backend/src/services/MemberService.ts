@@ -5,6 +5,7 @@ import _ from 'lodash'
 import MemberRepo from '@/repository/MemberRepository'
 import EmergencyContactRepo from '@/repository/EmergencyContactRepository'
 import { MemberStatus } from '@/entity/Member'
+import TeamRepository from '@/repository/TeamRepository'
 
 @Service()
 export default class MemberService {
@@ -158,6 +159,25 @@ export default class MemberService {
             return emergenctContact
         } catch (err) {
             console.log('Delete emergency contact fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Get members by team
+     * 
+     * @param id    team id
+     */
+    public async getMembersByTeam(id: string | number) {
+        try {
+            const teamRepo = getCustomRepository(TeamRepository)
+            const team = await teamRepo.findOneOrFail(id, {
+                relations: ['members']
+            })
+            return team.members
+        } catch (err) {
+            console.log('Get members by team fail')
             console.log(err.toString())
             return null
         }

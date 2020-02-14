@@ -7,18 +7,22 @@ import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import TeamLeaderCard from 'components/Teams/Detail/LeaderCard'
 import TeamBaseInfo from 'components/Teams/Detail/BaseInfo'
+import TeamMemberList from 'components/Teams/Detail/MemberList'
 import styles from './style'
 import { ITeam } from 'contracts/team'
+import { IMember } from 'contracts/member'
 
 type IProps = WithStyles<typeof styles> & RouteComponentProps & {
     id: number | string
     load: (id: string | number) => Promise<void>,
-    team: ITeam | null
+    team: ITeam | null,
+    members: IMember[] | null
 }
 
 type IState = {
     tabIndex: number,
-    team: ITeam | null
+    team: ITeam | null,
+    members: IMember[]
 }
 
 class TeamDetail extends Component<IProps, IState> {
@@ -27,7 +31,8 @@ class TeamDetail extends Component<IProps, IState> {
 
         this.state = {
             tabIndex: 0,
-            team: null
+            team: null,
+            members: []
         }
     }
 
@@ -35,18 +40,20 @@ class TeamDetail extends Component<IProps, IState> {
         this.props.load(this.props.id)
             .then(() => {
                 this.setState({
-                    team: this.props.team
+                    team: this.props.team,
+                    members: this.props.members || []
                 })
             })
     }
 
     render() {
         const {
-            classes
+            classes,
         } = this.props
         const {
             tabIndex,
-            team
+            team,
+            members
         } = this.state
 
         return (
@@ -71,15 +78,16 @@ class TeamDetail extends Component<IProps, IState> {
                                 textColor="primary"
                             >
                                 <Tab label="團隊資訊" />
-                                <Tab label="團隊成員" />
-                                <Tab label="任務列表" />
+                                <Tab label={`團隊成員 (${members ? members.length : 0})`} />
+                                <Tab label={`團隊任務 (0)`} />
                             </Tabs>
 
                             <Divider />
 
-                            <CardContent>
+                            <CardContent className={classes.contentWrapper}>
                                 {(() => {
-                                    return tabIndex === 0 ? <TeamBaseInfo  team={team} /> : ''
+                                    return tabIndex === 0 ? <TeamBaseInfo  team={team} /> : 
+                                        (tabIndex === 1 ? <TeamMemberList members={members} /> : '')
                                 })()}
                             </CardContent>
                         </Card>

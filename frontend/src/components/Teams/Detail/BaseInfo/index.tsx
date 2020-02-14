@@ -45,6 +45,8 @@ class TeamBaseInfo extends Component<IProps> {
 }
 
 export default styled(TeamBaseInfo)`
+    padding: 16px;
+
     & .team-name {
         font-weight: bold;
     }
