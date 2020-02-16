@@ -53,6 +53,17 @@ class TaskRepository extends Repository<Task> {
         ]))
     }
 
+    public async getByAssignment(type: TaskAssignmentType, targetId: string | number) {
+        return this.createQueryBuilder('task')
+            .innerJoinAndMapMany(
+                'task.assignment', 
+                TaskAssignment, 
+                'taskAssignment', 
+                'task.id = taskAssignment.task_id AND taskAssignment.type = :type AND taskAssignment.target_id = :targetId', 
+                { type, targetId })
+            .getMany() 
+    }
+
     public async attachTasksAssignment(tasks: Task[]) {
         const memberRepo = getCustomRepository(MemberRepo)
         const teamRepo = getCustomRepository(TeamRepo)

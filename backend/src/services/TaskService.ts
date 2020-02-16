@@ -3,6 +3,8 @@ import { getCustomRepository } from 'typeorm'
 
 import TaskRepo from '@/repository/TaskRepository'
 import { TaskStatus } from '@/entity/Task'
+import TeamRepository from '@/repository/TeamRepository'
+import { TaskAssignmentType } from '@/entity/TaskAssignment'
 
 @Service()
 export default class TaskService {
@@ -96,6 +98,25 @@ export default class TaskService {
             return await taskRepo.count()
         } catch (err) {
             console.log('Get total number of tasks fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Get tasks by team
+     * 
+     * @param id    team id
+     */
+    public async getTasksByTeam(id: string | number) {
+        try {
+            const teamRepo = getCustomRepository(TeamRepository)
+            const taskRepo = getCustomRepository(TaskRepo)
+            const team = await teamRepo.findOneOrFail(id)
+            const tasks = await taskRepo.getByAssignment(TaskAssignmentType.Team, team.id)
+            return tasks
+        } catch (err) {
+            console.log('Get tasks by team fail')
             console.log(err.toString())
             return null
         }
