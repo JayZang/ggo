@@ -46,7 +46,10 @@ export default (app: Router) => {
     })
 
     router.get('/:id/tasks', async (req, res) => {
-        const tasks = await taskService.getTasksByTeam(req.params.id)
+        const tasks = await taskService.getTasksByTeam(req.params.id, {
+            skip: req.query.offset || 0,
+            take: req.query.count || 10
+        })
         return tasks ?
             res.json(tasks) :
             res.status(400).end()

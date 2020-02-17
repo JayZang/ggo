@@ -12,6 +12,8 @@ export const CLEAR_PROJECT_TASK = 'CLEAR_PROJECT_TASK'
 
 export const UPDATE_TASK_STATUS = 'UPDATE_TASK_STATUS'
 
+export const GET_TEAM_TASKS = 'GET_TEAM_TASKS'
+
 export const ADD_MEMBER_SELECTION_LIST = 'ADD_MEMBER_SELECTION_LIST'
 export const CLEAR_MEMBER_SELECTION_LIST = 'CLEAR_MEMBER_SELECTION_LIST'
 export const ADD_TEAM_SELECTION_LIST = 'ADD_TEAM_SELECTION_LIST'
@@ -20,6 +22,10 @@ export const CLEAR_TEAM_SELECTION_LIST = 'CLEAR_TEAM_SELECTION_LIST'
 export type TaskState = {
     taskList: ITask[] | null
     tasksOfProject: ITask[] | null
+    tasksOfTeam: {
+        count: number,
+        tasks: ITask[] | null
+    }
     editPanel: {
         members: IMember[] | null
         teams: ITeam[] | null
@@ -95,6 +101,15 @@ type ClearTeamSelectionList = {
     type: typeof CLEAR_TEAM_SELECTION_LIST
 }
 
+type GetTeamTasks = {
+    type: typeof GET_TEAM_TASKS,
+    payload: {
+        count: number
+        tasks: ITask[],
+        append: boolean
+    }
+}
+
 export type TaskActionType = 
     GetCountStatistic |
     AddTasksToList |
@@ -106,4 +121,5 @@ export type TaskActionType =
     AddMemberSelectionList | 
     ClearMemberSelectionList |
     AddTeamSelectionList |
-    ClearTeamSelectionList
+    ClearTeamSelectionList |
+    GetTeamTasks

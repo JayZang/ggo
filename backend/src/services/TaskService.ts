@@ -108,13 +108,19 @@ export default class TaskService {
      * 
      * @param id    team id
      */
-    public async getTasksByTeam(id: string | number) {
+    public async getTasksByTeam(id: string | number, option?: {
+        skip: number,
+        take: number,
+    }) {
         try {
             const teamRepo = getCustomRepository(TeamRepository)
             const taskRepo = getCustomRepository(TaskRepo)
             const team = await teamRepo.findOneOrFail(id)
-            const tasks = await taskRepo.getByAssignment(TaskAssignmentType.Team, team.id)
-            return tasks
+            const [tasks, count] = await taskRepo.getByAssignment(TaskAssignmentType.Team, team.id, option)
+            return {
+                tasks,
+                count
+            }
         } catch (err) {
             console.log('Get tasks by team fail')
             console.log(err.toString())

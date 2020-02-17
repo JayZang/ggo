@@ -57,7 +57,7 @@ export default styled(TeamBaseInfo)`
         border-radius: 8px;
         background-color: rgba(0, 0, 0, 0.07);
         min-height: 100px;
-        white-space: pre;
+        white-space: pre-wrap;
     }
 
     & .status-bar {

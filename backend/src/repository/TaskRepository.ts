@@ -5,6 +5,7 @@ import Task, { TaskStatus } from '@/entity/Task'
 import TaskAssignment, { TaskAssignmentType } from '@/entity/TaskAssignment'
 import MemberRepo from './MemberRepository'
 import TeamRepo from './TeamRepository'
+import Project from '@/entity/Project'
 
 @EntityRepository(Task)
 class TaskRepository extends Repository<Task> {
@@ -53,7 +54,10 @@ class TaskRepository extends Repository<Task> {
         ]))
     }
 
-    public async getByAssignment(type: TaskAssignmentType, targetId: string | number) {
+    public async getByAssignment(type: TaskAssignmentType, targetId: string | number, option: {
+        skip: number,
+        take: number,
+    } = {skip: 0, take: 10}) {
         return this.createQueryBuilder('task')
             .innerJoinAndMapMany(
                 'task.assignment', 
@@ -61,7 +65,10 @@ class TaskRepository extends Repository<Task> {
                 'taskAssignment', 
                 'task.id = taskAssignment.task_id AND taskAssignment.type = :type AND taskAssignment.target_id = :targetId', 
                 { type, targetId })
-            .getMany() 
+            .leftJoinAndMapOne('task.project', Project, 'project', 'task.project_id = project.id')
+            .limit(option.take)
+            .offset(option.skip)
+            .getManyAndCount() 
     }
 
     public async attachTasksAssignment(tasks: Task[]) {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { WithStyles } from '@material-ui/styles'
-import { Route, Switch, RouteComponentProps, withRouter, matchPath } from 'react-router'
 import { Grid, withStyles, Card, CardContent, Tabs, Tab, Divider } from '@material-ui/core'
 
 import AppContent from 'pages/App/Content'
@@ -8,21 +7,25 @@ import MobileHeader from 'components/MobileHeader'
 import TeamLeaderCard from 'components/Teams/Detail/LeaderCard'
 import TeamBaseInfo from 'components/Teams/Detail/BaseInfo'
 import TeamMemberList from 'components/Teams/Detail/MemberList'
+import TeamTaskList from 'components/Teams/Detail/TaskList'
 import styles from './style'
 import { ITeam } from 'contracts/team'
 import { IMember } from 'contracts/member'
+import { ITask } from 'contracts/task'
 
-type IProps = WithStyles<typeof styles> & RouteComponentProps & {
+type IProps = WithStyles<typeof styles> & {
     id: number | string
-    load: (id: string | number) => Promise<void>,
-    team: ITeam | null,
+    load: (id: string | number) => Promise<void>
+    team: ITeam | null
     members: IMember[] | null
+    tasks: ITask[] | null,
+    taskTotalCount: number,
+    fetchTasks: (id: string | number) => Promise<void>
 }
 
 type IState = {
     tabIndex: number,
-    team: ITeam | null,
-    members: IMember[]
+    loaded: boolean
 }
 
 class TeamDetail extends Component<IProps, IState> {
@@ -31,8 +34,7 @@ class TeamDetail extends Component<IProps, IState> {
 
         this.state = {
             tabIndex: 0,
-            team: null,
-            members: []
+            loaded: false
         }
     }
 
@@ -40,20 +42,24 @@ class TeamDetail extends Component<IProps, IState> {
         this.props.load(this.props.id)
             .then(() => {
                 this.setState({
-                    team: this.props.team,
-                    members: this.props.members || []
+                    loaded: true
                 })
             })
     }
 
     render() {
         const {
+            id,
             classes,
+            team,
+            members,
+            tasks,
+            taskTotalCount,
+            fetchTasks
         } = this.props
         const {
             tabIndex,
-            team,
-            members
+            loaded
         } = this.state
 
         return (
@@ -65,9 +71,9 @@ class TeamDetail extends Component<IProps, IState> {
                     />
                 )}
             >
-                <Grid container spacing={3}>
+                <Grid container spacing={3} wrap="nowrap">
                     <Grid item className={classes.leftBlock}>
-                        <TeamLeaderCard leader={(team && team.leader) ? team.leader : null} />
+                        <TeamLeaderCard leader={(loaded && team && team.leader) ? team.leader : null} />
                     </Grid>
                     <Grid item className={classes.rightBlock}>
                         <Card>
@@ -78,16 +84,17 @@ class TeamDetail extends Component<IProps, IState> {
                                 textColor="primary"
                             >
                                 <Tab label="團隊資訊" />
-                                <Tab label={`團隊成員 (${members ? members.length : 0})`} />
-                                <Tab label={`團隊任務 (0)`} />
+                                <Tab label={`團隊成員 (${loaded && members ? members.length : 0})`} />
+                                <Tab label={`團隊任務 (${loaded ? taskTotalCount : 0})`} />
                             </Tabs>
 
                             <Divider />
 
                             <CardContent className={classes.contentWrapper}>
                                 {(() => {
-                                    return tabIndex === 0 ? <TeamBaseInfo  team={team} /> : 
-                                        (tabIndex === 1 ? <TeamMemberList members={members} /> : '')
+                                    return tabIndex === 0 ? <TeamBaseInfo  team={loaded ? team : null} /> : 
+                                        (tabIndex === 1 ? <TeamMemberList members={loaded && members ? members : []} /> : 
+                                        (tabIndex === 2 ? <TeamTaskList tasks={loaded && tasks ? tasks : []} totalCount={taskTotalCount} fetchTasks={fetchTasks.bind(this, id)} /> : ''))
                                 })()}
                             </CardContent>
                         </Card>
@@ -98,4 +105,4 @@ class TeamDetail extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(withRouter(TeamDetail))
+export default withStyles(styles)(TeamDetail)

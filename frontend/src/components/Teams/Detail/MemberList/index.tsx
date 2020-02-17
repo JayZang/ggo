@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Box, Divider } from '@material-ui/core'
+import { Box, Divider, Typography } from '@material-ui/core'
 
 import TeamMemberListItem from './MemberItem'
 import { IMember } from 'contracts/member'
@@ -23,6 +23,13 @@ class TeamMemberList extends Component<IProps> {
                         <TeamMemberListItem member={member}  />
                     </Box>        
                 )}
+                {(() => {
+                    return members.length === 0 ? (
+                        <Typography align="center">
+                            尚無成員
+                        </Typography>
+                    ) : null
+                })()}
             </Box>
         )
     }
