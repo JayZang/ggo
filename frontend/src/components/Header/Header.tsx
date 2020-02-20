@@ -15,6 +15,7 @@ import clsx from 'clsx';
 import HeaderSearchBar from './SearchBar';
 import HeaderMenuBtn from 'components/MenuDrawer/MenuBtn';
 import styles from './styles';
+import { appName } from 'utils/viewConfig'
 
 interface IProps extends WithStyles<typeof styles> { 
   openLeftArea: boolean
@@ -130,7 +131,7 @@ class Header extends Component<IProps, IStates> {
             open: this.props.openLeftArea
           })}>
             <Typography className={classes.title} variant="h6" noWrap>
-              GGO Management
+              {appName}
             </Typography>
 
             <HeaderMenuBtn />

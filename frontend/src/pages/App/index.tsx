@@ -6,6 +6,9 @@ import Header from 'components/Header'
 import MenuDrawer from 'components/MenuDrawer'
 import MobileBottomBar from 'components/MobileBottomBar'
 import ContentWrapper from './ContentWrapper'
+import AuthPage from 'pages/Auth'
+import { Switch, Router, Route } from 'react-router'
+import { Box } from '@material-ui/core'
 
 class App extends Component {
   render() {
@@ -13,10 +16,17 @@ class App extends Component {
       <div className="App">
         <CssBaseline />
         <RequestLoadingBar />
-        <Header />
-        <MenuDrawer />
-        <ContentWrapper />
-        <MobileBottomBar />
+        <Switch>
+            <Route path="/auth" component={AuthPage} />
+            <Route render={() => (
+                <Box>
+                    <Header />
+                    <MenuDrawer />
+                    <ContentWrapper />
+                    <MobileBottomBar />
+                </Box>
+            )} />
+        </Switch>
       </div>
     )
   }
