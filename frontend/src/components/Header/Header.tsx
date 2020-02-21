@@ -18,7 +18,8 @@ import styles from './styles';
 import { appName } from 'utils/viewConfig'
 
 interface IProps extends WithStyles<typeof styles> { 
-  openLeftArea: boolean
+    openLeftArea: boolean,
+    logout: () => void
 }
 
 interface IStates {
@@ -82,6 +83,7 @@ class Header extends Component<IProps, IStates> {
       >
         <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
         <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+        <MenuItem onClick={() => this.props.logout()}>登出</MenuItem>
       </Menu>
     );
   }

@@ -1,0 +1,1 @@
+export const authTokenKeyName = 'mfoewfmeowfoewnfgonw684'

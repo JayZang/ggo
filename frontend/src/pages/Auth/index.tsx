@@ -7,7 +7,7 @@ import { Box } from '@material-ui/core'
 import styled from 'styled-components'
 
 type IProps = {
-    className: string
+    className?: string
 }
 
 class AuthPage extends Component<IProps> {

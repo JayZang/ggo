@@ -1,0 +1,1 @@
+export const authTokenName = 'x-access-token'

@@ -4,6 +4,7 @@ import { loadingBarReducer } from 'react-redux-loading-bar'
 import reduxThunk from 'redux-thunk'
 
 import viewReducer from './view/reducer'
+import authReducer from './auth/reducer'
 import memberReducer from './member/reducers'
 import teamReducer from './team/reducers'
 import customerReducer from './customer/reducers'
@@ -12,6 +13,7 @@ import taskReducer from './task/reducer'
 
 const rootReducer = combineReducers({
   view: viewReducer,
+  auth: authReducer,
   member: memberReducer,
   team: teamReducer,
   customer: customerReducer,
