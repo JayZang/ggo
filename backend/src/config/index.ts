@@ -25,3 +25,9 @@ export const resource = {
         dest: 'uploads/customer/logo/'
     }
 }
+
+export const jwt = {
+    secret: process.env.JWT_SECRET || 'GGO_JWT_SECRET_109',
+    authValidDuration: 60 * 60 *24,
+    authHeaderName: 'x-access-token'
+}

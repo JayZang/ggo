@@ -41,17 +41,6 @@ export default class Member {
     leave_office_date: Date
 
     @Column({
-        nullable: true,
-        select: false
-    })
-    password: string
-
-    @Column({
-        nullable: true
-    })
-    line_id: string
-
-    @Column({
         type: 'tinyint',
         width: 4
     })
