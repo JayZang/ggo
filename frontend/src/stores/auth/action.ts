@@ -39,15 +39,19 @@ export const checkAuthToken = () => async (dispatch: Dispatch) => {
 
     if (!token) return
 
-    const action: AuthActionTypes = {
-        type: LOGIN,
-        payload: {
-            token
+    await authApi.check(token).then(res => {
+        const action: AuthActionTypes = {
+            type: LOGIN,
+            payload: {
+                token:  res.headers[authTokenName]
+            }
         }
-    }
-
-    insertTokenToRequestHeader(token)
-    dispatch(action)
+    
+        insertTokenToRequestHeader(token)
+        dispatch(action)
+    }).catch(() => {
+        localStorage.removeItem(authTokenKeyName)
+    })
 }
 
 function insertTokenToRequestHeader(token: string) {

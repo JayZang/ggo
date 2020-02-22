@@ -16,11 +16,21 @@ export default (app: Router) => {
             token
         } = await authService.login(
             req.body.account_id,
-            req.body.password
+            req.body.password,
+            req.ip
         )
 
         return user ?
             res.header(jwtConfig.authHeaderName, token).json(user) :
             res.status(400).end()
+    })
+
+    router.get('/check', async (req: Request, res: Response) => {
+        const token = req.header(jwtConfig.authHeaderName)
+        const user = await authService.check(token, req.ip)
+
+        return user ?
+            res.header(jwtConfig.authHeaderName, token).json(user) :
+            res.status(403).end()
     })
 }

@@ -46,17 +46,21 @@ class App extends Component<IProps, IState> {
             <div className="App">
                 <CssBaseline />
                 <RequestLoadingBar />
-                <Switch>
-                    <Route path="/auth" render={() => isLogin ? <Redirect to="/" /> : <AuthPage />} />
-                    <Route render={() => isLogin ? (
-                        <Box>
-                            <Header />
-                            <MenuDrawer />
-                            <ContentWrapper />
-                            <MobileBottomBar />
-                        </Box>
-                    ) : <Redirect to="/auth/login" />} />
-                </Switch>
+                {(() => {
+                    return initialed ? (
+                        <Switch>
+                            <Route path="/auth" render={() => isLogin ? <Redirect to="/" /> : <AuthPage />} />
+                            <Route render={() => isLogin ? (
+                                <Box>
+                                    <Header />
+                                    <MenuDrawer />
+                                    <ContentWrapper />
+                                    <MobileBottomBar />
+                                </Box>
+                            ) : <Redirect to="/auth/login" />} />
+                        </Switch>
+                    ) : null
+                })()}
             </div>
         )
     }

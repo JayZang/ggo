@@ -1,9 +1,10 @@
 import axios from 'axios'
+import { authTokenName } from 'config/httpHeader'
 
-const URL = '/api/auth/login'
+const URL = '/api/auth/check'
 
-export function login(account_id: string, password: string) {
-    return axios.post<{
+export function check(token: string) {
+    return axios.get<{
         id: string
         account_id: string
         line_id: string | null
@@ -13,7 +14,8 @@ export function login(account_id: string, password: string) {
         create_at: string
         update_at: string
     }>(URL, {
-        account_id,
-        password
+        headers: {
+            [authTokenName]: token
+        }
     })
 }

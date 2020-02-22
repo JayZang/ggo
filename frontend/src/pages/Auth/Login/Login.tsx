@@ -21,6 +21,8 @@ class Login extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
+        this.handleInputKeyDown = this.handleInputKeyDown.bind(this)
+
         this.state = {
             account_id: '',
             password: '',
@@ -43,6 +45,16 @@ class Login extends Component<IProps, IState> {
                 variant: 'error'
             })
         })
+    }
+
+    handleInputKeyDown(event: React.KeyboardEvent) {
+        if (!this.state.account_id || 
+            !this.state.password ||
+            this.state.logging ||
+            event.keyCode !== 13)
+            return
+
+        this.handleLoginClick()
     }
 
     render() {
@@ -76,6 +88,7 @@ class Login extends Component<IProps, IState> {
                             value={account_id}
                             onChange={event => this.setState({account_id:  event.target.value})}
                             fullWidth 
+                            onKeyDown={this.handleInputKeyDown}
                          />
                         <TextField 
                             className="mt-3" 
@@ -86,6 +99,7 @@ class Login extends Component<IProps, IState> {
                             value={password} 
                             onChange={event => this.setState({password:  event.target.value})}
                             fullWidth  
+                            onKeyDown={this.handleInputKeyDown}
                         />
                         <Button 
                             className="mt-4 mb-1" 
