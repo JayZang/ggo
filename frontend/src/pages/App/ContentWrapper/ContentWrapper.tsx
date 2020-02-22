@@ -8,6 +8,7 @@ import TeamPage from 'pages/Teams'
 import CustomerPage from 'pages/Customer'
 import ProjectPage from 'pages/Projects'
 import TaskPage from 'pages/Task'
+import IamPage from 'pages/IAM'
 
 interface IProps extends WithStyles<typeof styles> {
     isLeftDrawerOpen: boolean
@@ -29,6 +30,7 @@ class ContentWrapper extends Component<IProps> {
                     <CustomerPage />
                     <ProjectPage />
                     <TaskPage />
+                    <IamPage />
                 </div>
             </div>
         )

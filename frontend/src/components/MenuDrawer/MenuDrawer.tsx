@@ -101,12 +101,14 @@ function MenuDrawer(props: IProps) {
 
                 <Divider />
 
-                <ListItem button onClick={handleMenuItemClick}>
-                    <ListItemIcon>
-                        <GavelIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="權限管理" />
-                </ListItem>
+                <Link to="/iam">
+                    <ListItem button onClick={handleMenuItemClick}>
+                        <ListItemIcon>
+                            <GavelIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="使用者與權限" />
+                    </ListItem>
+                </Link>
             </List>
         </div>
     );
