@@ -11,11 +11,14 @@ export default class Group {
     @Column()
     name: string
 
+    @Column({
+        type: 'text',
+        nullable: true
+    })
+    description: string
+
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
-
-    @UpdateDateColumn({ type: 'timestamp' })
-    update_at: Date
 
     @ManyToMany(type => Policy)
     @JoinTable({
