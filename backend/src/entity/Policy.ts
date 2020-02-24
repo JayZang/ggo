@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm'
 
 @Entity()
 export default class Policy {
@@ -8,13 +8,16 @@ export default class Policy {
 
     @Column()
     name: string
+    
+    @Column({
+        type: 'text',
+        nullable: true
+    })
+    description: string
 
     @Column()
     variable_name: string
 
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
-
-    @UpdateDateColumn({ type: 'timestamp' })
-    update_at: Date
 }
