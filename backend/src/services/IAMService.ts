@@ -82,12 +82,12 @@ export default class IAMService {
     /**
      * Delete iam group
      */
-    public async deleteGroup(id: string | number) {
+    public async deleteGroup(ids: string[] | number[]) {
         try {
             const groupRepo = getCustomRepository(GroupRepo)
-            const group =  await groupRepo.findOneOrFail(id)
-            await groupRepo.remove(group)
-            return group
+            const groups =  await groupRepo.findByIds(ids)
+            await groupRepo.remove(groups)
+            return groups
         } catch (err) {
             console.log(err)
             console.log('Delete iam group error')

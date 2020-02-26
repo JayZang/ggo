@@ -4,9 +4,11 @@ import { Box, Grid, Paper } from '@material-ui/core'
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import PolicyTable from 'components/IAM/Policy/Table'
+import GroupTable from 'components/IAM/Group/Table'
 import styled from 'styled-components'
 import clsx from 'clsx'
 import { IPolicy } from 'contracts/policy'
+import { IGroup } from 'contracts/group'
 
 enum TabType {
     user = 0,
@@ -18,6 +20,7 @@ type IProps = {
     className?: string
     load: () => Promise<void>
     allPolicies: IPolicy[]
+    allGroups: IGroup[]
 }
 
 type IState = {
@@ -40,7 +43,8 @@ class IamMain extends Component<IProps,IState > {
     render() {
         const {
             className,
-            allPolicies
+            allPolicies,
+            allGroups
         } = this.props
         const {
             tabIndex
@@ -94,9 +98,9 @@ class IamMain extends Component<IProps,IState > {
                     {tabIndex === TabType.user ? (
                         <Box />
                     ) : (tabIndex === TabType.group ? (
-                        <Box />
+                        <GroupTable groups={allGroups} selectable={true} />
                     ): (tabIndex === TabType.policy ? (
-                        <PolicyTable policies={allPolicies} selectable={false} />
+                        <PolicyTable title="權限列表" policies={allPolicies} selectable={false} />
                     ): null))}
                 </Box>
             </AppContent>

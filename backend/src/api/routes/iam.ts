@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 import IAMService from '@/services/IAMService'
-import { CreateOrUpdateGroup } from '../validators/iam'
+import { CreateOrUpdateGroup, DeleteGroups } from '../validators/iam'
 
 const router = Router()
 const iamService = Container.get(IAMService)
@@ -41,11 +41,11 @@ export default (app: Router) => {
             res.status(400).end()
     })
 
-    router.delete('/groups/:id', async (req: Request, res: Response) => {
-        const group = await iamService.deleteGroup(req.params.id)
+    router.delete('/groups', DeleteGroups(), async (req: Request, res: Response) => {
+        const groups = await iamService.deleteGroup(req.body.ids)
 
-        return group ?
-            res.json(group) :
+        return groups ?
+            res.json(groups) :
             res.status(400).end()
     })
 }

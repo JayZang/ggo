@@ -11,3 +11,10 @@ export function CreateOrUpdateGroup(): RequestHandler[] {
         validate()
     ]
 }
+
+export function DeleteGroups(): RequestHandler[] {
+    return [
+        body('ids').exists({ checkFalsy: true }).isArray(),
+        validate()
+    ]
+}

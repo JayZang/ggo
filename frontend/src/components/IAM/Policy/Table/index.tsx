@@ -3,19 +3,21 @@ import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper
 import { IPolicy } from 'contracts/policy'
 
 type ITableToolbarProps = {
+    title: string
     numSelected: number
 }
 
 class TableToolbar extends Component<ITableToolbarProps> {
     render() {
         const {
+            title,
             numSelected
         } = this.props
 
         return (
             <Toolbar>
                 <Typography variant="h6">
-                    權限列表
+                    {title}
                 </Typography>
                 {numSelected > 0 ? (
                     <Box marginLeft="auto">
@@ -30,8 +32,10 @@ class TableToolbar extends Component<ITableToolbarProps> {
 }
 
 type IPolicyTableProps = {
-    policies: IPolicy[],
+    title: string
+    policies: IPolicy[]
     selectable: boolean
+    onChange?: (policies: IPolicy[]) => void
 }
 
 type IPolicyTableState = {
@@ -48,16 +52,16 @@ class PolicyTable extends Component<IPolicyTableProps, IPolicyTableState> {
     }
 
     handleSelectAllClick() {
+        let selectedPolicies = this.state.selectedPolicies
         if (this.state.selectedPolicies.length !== this.props.policies.length)
-            this.setState({
-                selectedPolicies: [
-                    ...this.props.policies
-                ]
-            })
+            selectedPolicies = [
+                ...this.props.policies
+            ]
         else 
-            this.setState({
-                selectedPolicies: []
-            })
+            selectedPolicies = []
+
+        this.setState({ selectedPolicies })
+        this.props.onChange && this.props.onChange(selectedPolicies)
     }
 
     handleSelectOne(policy: IPolicy) {
@@ -65,20 +69,17 @@ class PolicyTable extends Component<IPolicyTableProps, IPolicyTableState> {
         const index = selectedPolicies.indexOf(policy)
 
         if (index === -1)
-            this.setState({
-                selectedPolicies: [
-                    ...selectedPolicies,
-                    policy
-                ]
-            })
-        else {
+            selectedPolicies.push(policy)
+        else
             selectedPolicies.splice(index, 1)
-            this.setState({ selectedPolicies })
-        }
+
+        this.setState({ selectedPolicies })
+        this.props.onChange && this.props.onChange(selectedPolicies)
     }
 
     render() {
         const {
+            title,
             policies,
             selectable
         } = this.props
@@ -89,7 +90,10 @@ class PolicyTable extends Component<IPolicyTableProps, IPolicyTableState> {
         return (
             <Paper>
                 <TableContainer>
-                    <TableToolbar numSelected={selectedPolicies.length} />
+                    <TableToolbar 
+                        title={title}
+                        numSelected={selectedPolicies.length} 
+                    />
                     <Table>
                         <TableHead>
                             <TableRow>
