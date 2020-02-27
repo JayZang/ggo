@@ -41,6 +41,7 @@ type IProps = WithSnackbarProps & {
     group? :IGroup
     totalPolicies: IPolicy[]
     create: (data: any) => Promise<void>
+    update: (id: string | number, data: any) => Promise<void>
     onSubmitSuccess?: () => void
 }
 
@@ -60,11 +61,13 @@ class GroupEditPanel extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
+        const group = props.group
+
         this.state = {
             fields: {
-                name: undefined,
-                description: undefined,
-                policies: []
+                name: group ? group.name : undefined,
+                description: group && group.description ? group.description : undefined,
+                policies: group? group.policies : []
             },
             errors: {
                 name: '',
@@ -80,7 +83,7 @@ class GroupEditPanel extends Component<IProps, IState> {
         event: ChangeEvent<HTMLInputElement>
     ) {
         const fields: any = this.state.fields
-        fields[propertyName] = event.target.value
+        fields[propertyName] = event.target.value || undefined
 
         this.setState({ fields })
         this.checkField(propertyName)
@@ -126,7 +129,6 @@ class GroupEditPanel extends Component<IProps, IState> {
         const group = this.props.group
         const fields = this.state.fields
         let isAllValid = true
-        let action = '新增'
 
         Object.keys(fields).forEach((key: any) => {
             isAllValid = this.checkField(key) && isAllValid
@@ -134,8 +136,13 @@ class GroupEditPanel extends Component<IProps, IState> {
 
         if (!isAllValid) return
 
+        const action = group ? '編輯' : '新增'
+        const submit = group ? 
+            this.props.update.bind(this, group.id) :
+            this.props.create
+
         this.setState({ isSubmitting: true })
-        this.props.create({
+        submit({
             name: fields.name,
             description: fields.description,
             policy_ids: fields.policies && fields.policies.map(policy => policy.id)
@@ -188,6 +195,7 @@ class GroupEditPanel extends Component<IProps, IState> {
                         selectable={true}
                         policies={totalPolicies}
                         onChange={policies => this.handlePoliciesSelectionChange(policies)}
+                        defaultSelectedPolicies={group ? group.policies : undefined}
                     />
                     {errors.policies ? (<FormHelperText>{errors.policies}</FormHelperText>) : null}
                 </Grid>

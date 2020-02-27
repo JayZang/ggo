@@ -66,10 +66,8 @@ export default class IAMService {
             const policyRepo = getCustomRepository(PolicyRepo)
             const group =  await groupRepo.findOneOrFail(id)
             const policies = await policyRepo.findByIds(data.policy_ids)
-            Object.assign(group, _.pick(data, [
-                'name',
-                'description'
-            ]))
+            group.name = data.name
+            group.description = data.description || null
             group.policies = policies
             return groupRepo.save(group)
         } catch (err) {

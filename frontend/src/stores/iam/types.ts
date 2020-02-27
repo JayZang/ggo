@@ -4,6 +4,7 @@ import { IGroup } from "contracts/group";
 export const GET_POLICIES = 'GET_POLICIES'
 export const GET_GROUPS = 'GET_GROUPS'
 export const ADD_GROUP = 'ADD_GROUP'
+export const UPDATE_GROUP = 'UPDATE_GROUP'
 export const DELETE_GROUP = 'DELETE_GROUP'
 
 export type IAMState = {
@@ -32,6 +33,13 @@ type AddGroup = {
     }
 }
 
+type UpdateGroup = {
+    type: typeof UPDATE_GROUP,
+    payload: {
+        group: IGroup
+    }
+}
+
 type DeleteGroup = {
     type: typeof DELETE_GROUP,
     payload: {
@@ -43,4 +51,5 @@ export type IAMActionTypes =
     GetPolicies |
     GetGroups |
     AddGroup |
+    UpdateGroup |
     DeleteGroup

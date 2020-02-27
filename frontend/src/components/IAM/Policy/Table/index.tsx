@@ -35,6 +35,7 @@ type IPolicyTableProps = {
     title: string
     policies: IPolicy[]
     selectable: boolean
+    defaultSelectedPolicies?: IPolicy[]
     onChange?: (policies: IPolicy[]) => void
 }
 
@@ -46,8 +47,15 @@ class PolicyTable extends Component<IPolicyTableProps, IPolicyTableState> {
     constructor(props: IPolicyTableProps) {
         super(props)
 
+        const {
+            policies,
+            defaultSelectedPolicies
+        } = props
+
         this.state = {
-            selectedPolicies: []
+            selectedPolicies: defaultSelectedPolicies ? policies.filter(policy => {
+                return defaultSelectedPolicies.findIndex(_policy => _policy.id === policy.id) !== -1
+            }) : []
         }
     }
 

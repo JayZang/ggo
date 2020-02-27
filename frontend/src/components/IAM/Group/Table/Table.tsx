@@ -92,6 +92,7 @@ type IGroupTableProps = WithSnackbarProps & {
 type IGroupTableState = {
     selectedGroups: IGroup[],
     groupToDisplayPolicies: IGroup | null,
+    groupToUpdate: IGroup | null,
     openEditDrawer: boolean
 }
 
@@ -109,6 +110,7 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
         this.state = {
             selectedGroups: [],
             groupToDisplayPolicies: null,
+            groupToUpdate: null,
             openEditDrawer: false
         }
     }
@@ -150,6 +152,11 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
         })
     }
 
+    handleUpdateGroupBtnClick(event: React.MouseEvent<HTMLButtonElement>, group: IGroup) {
+        event.stopPropagation()
+        this.openEditDrawer(group)
+    }
+
     async handleDeleteBtnClick() {
         await this.props.delete(
             this.state.selectedGroups.map(group => group.id.toString())
@@ -171,25 +178,27 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
 
     openEditDrawer(group?: IGroup) {
         this.setState({
-            openEditDrawer: true
+            openEditDrawer: true,
+            groupToUpdate: group || null
         })
     }
 
     closeEditDrawer() {
         this.setState({
-            openEditDrawer: false
+            openEditDrawer: false,
+            groupToUpdate: null
         })
     }
 
     render() {
         const {
             groups,
-            selectable,
-            delete: deleteGroup
+            selectable
         } = this.props
         const {
             selectedGroups,
             groupToDisplayPolicies,
+            groupToUpdate,
             openEditDrawer
         } = this.state
 
@@ -198,7 +207,7 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                 <TableContainer>
                     <TableToolbar 
                         numSelected={selectedGroups.length} 
-                        onCreateBtnClick={this.openEditDrawer}
+                        onCreateBtnClick={() => this.openEditDrawer()}
                         onDelete={this.handleDeleteBtnClick.bind(this)}
                     />
                     <Table>
@@ -249,6 +258,12 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                                             >
                                                 查看權限
                                             </Button>
+                                            <Button 
+                                                color="primary"
+                                                onClick={event => this.handleUpdateGroupBtnClick(event, group)}
+                                            >
+                                                編輯
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 )
@@ -274,6 +289,7 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                     open={openEditDrawer}
                     onOpen={this.openEditDrawer}
                     onClose={this.closeEditDrawer}
+                    group={groupToUpdate || undefined}
                 />
 
             </Paper>

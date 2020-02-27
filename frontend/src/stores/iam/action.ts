@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import * as iamApi from 'api/iam'
-import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP } from "./types";
+import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP } from "./types";
 import { regularizePolicyData, regularizeGroupData } from "./utils";
 
 export const getPolicies = () => async (dispatch: Dispatch) => {
@@ -35,6 +35,19 @@ export const createGroup = (data: any) => async (dispatch: Dispatch) => {
 
     const action: IAMActionTypes = {
         type: ADD_GROUP,
+        payload: {
+            group: regularizeGroupData(res.data)
+        }
+    }
+
+    dispatch(action)
+}
+
+export const updateGroup = (id: string | number, data: any) => async (dispatch: Dispatch) => {
+    const res = await iamApi.updateGroup(id, data)
+
+    const action: IAMActionTypes = {
+        type: UPDATE_GROUP,
         payload: {
             group: regularizeGroupData(res.data)
         }
