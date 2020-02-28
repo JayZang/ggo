@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm'
 import Group from './Group'
 import Policy from './Policy'
+import Member from './Member'
 
 @Entity()
 export default class User {
@@ -41,17 +42,23 @@ export default class User {
     @UpdateDateColumn({ type: 'timestamp' })
     update_at: Date
 
-    @ManyToMany(type => Group)
+    @ManyToMany(type => Group,{
+        cascade: true
+    })
     @JoinTable({
         name: 'user_group'
     })
     groups: Group[]
 
-    @ManyToMany(type => Policy)
+    @ManyToMany(type => Policy, {
+        cascade: true
+    })
     @JoinTable({
         name: 'user_policy'
     })
     policies: Policy[]
+
+    identity?: Member
 
     total_policies?: Policy[]
 }

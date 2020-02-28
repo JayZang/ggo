@@ -48,4 +48,26 @@ export default (app: Router) => {
             res.json(groups) :
             res.status(400).end()
     })
+
+    router.get('/users', async (req: Request, res: Response) => {
+        const usersAndCount = await iamService.getUsers({
+            take: req.query.count || 10,
+            skip: req.query.offset || 0
+        })
+
+        return usersAndCount ?
+            res.json({
+                users: usersAndCount[0],
+                count: usersAndCount[1]
+            }) :
+            res.status(400).end()
+    })
+
+    router.post('/users', async (req: Request, res: Response) => {
+        const user = await iamService.createUser(req.body)
+
+        return user ?
+            res.json(user) :
+            res.status(400).end()
+    })
 }

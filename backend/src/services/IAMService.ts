@@ -1,9 +1,14 @@
 import { getCustomRepository } from 'typeorm'
 import { Service } from 'typedi'
+import bcryptjs from 'bcryptjs'
 import _ from 'lodash'
 
 import PolicyRepo from '@/repository/PolicyRepository'
 import GroupRepo from '@/repository/GroupRepository'
+import UserRepo from '@/repository/UserRepository'
+import { UserStatus, UserIdentityType } from '@/entity/User'
+import MemberRepo from '@/repository/MemberRepository'
+import { makeRandomString } from '@/utils/makeRandomString'
 
 @Service()
 export default class IAMService {
@@ -49,7 +54,7 @@ export default class IAMService {
                 description: data.description || null,
                 policies
             })
-            return groupRepo.save(group)
+            return await groupRepo.save(group)
         } catch (err) {
             console.log(err)
             console.log('Create iam group error')
@@ -69,7 +74,7 @@ export default class IAMService {
             group.name = data.name
             group.description = data.description || null
             group.policies = policies
-            return groupRepo.save(group)
+            return await groupRepo.save(group)
         } catch (err) {
             console.log(err)
             console.log('Update iam group error')
@@ -90,6 +95,93 @@ export default class IAMService {
             console.log(err)
             console.log('Delete iam group error')
             return null
+        }
+    }
+
+
+    /**
+     * Get iam users
+     */
+    public async getUsers(option?: {
+        skip: number,
+        take: number,
+    }) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            return await userRepo.findAndCount(option)
+        } catch (err) {
+            console.log(err)
+            console.log('Get iam users error')
+            return null
+        }
+    }
+
+    /**
+     * Create iam user
+     */
+    public async createUser(data: any) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            const groupRepo = getCustomRepository(GroupRepo)
+            const policyRepo = getCustomRepository(PolicyRepo)
+
+            const existUser = await userRepo.find({
+                identity_type: data.identity_type,
+                identity_id: data.identity_id
+            })
+
+            if (existUser) throw Error('Can not create more than one user for a identity')
+
+            const identity = await this.getIdentity(
+                parseInt(data.identity_type), 
+                data.identity_id
+            )
+            const [
+                groups,
+                policies
+            ] = await Promise.all([
+                groupRepo.findByIds(data.group_ids),
+                policyRepo.findByIds(data.policy_ids)
+            ])
+
+            const randomString = makeRandomString(10)
+            const hashedPassword = bcryptjs.hashSync(
+                randomString,
+                bcryptjs.genSaltSync(10)
+            )
+            const user =  userRepo.create({
+                account_id: data.account_id || identity.email,
+                password: hashedPassword,
+                status: UserStatus.active,
+                identity_type: data.identity_type,
+                identity_id: data.identity_id,
+                groups,
+                policies
+            })
+            
+            await userRepo.save(user)
+            user.identity = identity
+            user.password = undefined
+            return user
+        } catch (err) {
+            console.log(err)
+            console.log('Create iam user error')
+            return null
+        }
+    }
+
+    /**
+     * Get identity
+     */
+    private async getIdentity(identity_type: UserIdentityType, identity_id: string | number) {
+        const memberRepo = getCustomRepository(MemberRepo)
+
+        switch (identity_type) {
+            case UserIdentityType.member:
+                return memberRepo.findOneOrFail(identity_id)
+
+            default:
+                throw Error('Search invalid user identity type !')
         }
     }
 }
