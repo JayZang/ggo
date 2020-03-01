@@ -1,8 +1,9 @@
-import { IAMState, IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP } from "./types";
+import { IAMState, IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS } from "./types";
 
 const initState: IAMState = {
     policies: null,
-    groups: null
+    groups: null,
+    users: null
 }
 
 export default function iamReducer(state: IAMState = initState, action: IAMActionTypes): IAMState {
@@ -42,6 +43,12 @@ export default function iamReducer(state: IAMState = initState, action: IAMActio
                 groups: state.groups && state.groups.filter(group => {
                     return action.payload.ids.findIndex((value: any) => group.id == value) === -1
                 })
+            }
+
+        case GET_USERS:
+            return {
+                ...state,
+                users: action.payload.users
             }
 
         default:

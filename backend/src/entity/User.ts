@@ -23,10 +23,9 @@ export default class User {
     line_id: string
 
     @Column({
-        type: 'tinyint',
-        width: 4
+        default: true
     })
-    status: number
+    loginable: boolean
 
     @Column({
         type: 'tinyint'
@@ -41,6 +40,12 @@ export default class User {
 
     @UpdateDateColumn({ type: 'timestamp' })
     update_at: Date
+
+    @Column({ 
+        type: 'datetime',
+        nullable: true
+    })
+    last_login_datetime: Date
 
     @ManyToMany(type => Group,{
         cascade: true
@@ -61,11 +66,6 @@ export default class User {
     identity?: Member
 
     total_policies?: Policy[]
-}
-
-export enum UserStatus {
-    inactive = 0,
-    active = 1
 }
 
 export enum UserIdentityType {

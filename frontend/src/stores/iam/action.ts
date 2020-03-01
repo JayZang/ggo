@@ -1,8 +1,8 @@
 import { Dispatch } from "redux";
 
 import * as iamApi from 'api/iam'
-import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP } from "./types";
-import { regularizePolicyData, regularizeGroupData } from "./utils";
+import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS } from "./types";
+import { regularizePolicyData, regularizeGroupData, regularizeUserData } from "./utils";
 
 export const getPolicies = () => async (dispatch: Dispatch) => {
     const res = await iamApi.getPolicies()
@@ -57,12 +57,25 @@ export const updateGroup = (id: string | number, data: any) => async (dispatch: 
 }
 
 export const deleteGroup = (ids: string[] | number[]) => async (dispatch: Dispatch) => {
-    const res = await iamApi.deleteGroup(ids)
+    await iamApi.deleteGroup(ids)
 
     const action: IAMActionTypes = {
         type: DELETE_GROUP,
         payload: {
             ids
+        }
+    }
+
+    dispatch(action)
+}
+
+export const getUsers = () => async (dispatch: Dispatch) => {
+    const res = await iamApi.getUsers()
+
+    const action: IAMActionTypes = {
+        type: GET_USERS,
+        payload: {
+            users: res.data.users.map(user => regularizeUserData(user))
         }
     }
 

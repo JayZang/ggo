@@ -5,10 +5,12 @@ import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import PolicyTable from 'components/IAM/Policy/Table'
 import GroupTable from 'components/IAM/Group/Table'
+import UserTable from 'components/IAM/User/Table'
 import styled from 'styled-components'
 import clsx from 'clsx'
 import { IPolicy } from 'contracts/policy'
 import { IGroup } from 'contracts/group'
+import { IUser } from 'contracts/user'
 
 enum TabType {
     user = 0,
@@ -20,7 +22,8 @@ type IProps = {
     className?: string
     load: () => Promise<void>
     allPolicies: IPolicy[]
-    allGroups: IGroup[]
+    allGroups: IGroup[],
+    users: IUser[]
 }
 
 type IState = {
@@ -44,7 +47,8 @@ class IamMain extends Component<IProps,IState > {
         const {
             className,
             allPolicies,
-            allGroups
+            allGroups,
+            users
         } = this.props
         const {
             tabIndex
@@ -96,7 +100,7 @@ class IamMain extends Component<IProps,IState > {
 
                 <Box className="mt-4">
                     {tabIndex === TabType.user ? (
-                        <Box />
+                        <UserTable users={users} title="使用者列表" selectable={true} />
                     ) : (tabIndex === TabType.group ? (
                         <GroupTable groups={allGroups} selectable={true} />
                     ): (tabIndex === TabType.policy ? (

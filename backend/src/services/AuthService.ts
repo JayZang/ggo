@@ -6,6 +6,7 @@ import _ from 'lodash'
 import UserRepo from '@/repository/UserRepository'
 import { jwt as jwtConfig } from '@/config'
 import User from '@/entity/User'
+import moment from 'moment'
 
 @Service()
 export default class AuthService {
@@ -18,8 +19,13 @@ export default class AuthService {
             const userRepo = getCustomRepository(UserRepo)
             const user = await userRepo.findOneOrFail({
                 account_id,
-                password
+                password,
+                loginable: true
             })
+
+            user.last_login_datetime = new Date
+            await userRepo.save(user)
+
             const token = jwt.sign(
                 Object.assign({}, user), 
                 ip || jwtConfig.secret,

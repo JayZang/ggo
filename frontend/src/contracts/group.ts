@@ -6,5 +6,5 @@ export  type IGroup = {
     name: string
     description: string | null
     create_at: Moment,
-    policies: IPolicy[]
+    policies?: IPolicy[]
 }

@@ -6,7 +6,7 @@ import _ from 'lodash'
 import PolicyRepo from '@/repository/PolicyRepository'
 import GroupRepo from '@/repository/GroupRepository'
 import UserRepo from '@/repository/UserRepository'
-import { UserStatus, UserIdentityType } from '@/entity/User'
+import { UserIdentityType } from '@/entity/User'
 import MemberRepo from '@/repository/MemberRepository'
 import { makeRandomString } from '@/utils/makeRandomString'
 
@@ -108,7 +108,13 @@ export default class IAMService {
     }) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            return await userRepo.findAndCount(option)
+            return await userRepo.findAndCount({
+                ...option,
+                relations: [
+                    'policies',
+                    'groups'
+                ]
+            })
         } catch (err) {
             console.log(err)
             console.log('Get iam users error')
@@ -125,7 +131,7 @@ export default class IAMService {
             const groupRepo = getCustomRepository(GroupRepo)
             const policyRepo = getCustomRepository(PolicyRepo)
 
-            const existUser = await userRepo.find({
+            const existUser = await userRepo.findOne({
                 identity_type: data.identity_type,
                 identity_id: data.identity_id
             })
@@ -152,7 +158,6 @@ export default class IAMService {
             const user =  userRepo.create({
                 account_id: data.account_id || identity.email,
                 password: hashedPassword,
-                status: UserStatus.active,
                 identity_type: data.identity_type,
                 identity_id: data.identity_id,
                 groups,

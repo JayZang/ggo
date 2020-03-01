@@ -250,7 +250,7 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                                         ) : null}
                                         <TableCell>{group.name}</TableCell>
                                         <TableCell>{group.description}</TableCell>
-                                        <TableCell>{group.policies.length}</TableCell>
+                                        <TableCell>{group.policies && group.policies.length}</TableCell>
                                         <TableCell align="right">
                                             <Button 
                                                 color="primary"
@@ -280,7 +280,7 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                 >
                     <PolicyTable 
                         title={`${groupToDisplayPolicies && groupToDisplayPolicies.name} - 權限列表`}
-                        policies={groupToDisplayPolicies ? groupToDisplayPolicies.policies : []} 
+                        policies={groupToDisplayPolicies && groupToDisplayPolicies.policies ? groupToDisplayPolicies.policies : []} 
                         selectable={false} 
                     />
                 </Dialog>
