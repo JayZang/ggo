@@ -1,7 +1,8 @@
 import moment from "moment";
 import { IPolicy } from "contracts/policy";
 import { IGroup } from "contracts/group";
-import { IUser } from "contracts/user";
+import { IUser, UserIdentityType } from "contracts/user";
+import { regularizeMemberData } from "stores/member/utils";
 
 export function regularizePolicyData(data: any): IPolicy {
     return {
@@ -25,6 +26,8 @@ export function regularizeUserData(data: any): IUser {
         update_at: moment(data.update_at),
         last_login_datetime: data.last_login_datetime && moment(data.update_at),
         policies: data.policies.map((policy: IPolicy) => regularizePolicyData(policy)),
-        groups: data.groups.map((group: IGroup) => regularizeGroupData(group))
+        groups: data.groups.map((group: IGroup) => regularizeGroupData(group)),
+        identity: data.identity_type === UserIdentityType.member ?
+            regularizeMemberData(data.identity) : undefined
     }
 }

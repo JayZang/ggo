@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 import IAMService from '@/services/IAMService'
-import { CreateOrUpdateGroup, DeleteGroups } from '../validators/iam'
+import { CreateOrUpdateGroup, DeleteGroups, CreateUser } from '../validators/iam'
 
 const router = Router()
 const iamService = Container.get(IAMService)
@@ -63,8 +63,24 @@ export default (app: Router) => {
             res.status(400).end()
     })
 
-    router.post('/users', async (req: Request, res: Response) => {
+    router.post('/users', CreateUser(), async (req: Request, res: Response) => {
         const user = await iamService.createUser(req.body)
+
+        return user ?
+            res.json(user) :
+            res.status(400).end()
+    })
+
+    router.post('/users/:id/loginable', async (req: Request, res: Response) => {
+        const user = await iamService.setUserLoginable(req.params.id, true)
+
+        return user ?
+            res.json(user) :
+            res.status(400).end()
+    })
+
+    router.delete('/users/:id/loginable', async (req: Request, res: Response) => {
+        const user = await iamService.setUserLoginable(req.params.id, false)
 
         return user ?
             res.json(user) :

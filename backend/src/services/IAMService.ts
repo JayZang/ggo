@@ -1,4 +1,4 @@
-import { getCustomRepository } from 'typeorm'
+import { getCustomRepository, Not } from 'typeorm'
 import { Service } from 'typedi'
 import bcryptjs from 'bcryptjs'
 import _ from 'lodash'
@@ -6,7 +6,7 @@ import _ from 'lodash'
 import PolicyRepo from '@/repository/PolicyRepository'
 import GroupRepo from '@/repository/GroupRepository'
 import UserRepo from '@/repository/UserRepository'
-import { UserIdentityType } from '@/entity/User'
+import User, { UserIdentityType } from '@/entity/User'
 import MemberRepo from '@/repository/MemberRepository'
 import { makeRandomString } from '@/utils/makeRandomString'
 
@@ -112,8 +112,20 @@ export default class IAMService {
                 ...option,
                 relations: [
                     'policies',
-                    'groups'
-                ]
+                    'groups',
+                    'groups.policies',
+                ],
+                where: {
+                    identity_type: Not(UserIdentityType.admin)
+                },
+                order: {
+                    create_at: 'DESC'
+                }
+            }).then(async ([users, count]) => {
+                return [
+                    await userRepo.attachIdentity(users),
+                    count
+                ] as [User[], number]
             })
         } catch (err) {
             console.log(err)
@@ -146,8 +158,8 @@ export default class IAMService {
                 groups,
                 policies
             ] = await Promise.all([
-                groupRepo.findByIds(data.group_ids),
-                policyRepo.findByIds(data.policy_ids)
+                data.group_ids ? groupRepo.findByIds(data.group_ids) : [],
+                data.policy_ids ? policyRepo.findByIds(data.policy_ids) : []
             ])
 
             const randomString = makeRandomString(10)
@@ -156,7 +168,7 @@ export default class IAMService {
                 bcryptjs.genSaltSync(10)
             )
             const user =  userRepo.create({
-                account_id: data.account_id || identity.email,
+                account_id: identity.email,
                 password: hashedPassword,
                 identity_type: data.identity_type,
                 identity_id: data.identity_id,
@@ -172,6 +184,25 @@ export default class IAMService {
             console.log(err)
             console.log('Create iam user error')
             return null
+        }
+    }
+
+    /**
+     * Set iam user loginable
+     */
+    public async setUserLoginable(id: string | number, loginable: boolean) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            const user = await userRepo.findOneOrFail(id, {
+                where: {
+                    identity_type: Not(UserIdentityType.admin)
+                }
+            })
+            user.loginable = loginable
+            return userRepo.save(user)
+        } catch (err) {
+            console.log(err)
+            console.log('Set iam user loginable error')
         }
     }
 

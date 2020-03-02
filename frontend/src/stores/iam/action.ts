@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import * as iamApi from 'api/iam'
-import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS } from "./types";
+import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS, CONFIG_USER_LOGINABLE } from "./types";
 import { regularizePolicyData, regularizeGroupData, regularizeUserData } from "./utils";
 
 export const getPolicies = () => async (dispatch: Dispatch) => {
@@ -76,6 +76,20 @@ export const getUsers = () => async (dispatch: Dispatch) => {
         type: GET_USERS,
         payload: {
             users: res.data.users.map(user => regularizeUserData(user))
+        }
+    }
+
+    dispatch(action)
+}
+
+export const configUserLoginable = (id: string | number, loginable: boolean) => async (dispatch: Dispatch) => {
+    await iamApi.setUserLoginable(id, loginable)
+
+    const action: IAMActionTypes = {
+        type: CONFIG_USER_LOGINABLE,
+        payload: {
+            id,
+            loginable
         }
     }
 

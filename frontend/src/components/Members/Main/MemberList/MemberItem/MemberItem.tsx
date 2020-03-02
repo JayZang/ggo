@@ -17,8 +17,6 @@ import EditIcon from '@material-ui/icons/Edit'
 import { WithSnackbarProps, withSnackbar } from 'notistack'
 import clsx from 'clsx'
 
-import defaultManAvatar from 'assets/svgs/default-man-avatar.svg'
-import defaultWomanAvatar from 'assets/svgs/default-woman-avatar.svg'
 import { IMember, MemberStatus, MemberGender } from 'contracts/member'
 import MemberEditDrawer from 'components/Members/MemberEditPanel/MemberEditDrawer'
 import styles from './styles'
@@ -108,7 +106,7 @@ class MemberItem extends Component<IProps, IState> {
                     }}
                 >
                     <div className={classes.name} style={{ display: 'flex' }}>
-                        <Avatar src={member.avatar || (member.gender ? defaultManAvatar : defaultWomanAvatar)} />
+                        <Avatar src={member.avatar} />
                         <Typography className={clsx(classes.field)} component="div">
                             {member.name}
                             <Box className={classes.fieldHint}>

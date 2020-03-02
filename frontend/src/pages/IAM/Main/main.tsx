@@ -102,7 +102,7 @@ class IamMain extends Component<IProps,IState > {
                     {tabIndex === TabType.user ? (
                         <UserTable users={users} title="使用者列表" selectable={true} />
                     ) : (tabIndex === TabType.group ? (
-                        <GroupTable groups={allGroups} selectable={true} />
+                        <GroupTable title="群組列表" groups={allGroups} selectable={true} editable={true} />
                     ): (tabIndex === TabType.policy ? (
                         <PolicyTable title="權限列表" policies={allPolicies} selectable={false} />
                     ): null))}

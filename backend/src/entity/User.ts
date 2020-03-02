@@ -9,7 +9,9 @@ export default class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({
+        unique: true
+    })
     account_id: string
 
     @Column({

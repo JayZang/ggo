@@ -1,6 +1,7 @@
 import { Moment } from "moment";
 import { IPolicy } from "./policy";
 import { IGroup } from "./group";
+import { IMember } from "./member";
 
 export type IUser = {
     id: number | string
@@ -14,6 +15,7 @@ export type IUser = {
     last_login_datetime: Moment | null
     groups: IGroup[]
     policies: IPolicy[]
+    identity?: IMember
 }
 
 export enum UserIdentityType {

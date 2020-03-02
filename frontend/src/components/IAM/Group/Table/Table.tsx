@@ -10,7 +10,9 @@ import AddIcon from '@material-ui/icons/Add';
 import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 type ITableToolbarProps = {
+    title: string
     numSelected: number,
+    hideBtn: boolean
     onCreateBtnClick: () => void
     onDelete: () => Promise<void>
 }
@@ -37,7 +39,9 @@ class TableToolbar extends Component<ITableToolbarProps, ITableToolbarState> {
 
     render() {
         const {
-            numSelected
+            title,
+            numSelected,
+            hideBtn
         } = this.props
         const {
             isSubmitting
@@ -46,7 +50,7 @@ class TableToolbar extends Component<ITableToolbarProps, ITableToolbarState> {
         return (
             <Toolbar>
                 <Typography variant="h6">
-                    權限群組列表
+                    {title}
                 </Typography>
                 <Box marginLeft="auto">
                      {numSelected > 0 ? (
@@ -67,7 +71,7 @@ class TableToolbar extends Component<ITableToolbarProps, ITableToolbarState> {
                                 </Button>
                             </Tooltip>
                         </Box>
-                    ): (
+                    ): (hideBtn ? null : (
                         <Button
                             color="primary"
                             startIcon={<AddIcon />}
@@ -76,7 +80,7 @@ class TableToolbar extends Component<ITableToolbarProps, ITableToolbarState> {
                         >
                             新增
                         </Button>
-                    )}
+                    ))}
                 </Box>
             </Toolbar>
         )
@@ -84,8 +88,10 @@ class TableToolbar extends Component<ITableToolbarProps, ITableToolbarState> {
 }
 
 type IGroupTableProps = WithSnackbarProps & {
+    title?: string
     groups: IGroup[],
     selectable: boolean
+    editable: boolean
     delete: (ids: string[] | number[]) => Promise<void>
 }
 
@@ -192,8 +198,10 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
 
     render() {
         const {
+            title,
             groups,
-            selectable
+            selectable,
+            editable
         } = this.props
         const {
             selectedGroups,
@@ -205,11 +213,16 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
         return (
             <Paper className="w-100">
                 <TableContainer>
-                    <TableToolbar 
-                        numSelected={selectedGroups.length} 
-                        onCreateBtnClick={() => this.openEditDrawer()}
-                        onDelete={this.handleDeleteBtnClick.bind(this)}
-                    />
+                    {title && (
+                        <TableToolbar 
+                            title={title}
+                            hideBtn={!editable}
+                            numSelected={selectedGroups.length} 
+                            onCreateBtnClick={() => this.openEditDrawer()}
+                            onDelete={this.handleDeleteBtnClick.bind(this)}
+                        />
+                    )}
+                    
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -225,8 +238,8 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                                 ) : null}
                                 <TableCell>名稱</TableCell>
                                 <TableCell>描述</TableCell>
-                                <TableCell>權限數量</TableCell>
-                                <TableCell></TableCell>
+                                {editable ?  <TableCell>權限數量</TableCell> : null}
+                                {editable ?  <TableCell></TableCell> : null}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -250,24 +263,29 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                                         ) : null}
                                         <TableCell>{group.name}</TableCell>
                                         <TableCell>{group.description}</TableCell>
-                                        <TableCell>{group.policies && group.policies.length}</TableCell>
-                                        <TableCell align="right">
-                                            <Button 
-                                                color="primary"
-                                                onClick={event => this.handleDisplayGroupPoliciesBtnClick(event, group)}
-                                            >
-                                                查看權限
-                                            </Button>
-                                            <Button 
-                                                color="primary"
-                                                onClick={event => this.handleUpdateGroupBtnClick(event, group)}
-                                            >
-                                                編輯
-                                            </Button>
-                                        </TableCell>
+                                        {editable ? <TableCell>{group.policies && group.policies.length}</TableCell> : null}
+                                        {editable ? (
+                                            <TableCell align="right">
+                                                <Button 
+                                                    color="primary"
+                                                    onClick={event => this.handleDisplayGroupPoliciesBtnClick(event, group)}
+                                                >
+                                                    查看權限
+                                                </Button>
+                                                <Button 
+                                                    color="primary"
+                                                    onClick={event => this.handleUpdateGroupBtnClick(event, group)}
+                                                >
+                                                    編輯
+                                                </Button>
+                                            </TableCell>
+                                        ) : null}
                                     </TableRow>
                                 )
                             })}
+                            {groups.length === 0 ? (
+                                <TableCell colSpan={999} align="center">無群組資料</TableCell>
+                            ) : null}
                         </TableBody>
                     </Table>
                 </TableContainer>

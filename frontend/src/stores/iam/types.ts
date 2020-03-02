@@ -4,10 +4,11 @@ import { IUser } from "contracts/user";
 
 export const GET_POLICIES = 'GET_POLICIES'
 export const GET_GROUPS = 'GET_GROUPS'
-export const GET_USERS = 'GET_USERS'
 export const ADD_GROUP = 'ADD_GROUP'
 export const UPDATE_GROUP = 'UPDATE_GROUP'
 export const DELETE_GROUP = 'DELETE_GROUP'
+export const GET_USERS = 'GET_USERS'
+export const CONFIG_USER_LOGINABLE = 'CONFIG_USER_LOGINABLE'
 
 export type IAMState = {
     policies: IPolicy[] | null
@@ -57,10 +58,19 @@ type GetUsers = {
     }
 }
 
+type ConfigUserLoginable = {
+    type: typeof CONFIG_USER_LOGINABLE,
+    payload: {
+        id: string | number
+        loginable: boolean
+    }
+}
+
 export type IAMActionTypes = 
     GetPolicies |
     GetGroups |
     AddGroup |
     UpdateGroup |
     DeleteGroup |
-    GetUsers
+    GetUsers |
+    ConfigUserLoginable

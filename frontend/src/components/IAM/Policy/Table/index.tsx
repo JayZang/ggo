@@ -32,7 +32,7 @@ class TableToolbar extends Component<ITableToolbarProps> {
 }
 
 type IPolicyTableProps = {
-    title: string
+    title?: string
     policies: IPolicy[]
     selectable: boolean
     defaultSelectedPolicies?: IPolicy[]
@@ -98,10 +98,13 @@ class PolicyTable extends Component<IPolicyTableProps, IPolicyTableState> {
         return (
             <Paper>
                 <TableContainer>
-                    <TableToolbar 
-                        title={title}
-                        numSelected={selectedPolicies.length} 
-                    />
+                    {title && (
+                        <TableToolbar 
+                            title={title}
+                            numSelected={selectedPolicies.length} 
+                        />
+                    )}
+                    
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -143,6 +146,9 @@ class PolicyTable extends Component<IPolicyTableProps, IPolicyTableState> {
                                     </TableRow>
                                 )
                             })}
+                            {policies.length === 0 ? (
+                                <TableCell colSpan={999} align="center">無權限資料</TableCell>
+                            ) : null}
                         </TableBody>
                     </Table>
                 </TableContainer>
