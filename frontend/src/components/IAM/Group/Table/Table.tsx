@@ -58,18 +58,20 @@ class TableToolbar extends Component<ITableToolbarProps, ITableToolbarState> {
                             <Typography>
                                 {numSelected} 個項目已選擇
                             </Typography>
-                            <Tooltip title="刪除">
-                                <Button  
-                                    className="ml-3 bg-danger text-white" 
-                                    component="span" 
-                                    startIcon={<DeleteIcon />}
-                                    variant="contained"
-                                    onClick={this.handleDeleteBtnClick.bind(this)}
-                                    disabled={isSubmitting}
-                                >
-                                    刪除
-                                </Button>
-                            </Tooltip>
+                            {hideBtn ? null : (
+                                <Tooltip title="刪除">
+                                    <Button  
+                                        className="ml-3 bg-danger text-white" 
+                                        component="span" 
+                                        startIcon={<DeleteIcon />}
+                                        variant="contained"
+                                        onClick={this.handleDeleteBtnClick.bind(this)}
+                                        disabled={isSubmitting}
+                                    >
+                                        刪除
+                                    </Button>
+                                </Tooltip>
+                            )}
                         </Box>
                     ): (hideBtn ? null : (
                         <Button
@@ -92,7 +94,9 @@ type IGroupTableProps = WithSnackbarProps & {
     groups: IGroup[],
     selectable: boolean
     editable: boolean
+    defaultSelectedGroups?: IGroup[]
     delete: (ids: string[] | number[]) => Promise<void>
+    onChange?: (groups: IGroup[]) => void
 }
 
 type IGroupTableState = {
@@ -113,8 +117,15 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
         this.openEditDrawer = this.openEditDrawer.bind(this)
         this.closeEditDrawer = this.closeEditDrawer.bind(this)
 
+        const {
+            groups,
+            defaultSelectedGroups
+        } = this.props
+
         this.state = {
-            selectedGroups: [],
+            selectedGroups: defaultSelectedGroups ? groups.filter(group => {
+                return defaultSelectedGroups.findIndex(_group => _group.id === group.id) !== -1
+            }) : [],
             groupToDisplayPolicies: null,
             groupToUpdate: null,
             openEditDrawer: false
@@ -122,33 +133,30 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
     }
 
     handleSelectAllClick() {
-        if (this.state.selectedGroups.length !== this.props.groups.length)
-            this.setState({
-                selectedGroups: [
-                    ...this.props.groups
-                ]
-            })
+        let selectedGroups = this.state.selectedGroups
+
+        if (selectedGroups.length !== this.props.groups.length)
+            selectedGroups = [
+                ...this.props.groups
+            ]
         else 
-            this.setState({
-                selectedGroups: []
-            })
+            selectedGroups = []
+
+        this.setState({ selectedGroups })
+        this.props.onChange && this.props.onChange(selectedGroups)
     }
 
     handleSelectOne(group: IGroup) {
-        const selectedGroups = this.state.selectedGroups
+        let selectedGroups = this.state.selectedGroups
         const index = selectedGroups.indexOf(group)
 
         if (index === -1)
-            this.setState({
-                selectedGroups: [
-                    ...selectedGroups,
-                    group
-                ]
-            })
-        else {
+            selectedGroups.push(group)
+        else
             selectedGroups.splice(index, 1)
-            this.setState({ selectedGroups })
-        }
+
+        this.setState({ selectedGroups })
+        this.props.onChange && this.props.onChange(selectedGroups)
     }
 
     handleDisplayGroupPoliciesBtnClick(event: React.MouseEvent<HTMLButtonElement>, group: IGroup) {

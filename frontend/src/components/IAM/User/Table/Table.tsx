@@ -5,6 +5,7 @@ import { TransitionProps } from '@material-ui/core/transitions'
 import { IUser, UserIdentityType } from 'contracts/user'
 import GroupTable from 'components/IAM/Group/Table'
 import PolicyTable from 'components/IAM/Policy/Table'
+import UserEditDrawer from 'components/IAM/User/EditPanel/EditDrawer'
 import { IPolicy } from 'contracts/policy'
 import { Link } from 'react-router-dom'
 
@@ -142,6 +143,7 @@ type IUserTableProps = {
 type IUserTableState = {
     selectedUsers: IUser[]
     userToDisplayPolicies: IUser | null
+    userToUpdate: IUser | null
 }
 
 class UserTable extends Component<IUserTableProps, IUserTableState> {
@@ -150,7 +152,8 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
 
         this.state = {
             selectedUsers: [],
-            userToDisplayPolicies: null
+            userToDisplayPolicies: null,
+            userToUpdate: null
         }
     }
 
@@ -187,6 +190,13 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         })
     }
 
+    handleEditUserBtnClick(event: React.MouseEvent<HTMLButtonElement>, user: IUser) { 
+        event.stopPropagation()
+        this.setState({
+            userToUpdate: user
+        })
+    }
+
     render() {
         const {
             title,
@@ -195,7 +205,8 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         } = this.props
         const {
             selectedUsers,
-            userToDisplayPolicies
+            userToDisplayPolicies,
+            userToUpdate
         } = this.state
 
         return (
@@ -300,9 +311,9 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                             </Button>
                                             <Button
                                                 color="primary"
-                                                // onClick={event => this.handleUpdateGroupBtnClick(event, group)}
+                                                onClick={event => this.handleEditUserBtnClick(event, user)}
                                             >
-                                                編輯
+                                                權限編輯
                                             </Button>
                                         </TableCell>
                                     </TableRow>
@@ -315,6 +326,13 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                 <UserPoliciesDialog 
                     user={userToDisplayPolicies}
                     onClose={() => this.setState({ userToDisplayPolicies: null })}
+                />
+
+                <UserEditDrawer 
+                    open={!!userToUpdate}
+                    user={userToUpdate}
+                    onOpen={() => {}}
+                    onClose={() => this.setState({ userToUpdate: null })}
                 />
 
             </Paper>
