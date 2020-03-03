@@ -284,7 +284,9 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                                 )
                             })}
                             {groups.length === 0 ? (
-                                <TableCell colSpan={999} align="center">無群組資料</TableCell>
+                                <TableRow>
+                                    <TableCell colSpan={999} align="center">無群組資料</TableCell>
+                                </TableRow>
                             ) : null}
                         </TableBody>
                     </Table>

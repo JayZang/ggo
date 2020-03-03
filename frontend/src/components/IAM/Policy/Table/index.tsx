@@ -147,7 +147,9 @@ class PolicyTable extends Component<IPolicyTableProps, IPolicyTableState> {
                                 )
                             })}
                             {policies.length === 0 ? (
-                                <TableCell colSpan={999} align="center">無權限資料</TableCell>
+                                <TableRow>
+                                    <TableCell colSpan={999} align="center">無權限資料</TableCell>
+                                </TableRow>
                             ) : null}
                         </TableBody>
                     </Table>
