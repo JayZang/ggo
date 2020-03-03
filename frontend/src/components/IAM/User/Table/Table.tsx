@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Switch, Button, Dialog, Slide, Tabs, Tab, Avatar, Tooltip } from '@material-ui/core'
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Switch, Button, Dialog, Slide, Tabs, Tab, Avatar, Tooltip, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core'
 import { TransitionProps } from '@material-ui/core/transitions'
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { IUser, UserIdentityType } from 'contracts/user'
 import GroupTable from 'components/IAM/Group/Table'
@@ -8,13 +9,28 @@ import PolicyTable from 'components/IAM/Policy/Table'
 import UserEditDrawer from 'components/IAM/User/EditPanel/EditDrawer'
 import { IPolicy } from 'contracts/policy'
 import { Link } from 'react-router-dom'
+import { withSnackbar, WithSnackbarProps } from 'notistack';
 
 type ITableToolbarProps = {
     title: string
     numSelected: number
+    onDelete: () => void
 }
 
 class TableToolbar extends Component<ITableToolbarProps> {
+    constructor(props: ITableToolbarProps) {
+        super(props)
+
+        this.state = {
+            isSubmitting: false
+        }
+    }
+
+    handleDeleteBtnClick() {
+        this.setState({ isSubmitting: true })
+        this.props.onDelete()
+    }
+
     render() {
         const {
             title,
@@ -27,10 +43,21 @@ class TableToolbar extends Component<ITableToolbarProps> {
                     {title}
                 </Typography>
                 {numSelected > 0 ? (
-                    <Box marginLeft="auto">
+                    <Box marginLeft="auto" className="d-flex align-items-center">
                         <Typography>
                             {numSelected} 個項目已選擇
                         </Typography>
+                        <Tooltip title="刪除">
+                            <Button
+                                className="ml-3 bg-danger text-white"
+                                component="span"
+                                startIcon={<DeleteIcon />}
+                                variant="contained"
+                                onClick={this.handleDeleteBtnClick.bind(this)}
+                            >
+                                刪除
+                            </Button>
+                        </Tooltip>
                     </Box>
                 ) : null}
             </Toolbar>
@@ -132,18 +159,85 @@ class UserPoliciesDialog extends Component<IUserPoliciesDialogProps, IUserPolici
     }
 }
 
-type IUserTableProps = {
+class UserDeleteWarningDialog extends Component<{
+    open: boolean
+    onClose: () => void,
+    onDelete: () => Promise<void>
+}, {
+    isSubmittung: boolean
+}> {
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            isSubmittung: false
+        }
+    }
+
+    handleDelete() {
+        this.setState({ isSubmittung: true })
+        this.props.onDelete().finally(() => {
+            this.props.onClose()
+            this.setState({ isSubmittung: false })
+        })
+    }
+
+    render() {
+        const {
+            open,
+            onClose
+        } = this.props
+        const {
+            isSubmittung
+        } = this.state
+
+        return (
+            <Dialog
+                open={open}
+                onClose={onClose}
+                TransitionComponent={Transition}
+                fullWidth
+            >
+                <DialogTitle>
+                    刪除使用者
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        刪除使用者不影響所屬身份之資料，刪除後對應之身份即無使用者所操作，確定要執行刪除動作嗎？
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.props.onClose} color="default" variant="contained">
+                        返回
+                    </Button>
+                    <Button 
+                        onClick={this.handleDelete.bind(this)} 
+                        className="bg-danger text-white" 
+                        variant="contained"
+                        disabled={isSubmittung}
+                    >
+                        刪除
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+}
+
+type IUserTableProps = WithSnackbarProps & { 
     title: string
     users: IUser[]
     selectable: boolean
     onChange?: (users: IUser[]) => void
     onUserLoginableChange: (id: string | number, loginable: boolean) => Promise<void>
+    deleteUsers: (ids: string[] | number[]) => Promise<void>
 }
 
 type IUserTableState = {
     selectedUsers: IUser[]
     userToDisplayPolicies: IUser | null
     userToUpdate: IUser | null
+    openDeleteWarningDialog: boolean
 }
 
 class UserTable extends Component<IUserTableProps, IUserTableState> {
@@ -153,7 +247,8 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         this.state = {
             selectedUsers: [],
             userToDisplayPolicies: null,
-            userToUpdate: null
+            userToUpdate: null,
+            openDeleteWarningDialog: false
         }
     }
 
@@ -197,6 +292,25 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         })
     }
 
+    async handleDeleteUsersBtnClick() {
+        const users = this.state.selectedUsers
+
+        if (users.length === 0) return
+
+        return this.props.deleteUsers(
+            users.map(user => user.id as any)
+        ).then(() => {
+            this.setState({ selectedUsers: [] })
+            this.props.enqueueSnackbar(`刪除使用者成功！`, {
+                variant: 'success'
+            })
+        }).catch(() => {
+            this.props.enqueueSnackbar(`刪除使用者失敗！`, {
+                variant: 'error'
+            })
+        })
+    }
+
     render() {
         const {
             title,
@@ -206,7 +320,8 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         const {
             selectedUsers,
             userToDisplayPolicies,
-            userToUpdate
+            userToUpdate,
+            openDeleteWarningDialog
         } = this.state
 
         return (
@@ -215,6 +330,9 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                     <TableToolbar
                         title={title}
                         numSelected={selectedUsers.length}
+                        onDelete={() => this.setState({
+                            openDeleteWarningDialog: true
+                        })}
                     />
                     <Table>
                         <TableHead>
@@ -323,6 +441,14 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                     </Table>
                 </TableContainer>
 
+                <UserDeleteWarningDialog
+                    open={openDeleteWarningDialog}
+                    onClose={() => this.setState({
+                        openDeleteWarningDialog: false
+                    })}
+                    onDelete={this.handleDeleteUsersBtnClick.bind(this)}
+                />
+
                 <UserPoliciesDialog 
                     user={userToDisplayPolicies}
                     onClose={() => this.setState({ userToDisplayPolicies: null })}
@@ -340,4 +466,4 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
     }
 }
 
-export default UserTable
+export default withSnackbar(UserTable)

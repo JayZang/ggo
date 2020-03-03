@@ -35,3 +35,10 @@ export function UpdateUserPolicies(): RequestHandler[] {
         validate()
     ]
 }
+
+export function DeleteUsers(): RequestHandler[] {
+    return [
+        body('ids').exists({ checkFalsy: true }).isArray(),
+        validate()
+    ]
+}

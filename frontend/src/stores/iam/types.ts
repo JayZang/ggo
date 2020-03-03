@@ -10,6 +10,7 @@ export const DELETE_GROUP = 'DELETE_GROUP'
 export const GET_USERS = 'GET_USERS'
 export const CONFIG_USER_LOGINABLE = 'CONFIG_USER_LOGINABLE'
 export const UPDATE_USER_POLICIES = 'UPDATE_USER_POLICIES'
+export const DELETE_USERS = 'DELETE_USERS'
 
 export type IAMState = {
     policies: IPolicy[] | null
@@ -74,6 +75,13 @@ type UpdateUserPolicies = {
     }
 }
 
+type DeleteUsers = {
+    type: typeof DELETE_USERS,
+    payload: {
+        ids: string[] | number[]
+    }
+}
+
 export type IAMActionTypes = 
     GetPolicies |
     GetGroups |
@@ -82,4 +90,5 @@ export type IAMActionTypes =
     DeleteGroup |
     GetUsers |
     ConfigUserLoginable |
-    UpdateUserPolicies
+    UpdateUserPolicies |
+    DeleteUsers

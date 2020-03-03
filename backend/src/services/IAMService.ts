@@ -98,7 +98,6 @@ export default class IAMService {
         }
     }
 
-
     /**
      * Get iam users
      */
@@ -233,6 +232,22 @@ export default class IAMService {
         } catch (err) {
             console.log(err)
             console.log('Update user\'s policy and group error')
+        }
+    }
+
+    /**
+     * Delete iam users
+     */
+    public async deleteUsers(ids: string[] | number[]) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            const users = await userRepo.findByIds(ids)
+            await userRepo.remove(users)
+            return users
+        } catch (err) {
+            console.log(err)
+            console.log('Delete iam uers error')
+            return null
         }
     }
 

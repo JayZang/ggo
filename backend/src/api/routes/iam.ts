@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 import IAMService from '@/services/IAMService'
-import { CreateOrUpdateGroup, DeleteGroups, CreateUser, UpdateUserPolicies } from '../validators/iam'
+import { CreateOrUpdateGroup, DeleteGroups, CreateUser, UpdateUserPolicies, DeleteUsers } from '../validators/iam'
 
 const router = Router()
 const iamService = Container.get(IAMService)
@@ -95,6 +95,14 @@ export default (app: Router) => {
 
         return user ?
             res.json(user) :
+            res.status(400).end()
+    })
+
+    router.delete('/users', DeleteUsers(), async (req: Request, res: Response) => {
+        const users = await iamService.deleteUsers(req.body.ids)
+
+        return users ?
+            res.json(users) :
             res.status(400).end()
     })
 }
