@@ -9,6 +9,7 @@ export const UPDATE_GROUP = 'UPDATE_GROUP'
 export const DELETE_GROUP = 'DELETE_GROUP'
 export const GET_USERS = 'GET_USERS'
 export const CONFIG_USER_LOGINABLE = 'CONFIG_USER_LOGINABLE'
+export const UPDATE_USER_POLICIES = 'UPDATE_USER_POLICIES'
 
 export type IAMState = {
     policies: IPolicy[] | null
@@ -66,6 +67,13 @@ type ConfigUserLoginable = {
     }
 }
 
+type UpdateUserPolicies = {
+    type: typeof UPDATE_USER_POLICIES,
+    payload: {
+        user: IUser
+    }
+}
+
 export type IAMActionTypes = 
     GetPolicies |
     GetGroups |
@@ -73,4 +81,5 @@ export type IAMActionTypes =
     UpdateGroup |
     DeleteGroup |
     GetUsers |
-    ConfigUserLoginable
+    ConfigUserLoginable |
+    UpdateUserPolicies

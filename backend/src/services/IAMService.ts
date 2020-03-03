@@ -140,9 +140,6 @@ export default class IAMService {
     public async createUser(data: any) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            const groupRepo = getCustomRepository(GroupRepo)
-            const policyRepo = getCustomRepository(PolicyRepo)
-
             const existUser = await userRepo.findOne({
                 identity_type: data.identity_type,
                 identity_id: data.identity_id
@@ -154,13 +151,6 @@ export default class IAMService {
                 parseInt(data.identity_type), 
                 data.identity_id
             )
-            const [
-                groups,
-                policies
-            ] = await Promise.all([
-                data.group_ids ? groupRepo.findByIds(data.group_ids) : [],
-                data.policy_ids ? policyRepo.findByIds(data.policy_ids) : []
-            ])
 
             const randomString = makeRandomString(10)
             const hashedPassword = bcryptjs.hashSync(
@@ -171,9 +161,7 @@ export default class IAMService {
                 account_id: identity.email,
                 password: hashedPassword,
                 identity_type: data.identity_type,
-                identity_id: data.identity_id,
-                groups,
-                policies
+                identity_id: data.identity_id
             })
             
             await userRepo.save(user)
@@ -203,6 +191,48 @@ export default class IAMService {
         } catch (err) {
             console.log(err)
             console.log('Set iam user loginable error')
+        }
+    }
+
+    /**
+     * Update user's policy and group
+     */
+    public async updateUserPolicies(id: string | number, data: {
+        policyIds: string[] | number[]
+        groupIds: string[] | number[]
+    }) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            const groupRepo = getCustomRepository(GroupRepo)
+            const policyRepo = getCustomRepository(PolicyRepo)
+            const user = await userRepo.findOneOrFail(id, {
+                where: {
+                    identity_type: Not(UserIdentityType.admin)
+                }
+            })
+            const [
+                policies,
+                groups,
+                identity
+            ] = await Promise.all([
+                data.policyIds ? policyRepo.findByIds(data.policyIds) : [],
+                data.groupIds ? groupRepo.findByIds(data.groupIds, {
+                    relations: ['policies']
+                }) : [],
+                this.getIdentity(
+                    user.identity_type,
+                    user.identity_id
+                )
+            ])
+
+            user.policies = policies
+            user.groups = groups
+            user.identity = identity
+
+            return userRepo.save(user)
+        } catch (err) {
+            console.log(err)
+            console.log('Update user\'s policy and group error')
         }
     }
 

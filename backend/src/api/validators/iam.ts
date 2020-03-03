@@ -24,8 +24,14 @@ export function CreateUser(): RequestHandler[] {
     return [
         body('identity_type').exists({ checkFalsy: true }).isIn(Object.values(UserIdentityType)),
         body('identity_id').exists({ checkFalsy: true }),
-        body('policy_ids').optional().isArray(),
-        body('group_ids').optional().isArray(),
+        validate()
+    ]
+}
+
+export function UpdateUserPolicies(): RequestHandler[] {
+    return [
+        body('policyIds').exists({ checkFalsy: true }).isArray(),
+        body('groupIds').exists({ checkFalsy: true }).isArray(),
         validate()
     ]
 }

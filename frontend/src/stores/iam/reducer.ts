@@ -1,4 +1,4 @@
-import { IAMState, IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS, CONFIG_USER_LOGINABLE } from "./types";
+import { IAMState, IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS, CONFIG_USER_LOGINABLE, UPDATE_USER_POLICIES } from "./types";
 
 const initState: IAMState = {
     policies: null,
@@ -57,6 +57,16 @@ export default function iamReducer(state: IAMState = initState, action: IAMActio
                 users: state.users && state.users.map(user => {
                     if (user.id == action.payload.id)
                         user.loginable = action.payload.loginable
+                    return user
+                })
+            }
+
+        case UPDATE_USER_POLICIES:
+            return {
+                ...state,
+                users: state.users && state.users.map(user => {
+                    if (user.id == action.payload.user.id)
+                        return action.payload.user
                     return user
                 })
             }

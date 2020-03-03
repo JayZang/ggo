@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import UserEditPanel from './EditPanel'
 import { RootState } from 'stores';
+import { updateUserPolicies } from 'stores/iam/action';
 
 const mapStateToProps = (state: RootState) => ({
     totalGroups: state.iam.groups || [],
@@ -9,5 +10,5 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 export default connect(mapStateToProps, {
-    update: async (is: string| number, data: any) => {}
+    update: updateUserPolicies
 })(UserEditPanel)

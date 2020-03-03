@@ -21,6 +21,7 @@ type IState = {
     activeStep: number
     selectedGroups: IGroup[]
     selectedPolicies: IPolicy[]
+    isSubmitting: boolean
 }
 
 class UserEditPanel extends Component<IProps, IState> {
@@ -35,7 +36,8 @@ class UserEditPanel extends Component<IProps, IState> {
         this.state = {
             activeStep: 0,
             selectedGroups: props.user ? props.user.groups : [],
-            selectedPolicies: props.user ? props.user.policies : []
+            selectedPolicies: props.user ? props.user.policies : [],
+            isSubmitting: false
         }
     }
 
@@ -88,7 +90,27 @@ class UserEditPanel extends Component<IProps, IState> {
     }
 
     handleSubmitBtnClick() {
+        const user = this.props.user
 
+        if (!user) return
+
+        this.setState({ isSubmitting: true })
+        this.props.update(user.id, {
+            policyIds: this.state.selectedPolicies.map(policy => policy.id),
+            groupIds: this.state.selectedGroups.map(group => group.id)
+        }).then(() => {
+            this.props.enqueueSnackbar(`編輯使用者 ${user.account_id} 權限成功！`, {
+                variant: 'success'
+            })
+            this.props.onSubmitSuccess && this.props.onSubmitSuccess()
+        })
+        .catch(reason => {
+            console.log(reason)
+            this.setState({ isSubmitting: false })
+            this.props.enqueueSnackbar(`編輯使用者 ${user.account_id} 權限失敗！`, {
+                variant: 'error'
+            })
+        })
     }
 
     render() {
@@ -100,7 +122,8 @@ class UserEditPanel extends Component<IProps, IState> {
         const {
             activeStep,
             selectedGroups,
-            selectedPolicies
+            selectedPolicies,
+            isSubmitting
         } = this.state
 
         return (
@@ -194,6 +217,7 @@ class UserEditPanel extends Component<IProps, IState> {
                                     variant="contained" 
                                     fullWidth
                                     onClick={this.backStep.bind(this)}
+                                    disabled={isSubmitting}
                                 >
                                     上一步
                                 </Button>
@@ -206,6 +230,7 @@ class UserEditPanel extends Component<IProps, IState> {
                                     variant="contained" 
                                     fullWidth
                                     onClick={this.nextStep.bind(this)}
+                                    disabled={isSubmitting}
                                 >
                                     下一步
                                 </Button>
@@ -218,6 +243,7 @@ class UserEditPanel extends Component<IProps, IState> {
                                     variant="contained" 
                                     fullWidth
                                     onClick={this.handleSubmitBtnClick.bind(this)}
+                                    disabled={isSubmitting}
                                 >
                                     儲存
                                 </Button>
