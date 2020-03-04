@@ -13,6 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
+import GavelIcon from '@material-ui/icons/Gavel';
 import EditIcon from '@material-ui/icons/Edit'
 import { WithSnackbarProps, withSnackbar } from 'notistack'
 import clsx from 'clsx'
@@ -76,7 +77,7 @@ class MemberItem extends Component<IProps, IState> {
         })
     }
 
-    hendleEditClicked() {
+    handleEditClicked() {
         this.setState({ isEditing: true })
         this.handleCloseMenu()
     }
@@ -174,7 +175,7 @@ class MemberItem extends Component<IProps, IState> {
                             </Button>
                         </Link>
 
-                        <IconButton onClick={this.handleOpenMenu}>
+                        <IconButton className="ml-3" onClick={this.handleOpenMenu}>
                             <MoreVertIcon />
                         </IconButton>
                         <Menu
@@ -194,13 +195,19 @@ class MemberItem extends Component<IProps, IState> {
                                 <ListItemIcon className={classes.menuIcon}>
                                     <DeleteIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Delete" />
+                                <ListItemText primary="刪除" />
                             </MenuItem>
-                            <MenuItem onClick={this.hendleEditClicked.bind(this)}>
+                            <MenuItem onClick={this.handleEditClicked.bind(this)}>
                                 <ListItemIcon className={classes.menuIcon}>
                                     <EditIcon />
                                 </ListItemIcon>
-                                <ListItemText primary="Edit" />
+                                <ListItemText primary="編輯" />
+                            </MenuItem>
+                            <MenuItem onClick={this.handleEditClicked.bind(this)}>
+                                <ListItemIcon className={classes.menuIcon}>
+                                    <GavelIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="註冊使用者" />
                             </MenuItem>
                         </Menu>
                     </div>
