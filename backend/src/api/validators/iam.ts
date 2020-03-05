@@ -22,6 +22,7 @@ export function DeleteGroups(): RequestHandler[] {
 
 export function CreateUser(): RequestHandler[] {
     return [
+        body('account_id').exists({ checkFalsy: true }).isLength({ min: 8 }).isString(),
         body('identity_type').exists({ checkFalsy: true }).isIn(Object.values(UserIdentityType)),
         body('identity_id').exists({ checkFalsy: true }),
         validate()

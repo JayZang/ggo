@@ -157,7 +157,7 @@ export default class IAMService {
                 bcryptjs.genSaltSync(10)
             )
             const user =  userRepo.create({
-                account_id: identity.email,
+                account_id: data.account_id,
                 password: hashedPassword,
                 identity_type: data.identity_type,
                 identity_id: data.identity_id

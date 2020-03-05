@@ -13,7 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
-import GavelIcon from '@material-ui/icons/Gavel';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import EditIcon from '@material-ui/icons/Edit'
 import { WithSnackbarProps, withSnackbar } from 'notistack'
 import clsx from 'clsx'
@@ -25,6 +25,7 @@ import styles from './styles'
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     member: IMember,
     handleDeleteMember: (id: number | string) => Promise<void>
+    onRegisterUserBtnClick?: () => void
 }
 
 interface IState {
@@ -203,9 +204,12 @@ class MemberItem extends Component<IProps, IState> {
                                 </ListItemIcon>
                                 <ListItemText primary="編輯" />
                             </MenuItem>
-                            <MenuItem onClick={this.handleEditClicked.bind(this)}>
+                            <MenuItem onClick={() => {
+                                this.handleCloseMenu()
+                                this.props.onRegisterUserBtnClick &&  this.props.onRegisterUserBtnClick()
+                            }}>
                                 <ListItemIcon className={classes.menuIcon}>
-                                    <GavelIcon />
+                                    <AssignmentIndIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="註冊使用者" />
                             </MenuItem>
