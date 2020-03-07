@@ -4,6 +4,7 @@ import { Dialog, DialogTitle, DialogContent, Paper, Grid, Avatar, Typography, Bo
 import IAMUserAccountSettingPanel from 'components/IAM/User/AccountSettingPanel'
 import { TransitionProps } from '@material-ui/core/transitions'
 import { IMember } from 'contracts/member';
+import { UserIdentityType } from 'contracts/user';
 
 const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -12,10 +13,17 @@ const Transition = React.forwardRef<unknown, TransitionProps>(function Transitio
 type IProps = {
     member: IMember | null
     onClose: () => void
+    register: (data: {
+        account_id?: string
+        identity_type: UserIdentityType
+        identity_id: string | number
+    }) => Promise<void>
 }
 
 type IState = {
     accountId: string
+    isAccountIdDefault: boolean
+    isAccountIdValid: boolean
 }
 
 class MemberRegisterUserDialog extends Component<IProps, IState> {
@@ -23,12 +31,27 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
         super(props)
 
         this.state = {
-            accountId: props.member ? props.member.email : ''
+            accountId: props.member ? props.member.email : '',
+            isAccountIdDefault: false,
+            isAccountIdValid: false
         }
     }
 
-    register() {
+    handleRegisterBtnClick() {
+        const {
+            accountId,
+            isAccountIdDefault,
+            isAccountIdValid,
+        } = this.state
+        const member = this.props.member
 
+        if (!isAccountIdValid || !member) return
+
+        this.props.register({
+            account_id: isAccountIdDefault ? undefined : accountId,
+            identity_type: UserIdentityType.member,
+            identity_id: member.id
+        })
     }
 
     render() {
@@ -64,8 +87,10 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
 
                     <IAMUserAccountSettingPanel
                         defaultAccountID={member ? member.email : ''}
-                        onChange={value => this.setState({
-                            accountId: value
+                        onChange={(value, isDefault, isValid) => this.setState({
+                            accountId: value,
+                            isAccountIdDefault: isDefault,
+                            isAccountIdValid: isValid
                         })}
                     />
 
@@ -74,7 +99,11 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
                     <Button color="default" onClick={onClose}>
                         取消
                         </Button>
-                    <Button color="primary" onClick={this.register.bind(this)}>
+                    <Button 
+                        color="primary" 
+                        onClick={this.handleRegisterBtnClick.bind(this)}
+                        disabled={!this.state.isAccountIdValid}
+                    >
                         註冊
                         </Button>
                 </DialogActions>

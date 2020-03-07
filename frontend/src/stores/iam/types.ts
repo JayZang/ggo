@@ -10,6 +10,7 @@ export const DELETE_GROUP = 'DELETE_GROUP'
 export const GET_USERS = 'GET_USERS'
 export const CONFIG_USER_LOGINABLE = 'CONFIG_USER_LOGINABLE'
 export const UPDATE_USER_POLICIES = 'UPDATE_USER_POLICIES'
+export const REGISTER_MEMBER_USER = 'REGISTER_MEMBER_USER'
 export const DELETE_USERS = 'DELETE_USERS'
 
 export type IAMState = {
@@ -75,6 +76,13 @@ type UpdateUserPolicies = {
     }
 }
 
+type RegisterMemberUser = {
+    type: typeof REGISTER_MEMBER_USER,
+    payload: {
+       memberId: string | number
+    }
+}
+
 type DeleteUsers = {
     type: typeof DELETE_USERS,
     payload: {
@@ -91,4 +99,5 @@ export type IAMActionTypes =
     GetUsers |
     ConfigUserLoginable |
     UpdateUserPolicies |
+    RegisterMemberUser |
     DeleteUsers

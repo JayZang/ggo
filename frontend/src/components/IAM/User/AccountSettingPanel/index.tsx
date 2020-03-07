@@ -11,7 +11,7 @@ enum RadiosEnum {
 
 type IProps = {
     defaultAccountID: string
-    onChange?: (account_id: string, isValid: boolean) => void
+    onChange?: (account_id: string, isDefault: boolean, isValid: boolean) => void
 }
 
 type IState = {
@@ -32,6 +32,7 @@ class AccountSettingPanel extends Component<IProps, IState> {
 
         props.onChange && props.onChange(
             props.defaultAccountID,
+            true,
             true
         )
     }
@@ -48,18 +49,22 @@ class AccountSettingPanel extends Component<IProps, IState> {
                 <RadioGroup className="flex-row" name="account-type-selection" value={radioValue} onChange={(event, value) => {
                     let _account_id = ''
                     let _errorMsg: string | null = null
+                    let isDefault = false
 
-                    if (value === RadiosEnum.default)
+                    if (value === RadiosEnum.default) {
                         _account_id = this.props.defaultAccountID
-                    else
+                        isDefault = true
+                    } else {
                         _errorMsg = accountIdValidate(_account_id)
+                        isDefault = false
+                    }
 
                     this.setState({ 
                         radioValue: value as RadiosEnum, 
                         account_id: _account_id, 
                         errorMsg: _errorMsg 
                     })
-                    this.props.onChange && this.props.onChange(account_id, !_errorMsg)
+                    this.props.onChange && this.props.onChange(account_id, isDefault, !_errorMsg)
                 }}>
                     <FormControlLabel value={RadiosEnum.default} control={<Radio color="primary"/>} label="預設帳號" />
                     <FormControlLabel value={RadiosEnum.custom} control={<Radio color="primary"/>} label="自訂帳號" />
@@ -73,11 +78,13 @@ class AccountSettingPanel extends Component<IProps, IState> {
                     fullWidth 
                     disabled={radioValue === RadiosEnum.default}
                     onChange={event => {
+                        const value =  event.target.value
+                        const errorMessage = accountIdValidate(event.target.value)
                         this.setState({ 
-                            account_id: event.target.value,
-                            errorMsg: accountIdValidate(event.target.value)
+                            account_id: value,
+                            errorMsg: errorMessage
                          }, () => {
-                            this.props.onChange && this.props.onChange(account_id, !errorMsg)
+                            this.props.onChange && this.props.onChange(value, false, !errorMessage)
                          })
                     }}
                 />

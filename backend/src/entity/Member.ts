@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany, OneToOne } from 'typeorm'
 
 import EmergencyContact from './EmergencyContact'
 import Team from './Team'
+import User from './User'
 
 @Entity()
 export default class Member {
@@ -66,6 +67,8 @@ export default class Member {
         cascade: true
     })
     teams_as_leader: Team[]
+
+    user?: User
 }
 
 export enum MemberStatus {

@@ -1,8 +1,9 @@
 import { Dispatch } from "redux";
 
 import * as iamApi from 'api/iam'
-import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS, CONFIG_USER_LOGINABLE, UPDATE_USER_POLICIES, DELETE_USERS } from "./types";
+import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS, CONFIG_USER_LOGINABLE, UPDATE_USER_POLICIES, DELETE_USERS, REGISTER_MEMBER_USER } from "./types";
 import { regularizePolicyData, regularizeGroupData, regularizeUserData } from "./utils";
+import { UserIdentityType } from "contracts/user";
 
 export const getPolicies = () => async (dispatch: Dispatch) => {
     const res = await iamApi.getPolicies()
@@ -107,6 +108,32 @@ export const updateUserPolicies = (id: string | number, data: {
         payload: {
             user: regularizeUserData(res.data)
         }
+    }
+
+    dispatch(action)
+}
+
+export const registerUser = (data: {
+    account_id?: string
+    identity_type: UserIdentityType
+    identity_id: string | number
+}) => async (dispatch: Dispatch) => {
+    await iamApi.registerUser(data)
+
+    let action: IAMActionTypes
+
+    switch (data.identity_type) {
+        case UserIdentityType.member:
+            action =  {
+                type: REGISTER_MEMBER_USER,
+                payload: {
+                    memberId: data.identity_id
+                }
+            }
+            break
+        
+        default:
+            return
     }
 
     dispatch(action)

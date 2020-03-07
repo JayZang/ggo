@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, getCustomRepository } from 'typeorm'
+import { EntityRepository, Repository, getCustomRepository, In } from 'typeorm'
 import _ from 'lodash'
 
 import User, { UserIdentityType } from '@/entity/User'
@@ -6,6 +6,13 @@ import MemberRepo from './MemberRepository'
 
 @EntityRepository(User)
 class UserRepository extends Repository<User> {
+
+    public async getByIdentities(type: UserIdentityType, ids: number[]) {
+        return this.find({
+            identity_type: type,
+            identity_id: In(ids)
+        })
+    }
 
     public async attachIdentity(users: User[]): Promise< User[]> {
         const memberRepo = getCustomRepository(MemberRepo)

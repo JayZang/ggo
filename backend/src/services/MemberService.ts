@@ -6,6 +6,8 @@ import MemberRepo from '@/repository/MemberRepository'
 import EmergencyContactRepo from '@/repository/EmergencyContactRepository'
 import { MemberStatus } from '@/entity/Member'
 import TeamRepository from '@/repository/TeamRepository'
+import UserRepo from '@/repository/UserRepository'
+import { UserIdentityType } from '@/entity/User'
 
 @Service()
 export default class MemberService {
@@ -32,7 +34,17 @@ export default class MemberService {
         take: number,
     }) {
         const memberRepo = getCustomRepository(MemberRepo)
-        return await memberRepo.find(option)
+        const userRepo = getCustomRepository(UserRepo)
+
+        // TODO:
+        // const members = await memberRepo.find(option)
+        // const memberIdsMapping = []
+
+        // members.forEach(member => {
+        //     memberIdsMapping[member.id] = member
+        // })
+
+        // const users = userRepo.getByIdentities(UserIdentityType.member, Object.keys(memberIdsMapping))
     }
 
     /**

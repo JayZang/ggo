@@ -13,6 +13,7 @@ import {
     GET_MEMBER_COUNT_STATISTIC,
     GET_TEAM_MEMBERS
 } from './types'
+import { REGISTER_MEMBER_USER, IAMActionTypes } from 'stores/iam/types'
 
 const initState: MemberState = {
     members: {
@@ -28,7 +29,7 @@ const initState: MemberState = {
     teamMembers: null
 }
 
-export default function memberReducer(state = initState, action: MemberActionTypes): MemberState {
+export default function memberReducer(state = initState, action: MemberActionTypes | IAMActionTypes): MemberState {
     switch (action.type) {
         case CLEAR_MEMBERS:
             return {
@@ -149,6 +150,19 @@ export default function memberReducer(state = initState, action: MemberActionTyp
             return {
                 ...state,
                 teamMembers: action.payload.members
+            }
+
+        case REGISTER_MEMBER_USER:
+            return {
+                ...state,
+                members: {
+                    ...state.members,
+                    list: state.members.list && state.members.list.map(member => {
+                        if (member.id === action.payload.memberId)
+                            console.log(member)
+                        return member
+                    })
+                }
             }
 
         default:
