@@ -1,4 +1,5 @@
 import { Moment } from 'moment'
+import { IUser } from './user'
 
 export type IMember = {
     id: number
@@ -11,6 +12,7 @@ export type IMember = {
     take_office_date: Moment
     leave_office_date: Moment | null
     status: MemberStatus
+    isUser?: boolean
     create_at: Moment
     update_at: Moment
 }

@@ -11,13 +11,14 @@ enum RadiosEnum {
 
 type IProps = {
     defaultAccountID: string
+    defaultErrorMsg?: string
     onChange?: (account_id: string, isDefault: boolean, isValid: boolean) => void
 }
 
 type IState = {
     account_id: string
     radioValue: RadiosEnum,
-    errorMsg: string | null
+    errorMsg?: string
 }
 
 class AccountSettingPanel extends Component<IProps, IState> {
@@ -27,7 +28,7 @@ class AccountSettingPanel extends Component<IProps, IState> {
         this.state = {
             account_id: props.defaultAccountID,
             radioValue: RadiosEnum.default,
-            errorMsg: null
+            errorMsg: props.defaultErrorMsg
         }
 
         props.onChange && props.onChange(
@@ -35,6 +36,13 @@ class AccountSettingPanel extends Component<IProps, IState> {
             true,
             true
         )
+    }
+
+    componentDidUpdate(prevProps: IProps) {
+        if (prevProps.defaultErrorMsg !== this.props.defaultErrorMsg)
+            this.setState({ 
+                errorMsg: this.props.defaultErrorMsg
+             })
     }
 
     render() {
@@ -48,14 +56,14 @@ class AccountSettingPanel extends Component<IProps, IState> {
             <Box>
                 <RadioGroup className="flex-row" name="account-type-selection" value={radioValue} onChange={(event, value) => {
                     let _account_id = ''
-                    let _errorMsg: string | null = null
+                    let _errorMsg: string | undefined = undefined
                     let isDefault = false
 
                     if (value === RadiosEnum.default) {
                         _account_id = this.props.defaultAccountID
                         isDefault = true
                     } else {
-                        _errorMsg = accountIdValidate(_account_id)
+                        _errorMsg = accountIdValidate(_account_id) || undefined
                         isDefault = false
                     }
 
@@ -79,7 +87,7 @@ class AccountSettingPanel extends Component<IProps, IState> {
                     disabled={radioValue === RadiosEnum.default}
                     onChange={event => {
                         const value =  event.target.value
-                        const errorMessage = accountIdValidate(event.target.value)
+                        const errorMessage = accountIdValidate(event.target.value) || undefined
                         this.setState({ 
                             account_id: value,
                             errorMsg: errorMessage

@@ -204,15 +204,17 @@ class MemberItem extends Component<IProps, IState> {
                                 </ListItemIcon>
                                 <ListItemText primary="編輯" />
                             </MenuItem>
-                            <MenuItem onClick={() => {
-                                this.handleCloseMenu()
-                                this.props.onRegisterUserBtnClick &&  this.props.onRegisterUserBtnClick()
-                            }}>
-                                <ListItemIcon className={classes.menuIcon}>
-                                    <AssignmentIndIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="註冊使用者" />
-                            </MenuItem>
+                            {member.isUser ? null : (
+                                <MenuItem onClick={() => {
+                                    this.handleCloseMenu()
+                                    this.props.onRegisterUserBtnClick && this.props.onRegisterUserBtnClick()
+                                }}>
+                                    <ListItemIcon className={classes.menuIcon}>
+                                        <AssignmentIndIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="註冊使用者" />
+                                </MenuItem>
+                            )}
                         </Menu>
                     </div>
                 </Paper>

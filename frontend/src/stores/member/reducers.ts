@@ -159,7 +159,7 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                     ...state.members,
                     list: state.members.list && state.members.list.map(member => {
                         if (member.id === action.payload.memberId)
-                            console.log(member)
+                            member.isUser = true
                         return member
                     })
                 }

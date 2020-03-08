@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 import MemberRepo from '@/repository/MemberRepository'
 import EmergencyContactRepo from '@/repository/EmergencyContactRepository'
-import { MemberStatus } from '@/entity/Member'
+import Member, { MemberStatus } from '@/entity/Member'
 import TeamRepository from '@/repository/TeamRepository'
 import UserRepo from '@/repository/UserRepository'
 import { UserIdentityType } from '@/entity/User'
@@ -36,15 +36,23 @@ export default class MemberService {
         const memberRepo = getCustomRepository(MemberRepo)
         const userRepo = getCustomRepository(UserRepo)
 
-        // TODO:
-        // const members = await memberRepo.find(option)
-        // const memberIdsMapping = []
+        const members = await memberRepo.find(option)
+        const memberIdsMapping: Member[] = []
 
-        // members.forEach(member => {
-        //     memberIdsMapping[member.id] = member
-        // })
+        members.forEach(member => {
+            memberIdsMapping[member.id] = member
+        })
 
-        // const users = userRepo.getByIdentities(UserIdentityType.member, Object.keys(memberIdsMapping))
+        const users = await userRepo.getByIdentities(
+            UserIdentityType.member, 
+            Object.keys(memberIdsMapping) as any[]
+        )
+
+        users.forEach(user => {
+            memberIdsMapping[user.identity_id].isUser = !!user
+        })
+
+        return members
     }
 
     /**
@@ -88,7 +96,13 @@ export default class MemberService {
     public async delete(id: string | number) {
         try {
             const memberRepo = getCustomRepository(MemberRepo)
+            const userRepo = getCustomRepository(UserRepo)
             const member = await memberRepo.findOneOrFail(id)
+            await userRepo.removeByIdentity(
+                UserIdentityType.member,
+                member.id
+            )
+
             return await memberRepo.remove(member)
         } catch (err) {
             console.log('Delete member fail')

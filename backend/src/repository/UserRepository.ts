@@ -47,6 +47,18 @@ class UserRepository extends Repository<User> {
 
         return users
     }
+
+    public async removeByIdentity(type: UserIdentityType, id: number) {
+        const user = await this.findOne({
+            identity_type: type,
+            identity_id: id
+        })
+
+        if (user)
+            await this.remove(user)
+
+        return user
+    }
 }
 
 export default UserRepository

@@ -5,12 +5,13 @@ import IAMUserAccountSettingPanel from 'components/IAM/User/AccountSettingPanel'
 import { TransitionProps } from '@material-ui/core/transitions'
 import { IMember } from 'contracts/member';
 import { UserIdentityType } from 'contracts/user';
+import { WithSnackbarProps, withSnackbar } from 'notistack';
 
 const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-type IProps = {
+type IProps = WithSnackbarProps & {
     member: IMember | null
     onClose: () => void
     register: (data: {
@@ -24,16 +25,22 @@ type IState = {
     accountId: string
     isAccountIdDefault: boolean
     isAccountIdValid: boolean
+    submitting: boolean
+    isRegisterError: boolean
 }
 
 class MemberRegisterUserDialog extends Component<IProps, IState> {
+    registerErrorHint = '該帳號已被其他使用者註冊！'
+
     constructor(props: IProps) {
         super(props)
 
         this.state = {
             accountId: props.member ? props.member.email : '',
             isAccountIdDefault: false,
-            isAccountIdValid: false
+            isAccountIdValid: false,
+            submitting: false,
+            isRegisterError: false
         }
     }
 
@@ -51,6 +58,16 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
             account_id: isAccountIdDefault ? undefined : accountId,
             identity_type: UserIdentityType.member,
             identity_id: member.id
+        }).then(() => {
+            this.props.enqueueSnackbar('註冊使用者成功！', {
+                variant: 'success'
+            })
+            this.props.onClose()
+        }).catch(() => {
+            this.props.enqueueSnackbar('註冊使用者失敗！', {
+                variant: 'error'
+            })
+            this.setState({ isRegisterError: true })
         })
     }
 
@@ -59,6 +76,11 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
             member,
             onClose
         } = this.props
+        const {
+            isAccountIdValid,
+            submitting,
+            isRegisterError
+        } = this.state
 
         return (
             <Dialog
@@ -87,10 +109,12 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
 
                     <IAMUserAccountSettingPanel
                         defaultAccountID={member ? member.email : ''}
+                        defaultErrorMsg={isRegisterError ? this.registerErrorHint : undefined}
                         onChange={(value, isDefault, isValid) => this.setState({
                             accountId: value,
                             isAccountIdDefault: isDefault,
-                            isAccountIdValid: isValid
+                            isAccountIdValid: isValid,
+                            isRegisterError: false
                         })}
                     />
 
@@ -102,7 +126,7 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
                     <Button 
                         color="primary" 
                         onClick={this.handleRegisterBtnClick.bind(this)}
-                        disabled={!this.state.isAccountIdValid}
+                        disabled={!isAccountIdValid || submitting}
                     >
                         註冊
                         </Button>
@@ -112,4 +136,4 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
     }
 }
 
-export default MemberRegisterUserDialog
+export default withSnackbar(MemberRegisterUserDialog)

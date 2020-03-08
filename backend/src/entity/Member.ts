@@ -68,7 +68,7 @@ export default class Member {
     })
     teams_as_leader: Team[]
 
-    user?: User
+    isUser?: boolean
 }
 
 export enum MemberStatus {
