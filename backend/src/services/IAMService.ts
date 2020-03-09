@@ -2,6 +2,7 @@ import { getCustomRepository, Not } from 'typeorm'
 import { Service } from 'typedi'
 import bcryptjs from 'bcryptjs'
 import _ from 'lodash'
+import xlsx from 'node-xlsx'
 
 import PolicyRepo from '@/repository/PolicyRepository'
 import GroupRepo from '@/repository/GroupRepository'
@@ -9,6 +10,7 @@ import UserRepo from '@/repository/UserRepository'
 import User, { UserIdentityType } from '@/entity/User'
 import MemberRepo from '@/repository/MemberRepository'
 import { makeRandomString } from '@/utils/makeRandomString'
+import moment from 'moment'
 
 @Service()
 export default class IAMService {
@@ -151,9 +153,9 @@ export default class IAMService {
                 data.identity_id
             )
 
-            const randomString = makeRandomString(10)
+            const password = makeRandomString(10)
             const hashedPassword = bcryptjs.hashSync(
-                randomString,
+                password,
                 bcryptjs.genSaltSync(10)
             )
             const user =  userRepo.create({
@@ -166,7 +168,7 @@ export default class IAMService {
             await userRepo.save(user)
             user.identity = identity
             user.password = undefined
-            return user
+            return this.buildUserProfileXlsx(identity.name, user, password)
         } catch (err) {
             console.log(err)
             console.log('Create iam user error')
@@ -190,6 +192,7 @@ export default class IAMService {
         } catch (err) {
             console.log(err)
             console.log('Set iam user loginable error')
+            return null
         }
     }
 
@@ -232,6 +235,7 @@ export default class IAMService {
         } catch (err) {
             console.log(err)
             console.log('Update user\'s policy and group error')
+            return null
         }
     }
 
@@ -264,5 +268,25 @@ export default class IAMService {
             default:
                 throw Error('Search invalid user identity type !')
         }
+    }
+
+    private buildUserProfileXlsx(name: string, user: User, pwd: string) {
+        let identityName: string
+
+        switch (user.identity_type) {
+            case UserIdentityType.member:
+                identityName = '成員'
+                break
+            default:
+                identityName = ''
+        }
+
+        return xlsx.build([{
+            name: '使用者資訊',
+            data: [
+                ['身份', '名稱', '帳號', '密碼', '密碼生成/變更日期'],
+                [identityName, name, user.account_id, pwd, moment().format('YYYY-MM-DD HH:mm')]
+            ]
+        }])
     }
 }

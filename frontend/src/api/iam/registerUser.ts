@@ -7,14 +7,7 @@ export function registerUser(data: {
     identity_type: number
     identity_id: string | number
 }) {
-    return axios.post<{
-        id: number | string
-        account_id: string
-        line_id: string | null
-        loginable: boolean
-        identity_type: number
-        identity_id: string | number
-        create_at: string
-        update_at: string
-    }>(URL, data)
+    return axios.post<Blob>(URL, data, {
+        responseType: 'blob'
+    })
 }

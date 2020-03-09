@@ -59,7 +59,8 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                     list: [
                         ...(state.members.list || []),
                         ...action.payload.members
-                    ]
+                    ],
+                    totalCount: state.members.totalCount + action.payload.totalCountIncrement
                 }
             }
 

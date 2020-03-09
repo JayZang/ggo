@@ -64,11 +64,13 @@ export default (app: Router) => {
     })
 
     router.post('/users', CreateUser(), async (req: Request, res: Response) => {
-        const user = await iamService.createUser(req.body)
+        const userProfileXlsx = await iamService.createUser(req.body)
 
-        return user ?
-            res.json(user) :
-            res.status(400).end()
+        if (!userProfileXlsx)
+            return res.status(400).end()
+
+        res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.end(userProfileXlsx)
     })
 
     router.post('/users/:id/loginable', async (req: Request, res: Response) => {

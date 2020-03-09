@@ -50,7 +50,8 @@ type GetMemberCountStatistic = {
 type AddMemberList = {
     type: typeof ADD_MEMBER_LIST,
     payload: {
-        members: IMember[]
+        members: IMember[],
+        totalCountIncrement: number
     }
 }
 

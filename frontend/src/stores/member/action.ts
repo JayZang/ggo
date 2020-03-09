@@ -54,7 +54,8 @@ export const fetchMembers = () => async (dispatch: Dispatch, getState: () => Roo
         payload: {
             members: res.data.map(member => {
                 return regularizeMemberData(member)
-            })
+            }),
+            totalCountIncrement: 0
         }
     }
 
@@ -73,7 +74,8 @@ export const createMember = (data: any) => async (dispatch: Dispatch, getState: 
     const action: MemberActionTypes = {
         type: ADD_MEMBER_LIST,
         payload: {
-            members: [regularizeMemberData(res.data)]
+            members: [regularizeMemberData(res.data)],
+            totalCountIncrement: 1
         }
     }
 

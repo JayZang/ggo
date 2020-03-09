@@ -14,7 +14,7 @@ const Transition = React.forwardRef<unknown, TransitionProps>(function Transitio
 type IProps = WithSnackbarProps & {
     member: IMember | null
     onClose: () => void
-    register: (data: {
+    register: (name: string, data: {
         account_id?: string
         identity_type: UserIdentityType
         identity_id: string | number
@@ -54,7 +54,7 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
 
         if (!isAccountIdValid || !member) return
 
-        this.props.register({
+        this.props.register(member.name, {
             account_id: isAccountIdDefault ? undefined : accountId,
             identity_type: UserIdentityType.member,
             identity_id: member.id
