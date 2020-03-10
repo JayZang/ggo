@@ -1,75 +1,80 @@
 version: '3'
 
 services:
-  nginx-proxy:
-    image: nginx
-    ports:
-      - 2999:80
-      - 3000:443
-    volumes: 
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/ssl:/etc/nginx/ssl
-    depends_on: 
-      - backend
-      - frontend
+    nginx-proxy:
+        image: nginx
+        ports:
+            - 2999:80
+            - 3000:443
+        volumes: 
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./nginx/ssl:/etc/nginx/ssl
+        depends_on: 
+            - backend
+            - frontend
 
-  backend:
-    build:
-      context: backend
-      dockerfile: Dockerfile.dev
-    volumes: 
-      - ./backend:/app
-    ports: 
-      - 3001:3000
-    depends_on: 
-      - mongodb
+    backend:
+        build:
+            context: backend
+            dockerfile: Dockerfile.dev
+        volumes: 
+            - ./backend:/app
+        ports: 
+            - 3001:3000
+        depends_on: 
+            - mysql
+            - mongodb
+            - redis
 
-  frontend:
-    build:
-      context: frontend
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./frontend:/app
-    ports: 
-      - 3002:3000
+    frontend:
+        build:
+            context: frontend
+            dockerfile: Dockerfile.dev
+        volumes:
+            - ./frontend:/app
+        ports: 
+            - 3002:3000
 
-  workspace:
-    image: node:10.16.3
-    volumes:
-      - ./:/app
-    command: tail -f /dev/null
+    workspace:
+        image: node:10.16.3
+        volumes:
+            - ./:/app
+        command: tail -f /dev/null
 
-  mysql:
-    image: mysql:5.7
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-    volumes: 
-      - ./data/mysql:/var/lib/mysql
-    ports:
-      - 3306:3306
+    mysql:
+        image: mysql:5.7
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        volumes: 
+            - ./data/mysql:/var/lib/mysql
+        ports:
+            - 3306:3306
 
-  mongodb:
-    image: mongo:4.0
-    ports: 
-      - 27017:27017
-    volumes: 
-      - ./data/mongo:/data/db
-  
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:4.8
-    ports:
-      - 3003:80
-    environment:
-      - PMA_HOST=mysql
+    mongodb:
+        image: mongo:4.0
+        ports: 
+            - 27017:27017
+        volumes: 
+            - ./data/mongo:/data/db
+    
+    redis:
+        image: redis:5.0.7
 
-  backend-test:
-    build:
-      context: backend
-      dockerfile: Dockerfile.dev
-    volumes: 
-      - ./backend:/app
-    environment: 
-      NODE_ENV: test
-    command: npm run watch-test
-    depends_on: 
-      - mongodb
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.8
+        ports:
+            - 3003:80
+        environment:
+            - PMA_HOST=mysql
+
+  # backend-test:
+  #   build:
+  #     context: backend
+  #     dockerfile: Dockerfile.dev
+  #   volumes: 
+  #     - ./backend:/app
+  #   environment: 
+  #     NODE_ENV: test
+  #   command: npm run watch-test
+  #   depends_on: 
+  #     - mongodb

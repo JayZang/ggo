@@ -17,6 +17,10 @@ export const database = {
     },
     mongo: {
         url: env === 'test' ? process.env.MONGODB_URI_TEST : process.env.MONGODB_URI
+    },
+    redis: {
+        host: process.env.REDIS_HOST || 'redis',
+        port: parseInt(process.env.REDIS_PORT) || 6379
     }
 }
 
