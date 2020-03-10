@@ -22,7 +22,7 @@ export default (app: Router) => {
 
         return user ?
             res.header(jwtConfig.authHeaderName, token).json(user) :
-            res.status(400).end()
+            res.status(401).end()
     })
 
     router.get('/check', async (req: Request, res: Response) => {

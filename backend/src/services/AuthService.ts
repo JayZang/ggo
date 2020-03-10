@@ -2,11 +2,12 @@ import { getCustomRepository } from 'typeorm'
 import jwt from 'jsonwebtoken'
 import { Service } from 'typedi'
 import _ from 'lodash'
+import bcryptjs from 'bcryptjs'
 
 import UserRepo from '@/repository/UserRepository'
 import { jwt as jwtConfig } from '@/config'
 import User from '@/entity/User'
-import moment from 'moment'
+
 
 @Service()
 export default class AuthService {
@@ -17,11 +18,16 @@ export default class AuthService {
     public async login(account_id: string, password: string, ip: string) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            const user = await userRepo.findOneOrFail({
-                account_id,
-                password,
-                loginable: true
-            })
+            const user = await userRepo.createQueryBuilder('user')
+                .addSelect('user.password')
+                .where({
+                    account_id,
+                    loginable: true
+                })
+                .getOne()
+
+            if (!user || !bcryptjs.compareSync(password, user.password))
+                return {}
 
             user.last_login_datetime = new Date
             await userRepo.save(user)

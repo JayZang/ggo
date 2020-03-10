@@ -18,7 +18,7 @@ export default (app: Router) => {
         const team = await teamService.create(req.body)
         return team ?
             res.json(team) :
-            res.status(400).end()
+            res.status(400).end() 
     })
 
     router.get('/permanent', async (req, res) => {

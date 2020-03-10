@@ -4,7 +4,6 @@ import * as iamApi from 'api/iam'
 import { IAMActionTypes, GET_POLICIES, GET_GROUPS, ADD_GROUP, DELETE_GROUP, UPDATE_GROUP, GET_USERS, CONFIG_USER_LOGINABLE, UPDATE_USER_POLICIES, DELETE_USERS, REGISTER_MEMBER_USER } from "./types";
 import { regularizePolicyData, regularizeGroupData, regularizeUserData } from "./utils";
 import { UserIdentityType } from "contracts/user";
-import { IMember } from "contracts/member";
 import downloadBlobFile from 'utils/downloadBlobFile'
 
 export const getPolicies = () => async (dispatch: Dispatch) => {
@@ -121,13 +120,11 @@ export const registerUser = (name: string, data: {
     identity_id: string | number
 }) => async (dispatch: Dispatch) => {
     const res = await iamApi.registerUser(data)
-    const filename = `${name}-:type-使用者登入資訊.xlsx`
-    let userTypeString: string
+    const filename = `${name}-使用者登入資訊.xlsx`
     let action: IAMActionTypes
 
     switch (data.identity_type) {
         case UserIdentityType.member:
-            userTypeString = '成員'
             action =  {
                 type: REGISTER_MEMBER_USER,
                 payload: {
@@ -141,10 +138,13 @@ export const registerUser = (name: string, data: {
     }
 
     dispatch(action)
-    downloadBlobFile(
-        filename.replace(':type', userTypeString), 
-        res.data
-    )
+    downloadBlobFile(filename, res.data)
+}
+
+export const resetUserPassword = (id: string | number, name: string) => async () => {
+    const res = await iamApi.resetUserPassword(id)
+    const filename = `${name}-使用者密碼重設資訊.xlsx`
+    downloadBlobFile(filename, res.data)
 }
 
 export const deleteUsers = (ids: string[] | number[]) => async (dispatch: Dispatch) => {

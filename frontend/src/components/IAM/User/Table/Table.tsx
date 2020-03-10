@@ -10,6 +10,7 @@ import UserEditDrawer from 'components/IAM/User/EditPanel/EditDrawer'
 import { IPolicy } from 'contracts/policy'
 import { Link } from 'react-router-dom'
 import { withSnackbar, WithSnackbarProps } from 'notistack';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 type ITableToolbarProps = {
     title: string
@@ -224,12 +225,100 @@ class UserDeleteWarningDialog extends Component<{
     }
 }
 
+class ResetUserPasswordDialog extends Component<{
+    open: boolean
+    onClose: () => void,
+    onReset: () => Promise<void>
+}, {
+    isSubmittung: boolean
+    isSubmitSuccess: boolean
+}> {
+    constructor(props: any) {
+        super(props)
+
+        this.handleClose = this.handleClose.bind(this)
+
+        this.state = {
+            isSubmittung: false,
+            isSubmitSuccess: false
+        }
+    }
+
+    handleDelete() {
+        this.setState({ isSubmittung: true })
+        this.props.onReset().then(() => {
+            this.setState({ isSubmitSuccess: true })
+        }).finally(() => {
+            this.setState({ isSubmittung: false })
+        })
+    }
+
+    handleClose() {
+        this.props.onClose()
+        this.setState({ 
+            isSubmittung: false,
+            isSubmitSuccess: false
+        })
+    }
+
+    render() {
+        const {
+            open,
+        } = this.props
+        const {
+            isSubmittung,
+            isSubmitSuccess
+        } = this.state
+
+        return (
+            <Dialog
+                open={open}
+                onClose={this.handleClose}
+                TransitionComponent={Transition}
+                fullWidth
+            >
+                <DialogTitle>
+                    重設使用者密碼
+                </DialogTitle>
+                <DialogContent>
+                    {isSubmitSuccess ? (
+                        <Alert severity="success">
+                            <AlertTitle>重設使用者密碼成功</AlertTitle>
+                                請將下載之檔案交付給該名使用者，並避免洩漏以防盜用。
+                        </Alert>
+                    ) : (
+                        <DialogContentText>
+                            <b>系統將自行為使用者產生新密碼</b>，確定要執行重設密碼動作嗎？
+                        </DialogContentText>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="default" variant="contained">
+                        返回
+                    </Button>
+                    {isSubmitSuccess ? null : (
+                        <Button
+                            onClick={this.handleDelete.bind(this)}
+                            color="primary"
+                            variant="contained"
+                            disabled={isSubmittung}
+                        >
+                            重設
+                        </Button>
+                    )}
+                </DialogActions>
+            </Dialog>
+        )
+    }
+}
+
 type IUserTableProps = WithSnackbarProps & { 
     title: string
     users: IUser[]
     selectable: boolean
     onChange?: (users: IUser[]) => void
     onUserLoginableChange: (id: string | number, loginable: boolean) => Promise<void>
+    resetUserPassword: (id: string | number, name: string) => Promise<void>
     deleteUsers: (ids: string[] | number[]) => Promise<void>
 }
 
@@ -237,6 +326,7 @@ type IUserTableState = {
     selectedUsers: IUser[]
     userToDisplayPolicies: IUser | null
     userToUpdate: IUser | null
+    userToResetPassword: IUser | null
     openDeleteWarningDialog: boolean
 }
 
@@ -248,6 +338,7 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
             selectedUsers: [],
             userToDisplayPolicies: null,
             userToUpdate: null,
+            userToResetPassword: null,
             openDeleteWarningDialog: false
         }
     }
@@ -285,6 +376,13 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         })
     }
 
+    handleResetPwdBtnClick(event: React.MouseEvent<HTMLButtonElement>, user: IUser) { 
+        event.stopPropagation()
+        this.setState({
+            userToResetPassword: user
+        })
+    }
+
     handleEditUserBtnClick(event: React.MouseEvent<HTMLButtonElement>, user: IUser) { 
         event.stopPropagation()
         this.setState({
@@ -311,6 +409,17 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         })
     }
 
+    async handleResetUserPassword() {
+        const user = this.state.userToResetPassword
+
+        if (!user) return
+
+        await this.props.resetUserPassword(
+            user.id, 
+            user.identity ? user.identity.name : ''
+        )
+    }
+
     render() {
         const {
             title,
@@ -321,6 +430,7 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
             selectedUsers,
             userToDisplayPolicies,
             userToUpdate,
+            userToResetPassword,
             openDeleteWarningDialog
         } = this.state
 
@@ -429,6 +539,12 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                             </Button>
                                             <Button
                                                 color="primary"
+                                                onClick={event => this.handleResetPwdBtnClick(event, user)}
+                                            >
+                                                密碼重設
+                                            </Button>
+                                            <Button
+                                                color="primary"
                                                 onClick={event => this.handleEditUserBtnClick(event, user)}
                                             >
                                                 權限編輯
@@ -452,6 +568,12 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                 <UserPoliciesDialog 
                     user={userToDisplayPolicies}
                     onClose={() => this.setState({ userToDisplayPolicies: null })}
+                />
+
+                <ResetUserPasswordDialog 
+                    open={!!userToResetPassword}
+                    onClose={() => this.setState({ userToResetPassword: null })}
+                    onReset={this.handleResetUserPassword.bind(this)}
                 />
 
                 <UserEditDrawer 

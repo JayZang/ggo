@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 import IAMService from '@/services/IAMService'
+import mimiTypes from 'mime-types'
 import { CreateOrUpdateGroup, DeleteGroups, CreateUser, UpdateUserPolicies, DeleteUsers } from '../validators/iam'
 
 const router = Router()
@@ -69,7 +70,17 @@ export default (app: Router) => {
         if (!userProfileXlsx)
             return res.status(400).end()
 
-        res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-type', mimiTypes.extension('application/octet-stream') || '');
+        res.end(userProfileXlsx)
+    })
+
+    router.post('/users/:id/password', async (req: Request, res: Response) => {
+        const userProfileXlsx = await iamService.resetUserPassword(req.params.id)
+
+        if (!userProfileXlsx)
+            return res.status(400).end()
+
+        res.setHeader('Content-type', mimiTypes.extension('application/octet-stream') || '');
         res.end(userProfileXlsx)
     })
 

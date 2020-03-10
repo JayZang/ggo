@@ -153,11 +153,10 @@ export default class IAMService {
                 data.identity_id
             )
 
-            const password = makeRandomString(10)
-            const hashedPassword = bcryptjs.hashSync(
+            const [
                 password,
-                bcryptjs.genSaltSync(10)
-            )
+                hashedPassword
+            ] = this.generatePassword()
             const user =  userRepo.create({
                 account_id: data.account_id || identity.email,
                 password: hashedPassword,
@@ -253,6 +252,44 @@ export default class IAMService {
             console.log('Delete iam uers error')
             return null
         }
+    }
+
+    /**
+     * Reset user password
+     */
+    public async resetUserPassword(id: number | string) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            const user = await userRepo.findOneOrFail(id)
+            const identity = await this.getIdentity(user.identity_type, user.identity_id)
+            const [
+                password,
+                hashedPassword
+            ] = this.generatePassword()
+            user.password = hashedPassword
+            await userRepo.save(user)
+            return this.buildUserProfileXlsx(identity.name, user, password)
+        } catch (err) {
+            console.log(err)
+            console.log('Reset user password error')
+            return null
+        }
+    }
+
+    /**
+     *Generate password (pure and hashed)
+     */
+    private generatePassword(): [string, string] {
+        const password = makeRandomString(10)
+        const hashedPassword = bcryptjs.hashSync(
+            password,
+            bcryptjs.genSaltSync(10)
+        )
+
+        return [
+            password,
+            hashedPassword
+        ]
     }
 
     /**

@@ -143,9 +143,9 @@ class MemberItem extends Component<IProps, IState> {
                     </Typography>
 
                     <Typography className={clsx(classes.birthday, classes.field)} component="div">
-                        {member.birthday.format('YYYY-MM-DD')}
+                        {member.isUser ? '是' : '否'}
                         <Box className={classes.fieldHint}>
-                            生日
+                            使用者
                         </Box>
                     </Typography>
 
