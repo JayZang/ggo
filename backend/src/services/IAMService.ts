@@ -1,5 +1,5 @@
 import { getCustomRepository, Not } from 'typeorm'
-import { Service } from 'typedi'
+import Container, { Service } from 'typedi'
 import bcryptjs from 'bcryptjs'
 import _ from 'lodash'
 import xlsx from 'node-xlsx'
@@ -11,6 +11,9 @@ import User, { UserIdentityType } from '@/entity/User'
 import MemberRepo from '@/repository/MemberRepository'
 import { makeRandomString } from '@/utils/makeRandomString'
 import moment from 'moment'
+import AuthService from './AuthService'
+
+const authService = Container.get(AuthService)
 
 @Service()
 export default class IAMService {
@@ -187,6 +190,10 @@ export default class IAMService {
                 }
             })
             user.loginable = loginable
+
+            if (!loginable)
+                await authService.logoutUser(user.id)
+
             return userRepo.save(user)
         } catch (err) {
             console.log(err)
@@ -230,7 +237,8 @@ export default class IAMService {
             user.groups = groups
             user.identity = identity
 
-            return userRepo.save(user)
+            await authService.logoutUser(user.id)
+            return await userRepo.save(user)
         } catch (err) {
             console.log(err)
             console.log('Update user\'s policy and group error')
@@ -245,6 +253,9 @@ export default class IAMService {
         try {
             const userRepo = getCustomRepository(UserRepo)
             const users = await userRepo.findByIds(ids)
+            await Promise.all(
+                users.map(user => authService.logoutUser(user.id))
+            )
             await userRepo.remove(users)
             return users
         } catch (err) {
@@ -267,6 +278,7 @@ export default class IAMService {
                 hashedPassword
             ] = this.generatePassword()
             user.password = hashedPassword
+            await authService.logoutUser(user.id)
             await userRepo.save(user)
             return this.buildUserProfileXlsx(identity.name, user, password)
         } catch (err) {

@@ -25,6 +25,15 @@ export default (app: Router) => {
             res.status(401).end()
     })
 
+    router.post('/logout', async (req: Request, res: Response) => {
+        const token = req.header(jwtConfig.authHeaderName)
+
+        if (token)
+            await authService.logout(token, req.ip)
+
+        return res.end()
+    })
+
     router.get('/check', async (req: Request, res: Response) => {
         const token = req.header(jwtConfig.authHeaderName)
         const user = await authService.check(token, req.ip)

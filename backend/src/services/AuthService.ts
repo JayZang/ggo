@@ -36,6 +36,9 @@ export default class AuthService {
                 this.storeAuthToken(token, user.id)
             ])
 
+            // prevent the password send to client
+            user.password = undefined
+
             return {
                 user,
                 token
@@ -47,13 +50,36 @@ export default class AuthService {
     }
 
     /**
+     * Logout by token
+     */
+    public async logout(token: string, ip: string) {
+        try {
+            const payload = jwt.verify(token, ip || jwtConfig.secret) as User
+            return await this.removeTokenFromStorage(token, payload.id)
+        } catch {
+            return
+        }
+    }
+
+    /**
+     * Logout user
+     */
+    public async logoutUser(userId: string | number) {
+        try {
+            return await this.removeTokensByUser(userId)
+        } catch {
+            return
+        }
+    }
+
+    /**
      * Verify auth token 
      */
     public async check(token: string, ip: string) {
         try {
             const payload = jwt.verify(token, ip || jwtConfig.secret) as User
 
-            if (!await this.isAuthTokenInStorage(token))
+            if (!await this.isTokenInStorage(token))
                 return null
 
             const userRepo = getCustomRepository(UserRepo)
@@ -83,11 +109,35 @@ export default class AuthService {
         })
     }
 
-    private isAuthTokenInStorage(token: string): Promise<boolean> {
+    private isTokenInStorage(token: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             redisClient.get(`auth-token:${token}`, (err, userId) => {
                 if (err) reject(err)
                 resolve(!!userId)
+            })
+        })
+    }
+
+    private removeTokenFromStorage(token: string, userId: string | number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            redisClient.del(`auth-token:${token}`, `user-id-and-token:${userId}:${token}`, () => {
+                resolve()
+            })
+        })
+    }
+
+    private removeTokensByUser(userId: string | number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            redisClient.keys(`user-id-and-token:${userId}:*`, (err, keys) => {
+                if (err) reject(err)
+                const tokenKeys = keys.map(key => {
+                    const token = key.split(`user-id-and-token:${userId}:`)[1]
+                    return `auth-token:${token}`
+                })
+                redisClient.del(...keys, ...tokenKeys, _err => {
+                    if (_err) reject(err)
+                    resolve()
+                })
             })
         })
     }
