@@ -68,6 +68,8 @@ export default class User {
     identity?: Member
 
     total_policies?: Policy[]
+
+    permissions?: string[]
 }
 
 export enum UserIdentityType {

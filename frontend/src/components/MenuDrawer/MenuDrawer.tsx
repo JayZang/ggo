@@ -20,10 +20,14 @@ import clsx from 'clsx';
 
 import styles from './styles';
 import TaskManagementListItem from './TaskManagementListItem'
+import { Permissions } from 'contracts/user';
+import { Box } from '@material-ui/core';
 
 interface IProps extends WithStyles<typeof styles> {
     open: boolean,
     toggleDrawer: () => void
+    permissions: Permissions
+    isIAMAvailable: boolean
 }
 
 function MenuDrawer(props: IProps) {
@@ -32,7 +36,9 @@ function MenuDrawer(props: IProps) {
     const {
         classes,
         open,
-        toggleDrawer
+        toggleDrawer,
+        permissions,
+        isIAMAvailable
     } = props;
 
     function handleMenuItemClick() {
@@ -44,71 +50,95 @@ function MenuDrawer(props: IProps) {
             <div className={props.classes.toolbar}>
                 <Typography variant="h5" noWrap>
                     GGO Management
-        </Typography>
+                </Typography>
             </div>
             <Divider />
             <List>
-                <Link to="/members">
-                    <ListItem button onClick={handleMenuItemClick}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="成員管理" />
-                    </ListItem>
-                </Link>
-                <Link to="/teams">
-                    <ListItem button onClick={handleMenuItemClick}>
-                        <ListItemIcon>
-                            <GroupIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="團隊管理" />
-                    </ListItem>
-                </Link>
-                <Link to="/customers">
-                    <ListItem button onClick={handleMenuItemClick}>
-                        <ListItemIcon>
-                            <CustomerIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="客戶管理" />
-                    </ListItem>
-                </Link>
-                <Link to="/outsourcing">
-                    <ListItem button onClick={handleMenuItemClick}>
-                        <ListItemIcon>
-                            <HomeWorkIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="外包管理" />
-                    </ListItem>
-                </Link>
+                {permissions.member_management ? (
+                    <Link to="/members">
+                        <ListItem button onClick={handleMenuItemClick}>
+                            <ListItemIcon>
+                                <PersonIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="成員管理" />
+                        </ListItem>
+                    </Link>
+                ) : null}
+                
+                {permissions.team_management ? (
+                    <Link to="/teams">
+                        <ListItem button onClick={handleMenuItemClick}>
+                            <ListItemIcon>
+                                <GroupIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="團隊管理" />
+                        </ListItem>
+                    </Link>
+                ) : null}
+                
+                {permissions.team_management ? (
+                    <Link to="/customers">
+                        <ListItem button onClick={handleMenuItemClick}>
+                            <ListItemIcon>
+                                <CustomerIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="客戶管理" />
+                        </ListItem>
+                    </Link>
+                ) : null}
 
-                <Divider />
+                {null && (
+                    <Link to="/outsourcing">
+                        <ListItem button onClick={handleMenuItemClick}>
+                            <ListItemIcon>
+                                <HomeWorkIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="外包管理" />
+                        </ListItem>
+                    </Link>
+                )}
 
-                <ListItem button onClick={handleMenuItemClick}>
-                    <ListItemIcon>
-                        <MoneyIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="財務管理" />
-                </ListItem>
-                <Link to="/projects">
+                {permissions.project_management || permissions.task_management ? (
+                    <Divider />
+                ) : null}
+
+                {null && (
                     <ListItem button onClick={handleMenuItemClick}>
                         <ListItemIcon>
-                            <ProjectIcon />
+                            <MoneyIcon />
                         </ListItemIcon>
-                        <ListItemText primary="專案/案件管理" />
+                        <ListItemText primary="財務管理" />
                     </ListItem>
-                </Link>
-                <TaskManagementListItem />
+                )}
 
-                <Divider />
+                {permissions.project_management ? (
+                    <Link to="/projects">
+                        <ListItem button onClick={handleMenuItemClick}>
+                            <ListItemIcon>
+                                <ProjectIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="專案/案件管理" />
+                        </ListItem>
+                    </Link>
+                ) : null}
 
-                <Link to="/iam">
-                    <ListItem button onClick={handleMenuItemClick}>
-                        <ListItemIcon>
-                            <GavelIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="使用者與權限" />
-                    </ListItem>
-                </Link>
+                {permissions.task_management ? (
+                    <TaskManagementListItem />
+                ) : null}
+
+                {isIAMAvailable ? (
+                    <Box>
+                        <Divider />
+                        <Link to="/iam">
+                            <ListItem button onClick={handleMenuItemClick}>
+                                <ListItemIcon>
+                                    <GavelIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="使用者與權限" />
+                            </ListItem>
+                        </Link>
+                    </Box>
+                ) : null}
             </List>
         </div>
     );

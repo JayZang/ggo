@@ -35,8 +35,8 @@ class UserEditPanel extends Component<IProps, IState> {
 
         this.state = {
             activeStep: 0,
-            selectedGroups: props.user ? props.user.groups : [],
-            selectedPolicies: props.user ? props.user.policies : [],
+            selectedGroups: props.user && props.user.groups ? props.user.groups : [],
+            selectedPolicies: props.user && props.user.policies ? props.user.policies : [],
             isSubmitting: false
         }
     }

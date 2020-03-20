@@ -95,11 +95,11 @@ class UserPoliciesDialog extends Component<IUserPoliciesDialogProps, IUserPolici
 
         const policies: IPolicy[] = []
         
-        user.policies.forEach(_policy => {
+        user.policies && user.policies.forEach(_policy => {
             policies[_policy.id as any] = _policy
         })
 
-        user.groups.forEach(group => {
+        user.groups && user.groups.forEach(group => {
             group.policies.forEach(_policy => {
                 if (policies[_policy.id as any]) return 
                 policies[_policy.id as any] = _policy
@@ -145,13 +145,13 @@ class UserPoliciesDialog extends Component<IUserPoliciesDialogProps, IUserPolici
                     />
                 ) : (tabIndex === 1 ? (
                     <GroupTable 
-                        groups={user ? user.groups : []}
+                        groups={user && user.groups ? user.groups : []}
                         selectable={false}
                         editable={false}
                     />
                 ) : (
                     <PolicyTable 
-                        policies={user ? user.policies : []}
+                        policies={user && user.policies? user.policies : []}
                         selectable={false}
                     />
                 ))}

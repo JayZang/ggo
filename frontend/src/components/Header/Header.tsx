@@ -16,6 +16,7 @@ import HeaderSearchBar from './SearchBar';
 import HeaderMenuBtn from 'components/MenuDrawer/MenuBtn';
 import styles from './styles';
 import { appName } from 'utils/viewConfig'
+import { Link } from 'react-router-dom';
 
 interface IProps extends WithStyles<typeof styles> { 
     openLeftArea: boolean,
@@ -132,11 +133,10 @@ class Header extends Component<IProps, IStates> {
             [classes.leftArea]: true,
             open: this.props.openLeftArea
           })}>
-            <Typography className={classes.title} variant="h6" noWrap>
-              {appName}
-            </Typography>
-
-            <HeaderMenuBtn />
+                <Typography className={classes.title} variant="h6" noWrap>
+                    <Link to="/" >{appName}</Link>
+                </Typography>
+                <HeaderMenuBtn />
           </div>
 
           <HeaderSearchBar />

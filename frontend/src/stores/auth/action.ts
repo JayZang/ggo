@@ -5,6 +5,7 @@ import { AuthActionTypes, LOGIN, LOGOUT } from "./types";
 import { authTokenName } from 'config/httpHeader'
 import { authTokenKeyName } from 'config/localStorage'
 import axios from "axios";
+import { regularizeUserData } from "stores/iam/utils";
 
 // axios request interceptor
 let interceptorOfInsertTokenToHeader:number | null = null
@@ -16,7 +17,8 @@ export const login = (account_id: string, password: string) => async (dispatch: 
     const action: AuthActionTypes = {
         type: LOGIN,
         payload: {
-            token: res.headers[authTokenName]
+            token: res.headers[authTokenName],
+            user: regularizeUserData(res.data)
         }
     }
 
@@ -25,13 +27,20 @@ export const login = (account_id: string, password: string) => async (dispatch: 
     dispatch(action)
 }
 
-export const logout = () => {
+export const logout = () => async (dispatch: Dispatch) => {
+    const token = localStorage.getItem(authTokenKeyName)
+
+    if (!token) return
+
+    await authApi.logout(token)
+    
     localStorage.removeItem(authTokenKeyName)
     interceptorOfInsertTokenToHeader !== null && axios.interceptors.request.eject(interceptorOfInsertTokenToHeader)
     const action: AuthActionTypes = {
         type: LOGOUT,
     }
-    return action
+
+    dispatch(action)
 }
 
 export const checkAuthToken = () => async (dispatch: Dispatch) => {
@@ -43,7 +52,8 @@ export const checkAuthToken = () => async (dispatch: Dispatch) => {
         const action: AuthActionTypes = {
             type: LOGIN,
             payload: {
-                token:  res.headers[authTokenName]
+                token:  res.headers[authTokenName],
+                user: regularizeUserData(res.data)
             }
         }
     

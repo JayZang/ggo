@@ -25,9 +25,13 @@ export function regularizeUserData(data: any): IUser {
         create_at: moment(data.create_at),
         update_at: moment(data.update_at),
         last_login_datetime: data.last_login_datetime && moment(data.update_at),
-        policies: data.policies.map((policy: IPolicy) => regularizePolicyData(policy)),
-        groups: data.groups.map((group: IGroup) => regularizeGroupData(group)),
-        identity: data.identity_type === UserIdentityType.member ?
-            regularizeMemberData(data.identity) : undefined
+        policies: data.policies && data.policies.map((policy: IPolicy) => regularizePolicyData(policy)),
+        groups: data.groups && data.groups.map((group: IGroup) => regularizeGroupData(group)),
+        identity: data.identity && data.identity_type === UserIdentityType.member ?
+            regularizeMemberData(data.identity) : undefined,
+        permissions: data.permissions && data.permissions.reduce((obj: any, permission: string) => {
+            obj[permission as any] = true
+            return obj
+        }, {})
     }
 }

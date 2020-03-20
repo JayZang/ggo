@@ -7,7 +7,9 @@ import _ from 'lodash'
 import UserRepo from '@/repository/UserRepository'
 import { client as redisClient } from '@/loaders/redis'
 import { jwt as jwtConfig } from '@/config'
-import User from '@/entity/User'
+import User, { UserIdentityType } from '@/entity/User'
+import PolicyRepo from '@/repository/PolicyRepository'
+import Policy from '@/entity/Policy'
 
 @Service()
 export default class AuthService {
@@ -20,24 +22,27 @@ export default class AuthService {
             const userRepo = getCustomRepository(UserRepo)
             const user = await userRepo.createQueryBuilder('user')
                 .addSelect('user.password')
-                .where({
-                    account_id,
-                    loginable: true
-                })
+                .where({ account_id, loginable: true })
+                .leftJoinAndSelect('user.policies', 'policies')
+                .leftJoinAndSelect('user.groups', 'groups')
+                .leftJoinAndSelect('groups.policies', 'groupPolicies')
                 .getOne()
-
+                
             if (!user || !bcryptjs.compareSync(password, user.password))
                 return {}
 
-            const token = this.generateAuthToken(user, ip)
             user.last_login_datetime = new Date
             await Promise.all([
                 userRepo.save(user),
-                this.storeAuthToken(token, user.id)
+                userRepo.attachIdentity([user]),
+                this.attachPermissions(user)
             ])
 
             // prevent the password send to client
             user.password = undefined
+
+            const token = this.generateAuthToken(user, ip)
+            await this.storeAuthToken(token, user.id)
 
             return {
                 user,
@@ -83,10 +88,37 @@ export default class AuthService {
                 return null
 
             const userRepo = getCustomRepository(UserRepo)
-            return await userRepo.findOneOrFail(payload.id)
+            const user = await userRepo.findOneOrFail(payload.id, {
+                relations: ['policies', 'groups', 'groups.policies']
+            })
+            await Promise.all([
+                userRepo.attachIdentity([user]),
+                this.attachPermissions(user)
+            ])
+            return user
         } catch {
             return null
         }
+    }
+
+    private async attachPermissions(user: User) {
+        let policies: Policy[] = []
+
+        if (user.identity_type === UserIdentityType.admin) {
+            const policyRepo = getCustomRepository(PolicyRepo)
+            policies = await policyRepo.find()
+        } else {
+            policies = user.policies
+            user.groups.forEach(group => {
+                group.policies.forEach(_policy => {
+                    if (policies.findIndex(policy => policy.id === _policy.id) === -1)
+                        policies.push(_policy)
+                })
+            })
+        }
+
+        user.permissions = policies.map(policy => policy.variable_name)
+        return user
     }
 
     private generateAuthToken(user: User, ip?: string) {

@@ -13,9 +13,10 @@ export type IUser = {
     create_at: Moment
     update_at: Moment
     last_login_datetime: Moment | null
-    groups: IGroup[]
-    policies: IPolicy[]
+    groups?: IGroup[]
+    policies?: IPolicy[]
     identity?: IMember
+    permissions?: Permissions
 }
 
 export enum UserIdentityType {
@@ -24,3 +25,12 @@ export enum UserIdentityType {
     customer = 2,
     outsourcing = 3
 }
+
+export type Permissions = Record<PermissionsList, boolean | undefined>
+
+type PermissionsList =
+    'member_management' |
+    'team_management' |
+    'customer_management' |
+    'project_management' |
+    'task_management'
