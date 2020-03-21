@@ -16,6 +16,7 @@ import ProjectIcon from '@material-ui/icons/BusinessCenter';
 import GavelIcon from '@material-ui/icons/Gavel';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import MoneyIcon from '@material-ui/icons/LocalAtm';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import clsx from 'clsx';
 
 import styles from './styles';
@@ -54,6 +55,21 @@ function MenuDrawer(props: IProps) {
             </div>
             <Divider />
             <List>
+                <Link to="/dashboard">
+                    <ListItem button onClick={handleMenuItemClick}>
+                        <ListItemIcon>
+                            <DashboardIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="儀表板" />
+                    </ListItem>
+                </Link>
+
+                {permissions.member_management || 
+                permissions.team_management || 
+                permissions.customer_management ? (
+                    <Divider />
+                ) : null}
+
                 {permissions.member_management ? (
                     <Link to="/members">
                         <ListItem button onClick={handleMenuItemClick}>
@@ -76,7 +92,7 @@ function MenuDrawer(props: IProps) {
                     </Link>
                 ) : null}
                 
-                {permissions.team_management ? (
+                {permissions.customer_management ? (
                     <Link to="/customers">
                         <ListItem button onClick={handleMenuItemClick}>
                             <ListItemIcon>

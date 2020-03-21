@@ -3,6 +3,7 @@ import { withStyles, WithStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 
 import styles from './styles'
+import DashboardPage from 'pages/Dashboard'
 import MemberPage from 'pages/Members'
 import TeamPage from 'pages/Teams'
 import CustomerPage from 'pages/Customer'
@@ -25,6 +26,7 @@ class ContentWrapper extends Component<IProps> {
                 'drawer-open': this.props.isLeftDrawerOpen
             })}>
                 <div className={classes.wrapper}>
+                    <DashboardPage />
                     <MemberPage />
                     <TeamPage />
                     <CustomerPage />
