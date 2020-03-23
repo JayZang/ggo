@@ -59,7 +59,7 @@ class TaskRepository extends Repository<Task> {
         take: number,
     } = {skip: 0, take: 10}) {
         return this.createQueryBuilder('task')
-            .innerJoinAndMapMany(
+            .innerJoinAndMapOne(
                 'task.assignment', 
                 TaskAssignment, 
                 'taskAssignment', 

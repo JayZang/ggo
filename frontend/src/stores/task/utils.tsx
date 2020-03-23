@@ -52,8 +52,8 @@ export function regularizeTaskAssignmentData(data: any): ITaskAssignment {
     return {
         ...data,
         distributor: data.distributor && regularizeMemberData(data.distributor),
-        target: data.type === TaskAssignType.Member ? regularizeMemberData(data.target) :
+        target: data.target && (data.type === TaskAssignType.Member ? regularizeMemberData(data.target) :
             data.type === TaskAssignType.Team ? regularizeTeamData(data.target) :
-            data.type === TaskAssignType.Outsourcing ? null : null
+            data.type === TaskAssignType.Outsourcing ? null : null)
     }
 }

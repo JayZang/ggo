@@ -1,26 +1,14 @@
 import React, { Component } from 'react'
-import { Route } from 'react-router'
-import { Box } from '@material-ui/core'
-import AppContent from 'pages/App/Content'
-import MobileHeader from 'components/MobileHeader'
+import { Route, Switch } from 'react-router'
 
-import ProjectAndTaskScheduler from 'components/Scheduler/ProjectAndTaskScheduler'
+import DashboardMain from './Main'
 
 export default class DashboardPage extends Component {
     render() {
         return (
-            <Route  exact path="/dashboard">
-                <AppContent
-                    mobileHeader={(
-                        <MobileHeader
-                            title="儀表板"
-                            defaultHidden={false}
-                        />
-                    )}
-                >
-                    <ProjectAndTaskScheduler />
-                </AppContent>
-            </Route>
+            <Switch>
+                <Route  exact path="/dashboard" component={DashboardMain} />
+            </Switch>
         )
     }
 }

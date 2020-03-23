@@ -25,7 +25,7 @@ export type ITaskAssignment = {
     distributor_id: number | string
     type: TaskAssignType,
     distributor?: IMember,
-    target: IMember | ITeam
+    target?: IMember | ITeam
 }
 
 export enum TaskStatus {

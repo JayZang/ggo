@@ -36,7 +36,7 @@ export default (app: Router) => {
 
     router.get('/check', async (req: Request, res: Response) => {
         const token = req.header(jwtConfig.authHeaderName)
-        const user = await authService.check(token, req.ip)
+        const user = req.user
 
         return user ?
             res.header(jwtConfig.authHeaderName, token).json(user) :

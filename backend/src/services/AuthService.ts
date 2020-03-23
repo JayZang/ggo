@@ -59,7 +59,10 @@ export default class AuthService {
      */
     public async logout(token: string, ip: string) {
         try {
-            const payload = jwt.verify(token, ip || jwtConfig.secret) as User
+            const payload = await this.verifyAuthToken(token, ip)
+
+            if (!payload) return
+
             return await this.removeTokenFromStorage(token, payload.id)
         } catch {
             return
@@ -74,30 +77,6 @@ export default class AuthService {
             return await this.removeTokensByUser(userId)
         } catch {
             return
-        }
-    }
-
-    /**
-     * Verify auth token 
-     */
-    public async check(token: string, ip: string) {
-        try {
-            const payload = jwt.verify(token, ip || jwtConfig.secret) as User
-
-            if (!await this.isTokenInStorage(token))
-                return null
-
-            const userRepo = getCustomRepository(UserRepo)
-            const user = await userRepo.findOneOrFail(payload.id, {
-                relations: ['policies', 'groups', 'groups.policies']
-            })
-            await Promise.all([
-                userRepo.attachIdentity([user]),
-                this.attachPermissions(user)
-            ])
-            return user
-        } catch {
-            return null
         }
     }
 
@@ -119,6 +98,19 @@ export default class AuthService {
 
         user.permissions = policies.map(policy => policy.variable_name)
         return user
+    }
+
+    public async verifyAuthToken(token: string, ip: string): Promise<User | null> {
+        try {
+            const payload = jwt.verify(token, ip || jwtConfig.secret) as User
+
+            if (!await this.isTokenInStorage(token))
+                return null
+
+            return payload
+        } catch {
+            return null
+        }
     }
 
     private generateAuthToken(user: User, ip?: string) {

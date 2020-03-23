@@ -4,6 +4,7 @@ import { loadingBarReducer } from 'react-redux-loading-bar'
 import reduxThunk from 'redux-thunk'
 
 import viewReducer from './view/reducer'
+import dashboardReducer from './dashboard/reducer'
 import authReducer from './auth/reducer'
 import iamReducer from './iam/reducer'
 import memberReducer from './member/reducers'
@@ -14,6 +15,7 @@ import taskReducer from './task/reducer'
 
 const rootReducer = combineReducers({
   view: viewReducer,
+  dashboard: dashboardReducer,
   auth: authReducer,
   iam: iamReducer,
   member: memberReducer,
