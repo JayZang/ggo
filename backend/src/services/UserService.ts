@@ -29,7 +29,7 @@ export default class UserService {
             switch (user.identity_type) {
                 case UserIdentityType.admin:
                     tasksAndCount = await taskRepo.findAndCount({ 
-                        relations: ['assignment'],
+                        relations: ['assignment', 'project'],
                         ...option
                     })
                     await taskRepo.attachTasksAssignment(tasksAndCount[0])

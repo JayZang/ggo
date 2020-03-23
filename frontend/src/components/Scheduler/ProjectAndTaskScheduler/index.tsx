@@ -15,20 +15,30 @@ import {
 import { Paper } from '@material-ui/core';
 
 import CustomViewSwitcher from 'components/Scheduler/CustomComponent/CustomViewSwitcher'
+import TaskAppointmentToolTip from 'components/Scheduler/CustomComponent/TaskAppointmentToolTip'
 import { IProject } from 'contracts/project';
 import { ITask } from 'contracts/task';
 
 type IProps = {
     projects?: IProject[]
-    tasks?: ITask[]
+    tasks: ITask[]
 }
 
 class ProjectAndTaskScheduler extends Component<IProps> {
     render() {
+        const {
+            tasks
+        } = this.props
+
         return (
             <Paper>
                 <Scheduler
-                    // data={(this.state as any).data}
+                    data={tasks.map(task => ({
+                        title: task.name,
+                        startDate: task.start_datetime.toDate(),
+                        endDate: task.deadline_datetime.toDate(),
+                        task
+                    }))}
                 >
                     <ViewState />
 
@@ -47,7 +57,8 @@ class ProjectAndTaskScheduler extends Component<IProps> {
                     />
                     {/* <EditRecurrenceMenu /> */}
                     <Appointments />
-                    <AppointmentTooltip />
+                    <TaskAppointmentToolTip />
+                    {/* <AppointmentTooltip /> */}
                     {/* <DragDropProvider /> */}
                 </Scheduler>
             </Paper>
