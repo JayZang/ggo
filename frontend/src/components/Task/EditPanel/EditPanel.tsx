@@ -80,7 +80,7 @@ type Fields = {
     description?: string
     start_datetime?: Moment
     deadline_datetime?: Moment
-    remarks?: string,
+    remark?: string,
     assign_type: TaskAssignType,
     assign_id?: string | number
 }
@@ -108,7 +108,7 @@ class TaskEditPanel extends Component<IProps, IState> {
                 description: undefined,
                 start_datetime: undefined,
                 deadline_datetime: undefined,
-                remarks: undefined,
+                remark: undefined,
                 assign_type: TaskAssignType.Member,
                 assign_id: undefined
             },
@@ -117,7 +117,7 @@ class TaskEditPanel extends Component<IProps, IState> {
                 description: '',
                 start_datetime: '',
                 deadline_datetime: '',
-                remarks: '',
+                remark: '',
                 assign_type: '',
                 assign_id: ''
             },
@@ -340,9 +340,9 @@ class TaskEditPanel extends Component<IProps, IState> {
                 <FieldItem
                     label="備註"
                     multiline
-                    value={fields.remarks}
-                    hint={errors.remarks}
-                    onChange={this.handleTextFieldChange.bind(this, 'remarks')}
+                    value={fields.remark}
+                    hint={errors.remark}
+                    onChange={this.handleTextFieldChange.bind(this, 'remark')}
                 />
 
                 <Grid item>

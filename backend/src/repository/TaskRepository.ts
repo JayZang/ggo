@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, getCustomRepository } from 'typeorm'
+import { EntityRepository, Repository, getCustomRepository, In } from 'typeorm'
 import _ from 'lodash'
 
 import Task, { TaskStatus } from '@/entity/Task'
@@ -6,9 +6,10 @@ import TaskAssignment, { TaskAssignmentType } from '@/entity/TaskAssignment'
 import MemberRepo from './MemberRepository'
 import TeamRepo from './TeamRepository'
 import Project from '@/entity/Project'
+import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Task)
-class TaskRepository extends Repository<Task> {
+class TaskRepository extends BaseRepository<Task> {
     
     /**
      * Insert one Project
@@ -126,6 +127,23 @@ class TaskRepository extends Repository<Task> {
         })
 
         return tasks
+    }
+
+    public withAssignmentRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.assignment`, 'taskAssignment')
+        return this
+    }
+
+    public withProjectRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.project`, 'project')
+        return this
+    }
+
+    public withStatusCondition(status: TaskStatus[]) {
+        this.queryBuilder.where({
+            status: In(status)
+        })
+        return this
     }
 }
 

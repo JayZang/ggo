@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
 import { WithStyles, createStyles, withStyles } from '@material-ui/styles'
-import { Theme, Box, Typography, Paper, Divider } from '@material-ui/core'
+import { Theme, Box, Typography, Paper, Divider, IconButton } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
+
 import { ITask } from 'contracts/task'
+import TaskDetailDialog from 'components/Dashboard/TaskDetailDialog'
 
 const styles = (theme: Theme) => createStyles({
     remarkWrapper: {
@@ -15,6 +18,52 @@ const styles = (theme: Theme) => createStyles({
     }
 })
 
+class _Header extends Component<AppointmentTooltip.HeaderProps & WithStyles<typeof styles>, {
+    displayDetailDialog: boolean
+}> {
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            displayDetailDialog: false
+        }
+    }
+
+    render() {
+        const {
+            classes,
+            appointmentData,
+            ...restProps
+        } = this.props
+        const {
+            displayDetailDialog
+        } = this.state
+        const task = appointmentData!.task as ITask
+
+        return (
+            <AppointmentTooltip.Header
+                {...restProps}
+                appointmentData={appointmentData}
+            >
+                <IconButton
+                    onClick={() => this.setState({
+                        displayDetailDialog: true
+                    })}
+                >
+                    <SearchIcon />
+                </IconButton>
+
+                <TaskDetailDialog 
+                    task={displayDetailDialog ? task : null} 
+                    onClose={() => this.setState({ 
+                        displayDetailDialog: false
+                    })}
+                />
+            </AppointmentTooltip.Header>
+        )
+    }
+}
+
 class _Content extends Component<AppointmentTooltip.ContentProps & WithStyles<typeof styles>> {
     render() {
         const {
@@ -26,11 +75,13 @@ class _Content extends Component<AppointmentTooltip.ContentProps & WithStyles<ty
 
         return (
             <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
-                <Typography className={classes.remarkWrapper} component="div">
-                    <Box minHeight={60} whiteSpace="pre">
-                        { task.description}
-                    </Box>
-                </Typography>
+                { task.description ? (
+                    <Typography className={classes.remarkWrapper} component="div">
+                        <Box minHeight={60} whiteSpace="pre">
+                            { task.description}
+                        </Box>
+                    </Typography>
+                ) : null }
                 <Paper className="mt-2 p-3">
                     <Typography component="div">
                         <Box className="mr-2" color="text.hint" fontSize={14}>所屬專案</Box>
@@ -42,13 +93,16 @@ class _Content extends Component<AppointmentTooltip.ContentProps & WithStyles<ty
     }
 }
 
+const Header = withStyles(styles)(_Header)
 const Content = withStyles(styles)(_Content)
 
 export default class TaskAppointmentToolTip extends  Component {
     render() {
         return (
             <AppointmentTooltip
+                headerComponent={Header}
                 contentComponent={Content}
+                showCloseButton
             />
         )
     }

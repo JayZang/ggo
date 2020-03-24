@@ -11,16 +11,10 @@ export default (app: Router) => {
     app.use('/user', validateIsAuth, router)
 
     router.get('/tasks', async (req: Request, res: Response) => {
-        const tasksAndCount = await userService.getTasks(req.user, {
-            skip: req.query.offset || 0,
-            take: req.query.count || 10
-        })
+        const tasks = await userService.getTasks(req.user)
 
-        return tasksAndCount ?
-            res.json({
-                tasks: tasksAndCount[0],
-                count: tasksAndCount[1]
-            }) :
+        return tasks ?
+            res.json(tasks) :
             res.status(400).end()
     })
 }

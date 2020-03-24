@@ -10,6 +10,7 @@ export  type ITask = {
     start_datetime: Moment
     deadline_datetime: Moment
     finish_datetime: Moment | null
+    remark: string | null,
     status: TaskStatus
     project_id: number
     project?: IProject | null

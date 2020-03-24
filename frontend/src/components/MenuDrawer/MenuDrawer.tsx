@@ -60,7 +60,7 @@ function MenuDrawer(props: IProps) {
                         <ListItemIcon>
                             <DashboardIcon />
                         </ListItemIcon>
-                        <ListItemText primary="儀表板" />
+                        <ListItemText primary="資料面板" />
                     </ListItem>
                 </Link>
 

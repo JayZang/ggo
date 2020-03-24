@@ -1,10 +1,7 @@
 import { DashboardState, DashboardActionType, GET_TASKS } from "./types"
 
 const initState: DashboardState = {
-    taskList: {
-        list: null,
-        count: 0
-    }
+    tasks: null
 }
 
 export default function dashboardReducer(state: DashboardState = initState, action: DashboardActionType): DashboardState {
@@ -12,10 +9,7 @@ export default function dashboardReducer(state: DashboardState = initState, acti
         case GET_TASKS:
             return {
                 ...state,
-                taskList: {
-                    list: action.payload.tasks,
-                    count: action.payload.count
-                }
+                tasks: action.payload.tasks
             }
 
         default:

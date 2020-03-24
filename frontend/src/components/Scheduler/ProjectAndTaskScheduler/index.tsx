@@ -52,9 +52,9 @@ class ProjectAndTaskScheduler extends Component<IProps> {
                     <TodayButton messages={{
                         today: '今天'
                     }} />
-                    <ViewSwitcher 
+                    {/* <ViewSwitcher 
                         switcherComponent={CustomViewSwitcher}
-                    />
+                    /> */}
                     {/* <EditRecurrenceMenu /> */}
                     <Appointments />
                     <TaskAppointmentToolTip />

@@ -13,7 +13,19 @@ type IProps = {
     tasks: ITask[]
 }
 
-export default class DashboardMain extends Component<IProps> {
+type IState = {
+    listedTasks: ITask[]
+}
+
+export default class DashboardMain extends Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props)
+
+        this.state = {
+            listedTasks: props.tasks
+        }
+    }
+
     componentDidMount() {
         this.props.init()
     }
@@ -22,22 +34,30 @@ export default class DashboardMain extends Component<IProps> {
         const {
             tasks
         } = this.props
+        const {
+            listedTasks
+        } = this.state
 
         return (
             <AppContent
                 mobileHeader={(
                     <MobileHeader
-                        title="儀表板"
+                        title="資料面板"
                         defaultHidden={false}
                     />
                 )}
             >
                 <Grid container spacing={3}>
                     <Grid item xs={4}>
-                        <TaskList  tasks={tasks} />
+                        <TaskList  
+                            tasks={tasks}
+                            onListTasksChange={tasks => this.setState({
+                                listedTasks: tasks
+                            })}
+                        />
                     </Grid>
                     <Grid item xs={8}>
-                        <ProjectAndTaskScheduler tasks={tasks} />
+                        <ProjectAndTaskScheduler tasks={listedTasks} />
                     </Grid>
                 </Grid>
             </AppContent>
