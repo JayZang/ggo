@@ -64,7 +64,7 @@ export default class TaskList extends Component<IProps, IState> {
             <Paper>
                 <Box className="p-3 d-flex align-items-center">
                     <Typography variant="h6">
-                        任務列表
+                        進行中任務
                     </Typography>
                     <Box marginLeft="auto">
                         <Select
@@ -103,6 +103,9 @@ export default class TaskList extends Component<IProps, IState> {
                                 </ListItemSecondaryAction>
                             </ListItem>
                         ))}
+                        {listedTasks.length === 0 ? (
+                            <ListItem>無進行中任務</ListItem>
+                        ) : null}
                     </List>
                 </Box>
                 <TaskDetailDialog 

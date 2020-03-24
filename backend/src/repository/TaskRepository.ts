@@ -145,6 +145,16 @@ class TaskRepository extends BaseRepository<Task> {
         })
         return this
     }
+
+    public withAssignmentCondition(type: TaskAssignmentType, targetId: string | number) {
+        this.queryBuilder.innerJoinAndSelect(
+            `${this.entityAlias}.assignment`,
+            `taskAssignment`,
+            `taskAssignment.type = :type AND taskAssignment.target_id = :targetId`,
+            { type, targetId }
+        )
+        return this
+    }
 }
 
 export default TaskRepository

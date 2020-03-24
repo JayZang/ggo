@@ -6,14 +6,6 @@ export class BaseRepository<T> extends Repository<T> {
     protected CREATE_AT = 'create_at'
     protected UPDATE_AT = 'update_at'
 
-    constructor() {
-        super()
-    }
-
-    public setEntityAlias(alias: string) {
-        this.entityAlias = alias
-    }
-
     public initQueryBuilder() {
         this.refreshQueryBuilder()
         return this
@@ -24,7 +16,7 @@ export class BaseRepository<T> extends Repository<T> {
     }
 
     public getMany() {
-        return this.queryBuilder.getMany()
+        return this.queryBuilder.printSql().getMany()
     }
 
     public getOne() {

@@ -13,28 +13,34 @@ export default class UserService {
 
     /**
      * Get user's tasks
+     * only admin and member identity return tasks
      */
     public async getTasks(user: User) {
         try {
-            const taskRepo = getCustomRepository(TaskRepo)
+            const taskRepo = getCustomRepository(TaskRepo).initQueryBuilder()
 
-            let tasks: Task[]
+            let tasks: Task[] = []
 
-            switch (user.identity_type) {
-                case UserIdentityType.admin:
-                    tasks = await  taskRepo
-                        .initQueryBuilder()
-                        .withAssignmentRelation()
-                        .withProjectRelation()
-                        .withStatusCondition([TaskStatus.Normal, TaskStatus.Pause])
-                        .withCreateAtOrder('DESC')
-                        .getMany()
-                        .then(tasks => taskRepo.attachTasksAssignment(tasks))
-                    break
+            if ([
+                UserIdentityType.admin,
+                UserIdentityType.member
+            ].includes(user.identity_type)) {
+                switch (user.identity_type) {
+                    case UserIdentityType.admin:
+                        taskRepo.withAssignmentRelation()
+                        break
+    
+                    case UserIdentityType.member:
+                        taskRepo.withAssignmentCondition(TaskAssignmentType.Member, user.identity!.id)
+                        break
+                }
 
-                case UserIdentityType.member:
-                    [tasks] =  await taskRepo.getByAssignment(TaskAssignmentType.Member, user.identity!.id)
-                    break
+                tasks = await taskRepo
+                    .withProjectRelation()
+                    .withStatusCondition([TaskStatus.Normal, TaskStatus.Pause])
+                    .withCreateAtOrder('DESC')
+                    .getMany()
+                    .then(tasks => taskRepo.attachTasksAssignment(tasks))
             }
 
             return tasks
