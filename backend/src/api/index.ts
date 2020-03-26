@@ -8,7 +8,7 @@ import teamRouter from './routes/team'
 import customerRouter from './routes/customer'
 import projectRouter from './routes/project'
 import taskRouter from './routes/task'
-import userRouter from './routes/user'
+import dashboardRouter from './routes/dashboard'
 
 export default () => {
     const app = Router()
@@ -22,7 +22,7 @@ export default () => {
     customerRouter(app)
     projectRouter(app)
     taskRouter(app)
-    userRouter(app)
+    dashboardRouter(app)
 
     return app
 }

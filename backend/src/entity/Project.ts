@@ -61,9 +61,7 @@ export default class Project {
     @JoinColumn({ name: 'customer_id' })
     customer: Customer
 
-    @OneToMany(type => Task, task => task.project, {
-        lazy: true
-    })
+    @OneToMany(type => Task, task => task.project)
     tasks: Task[]
 }
 

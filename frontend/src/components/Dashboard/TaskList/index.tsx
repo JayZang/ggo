@@ -81,7 +81,7 @@ export default class TaskList extends Component<IProps, IState> {
                     </Box>
                 </Box>
                 <Divider />
-                <Box maxHeight={370} overflow="auto">
+                <Box maxHeight={300} overflow="auto">
                     <List>
                         {listedTasks.map(task => (
                             <ListItem key={task.id}>

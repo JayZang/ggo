@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const URL = '/api/user/tasks'
+const URL = '/api/dashboard/tasks'
 
 export function getTasks() {
     return axios.get<{

@@ -1,10 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm'
+import { EntityRepository, Not, IsNull } from 'typeorm'
 import _ from 'lodash'
 
 import Project from '@/entity/Project'
+import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Project)
-class ProjectRepository extends Repository<Project> {
+class ProjectRepository extends BaseRepository<Project> {
     
     /**
      * Insert one Project
@@ -51,6 +52,23 @@ class ProjectRepository extends Repository<Project> {
             'customer',
             'remark'
         ]))
+    }
+
+    public withFinishedCondition(isFinish: boolean) {
+        this.queryBuilder.where({
+            'finish_datetime': isFinish ? Not(null) : IsNull()
+        })
+        return this
+    }
+
+    public withTaskRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.tasks`, 'tasks')
+        return this
+    }
+
+    public withCustomerRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.customer`, 'customer')
+        return this
     }
 }
 

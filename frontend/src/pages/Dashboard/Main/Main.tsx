@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
-import { Route } from 'react-router'
-import { Box, Grid } from '@material-ui/core'
+import { Grid, Box } from '@material-ui/core'
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 
 import ProjectAndTaskScheduler from 'components/Scheduler/ProjectAndTaskScheduler'
 import TaskList from 'components/Dashboard/TaskList'
+import ProjectList from 'components/Dashboard/ProjectList'
 import { ITask } from 'contracts/task'
+import { IProject } from 'contracts/project'
+import { IUser } from 'contracts/user'
 
 type IProps = {
-    init: () => Promise<void>
+    init: (user: IUser) => Promise<void>
+    user: IUser | null
     tasks: ITask[]
+    projects: IProject[]
 }
 
 type IState = {
@@ -27,12 +31,16 @@ export default class DashboardMain extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.props.init()
+        if (!this.props.user)
+            return
+        this.props.init(this.props.user)
     }
 
     render() {
         const {
-            tasks
+            user,
+            tasks,
+            projects
         } = this.props
         const {
             listedTasks
@@ -49,6 +57,14 @@ export default class DashboardMain extends Component<IProps, IState> {
             >
                 <Grid container spacing={3}>
                     <Grid item xs={4}>
+                        {user && user.permissions && user.permissions.project_management ? (
+                            <Box marginBottom={3}>
+                                <ProjectList
+                                    projects={projects}
+                                />
+                            </Box>
+                        ) : null}
+
                         <TaskList  
                             tasks={tasks}
                             onListTasksChange={tasks => this.setState({
