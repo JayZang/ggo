@@ -4,6 +4,7 @@ import ProjectIcon from '@material-ui/icons/BusinessCenter';
 import SearchIcon from '@material-ui/icons/Search'
 
 import { IProject } from 'contracts/project';
+import ProjectDetailDialog from 'components/Dashboard/ProjectDetailDialog'
 
 type IProps = {
     projects: IProject[]
@@ -78,6 +79,13 @@ export default class ProjectList extends Component<IProps, IState> {
                         ) : null}
                     </List>
                 </Box>
+
+                <ProjectDetailDialog
+                    project={projectToDisplayDetail}
+                    onClose={() => this.setState({
+                        projectToDisplayDetail: null
+                    })}
+                />
             </Paper>
         )
     }

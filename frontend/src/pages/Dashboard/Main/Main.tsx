@@ -73,7 +73,7 @@ export default class DashboardMain extends Component<IProps, IState> {
                         />
                     </Grid>
                     <Grid item xs={8}>
-                        <ProjectAndTaskScheduler tasks={listedTasks} />
+                        <ProjectAndTaskScheduler tasks={listedTasks} projects={projects} />
                     </Grid>
                 </Grid>
             </AppContent>

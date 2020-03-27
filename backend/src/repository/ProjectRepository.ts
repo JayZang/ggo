@@ -62,7 +62,9 @@ class ProjectRepository extends BaseRepository<Project> {
     }
 
     public withTaskRelation() {
-        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.tasks`, 'tasks')
+        this.queryBuilder
+            .leftJoinAndSelect(`${this.entityAlias}.tasks`, 'tasks')
+            .leftJoinAndSelect('tasks.assignment', 'taskAssignment')
         return this
     }
 

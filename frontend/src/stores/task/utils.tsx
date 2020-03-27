@@ -15,7 +15,7 @@ export function regularizeTaskData(data: any): ITask {
         finish_datetime: data.finish_datetime ? moment(data.finish_datetime) : null,
         project: data.project && regularizeProjectData(data.project),
         create_at: moment(data.create_at),
-        assignment: regularizeTaskAssignmentData(data.assignment),
+        assignment: data.assignment && regularizeTaskAssignmentData(data.assignment),
         get statusLabel() {
             if (this.status === TaskStatus.Normal) {
                 return (

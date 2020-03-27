@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Grid, Paper, WithStyles, withStyles, Typography, Button } from '@material-ui/core'
+import { Link } from 'react-router-dom'
+import clsx from 'clsx'
 
 import styles from './style'
 import { IProject, ProjectSrcType } from 'contracts/project'
-import clsx from 'clsx'
-import { Link } from 'react-router-dom'
+import ProjectSourceLabel from 'components/Project/ProjectSourceLabel'
 
 type IProps = WithStyles<typeof styles> & {
     project: IProject
@@ -68,34 +69,10 @@ class ProjectItem extends Component<IProps> {
                         </Typography>
                     </Grid>
 
-                    <Grid item className={clsx(classes.fieldGrid, classes.fieldSrcType)}>
-                        {(() => {
-                            switch (project.source_type) {
-                                case ProjectSrcType.Internal:
-                                    return <Typography className="badge badge-primary shadow">內部專案</Typography>
-
-                                case ProjectSrcType.Customer:
-                                    if (!project.customer)
-                                        return <Typography className="badge badge-danger shadow">錯誤</Typography>
-                                    return (
-                                        <Grid container direction="row" alignItems="center" wrap="nowrap">
-                                            <Grid item className="mr-3">
-                                                <img src={project.customer!.logo} style={{ width: 48 }} />
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography>{ project.customer.company_name }</Typography>
-                                                <Typography className={classes.fieldHint}>
-                                                    { project.customer.contact } / { project.customer.phone }
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    )
-
-                                default:
-                                    return <Typography className="badge badge-danger shadow">錯誤</Typography>
-                            }
-                        })()}
-                    </Grid>
+                    <ProjectSourceLabel 
+                        className={classes.fieldSrcType}
+                        project={project}
+                    />
 
                     <Grid item className="d-flex align-items-center">
                         <Link to={`/projects/${project.id}`}>
