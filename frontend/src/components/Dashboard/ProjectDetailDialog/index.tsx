@@ -1,18 +1,30 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/styles'
-import { Dialog, DialogProps, Paper, DialogTitle, Box, DialogContent, Typography, Theme, createStyles, WithStyles, Grid, IconButton, DialogActions, Divider, Slide } from '@material-ui/core'
+import { Dialog, DialogProps, Paper, DialogTitle, Box, DialogContent, Typography, Theme, createStyles, WithStyles, Grid, IconButton, DialogActions, Divider, Slide, List, ListItem, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction } from '@material-ui/core'
 import SwipeableViews from 'react-swipeable-views';
 import EventNoteIcon from '@material-ui/icons/EventNote'
 import CloseIcon from '@material-ui/icons/Close'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import TaskIcon from '@material-ui/icons/Assignment';
+import clsx from 'clsx';
 
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import ProjectSourceLabel from 'components/Project/ProjectSourceLabel'
+import TaskStatusLabel from 'components/Task/StatusLabel'
 import { IProject } from 'contracts/project'
 import { TaskStatus } from 'contracts/task'
 
 const styles = (theme: Theme) => createStyles({
+    DialogRoot: {
+        '& .react-swipeable-view-container > div': {
+            transition: '.4s ease',
+            '&[aria-hidden="true"]': {
+                maxHeight: 1,
+                opacity: 0,
+            }
+        }
+    },
     remarkWrapper: {
         padding: theme.spacing(2),
         borderColor: theme.palette.grey[300],
@@ -54,6 +66,7 @@ class ProjectDetailDialog extends Component<IProps, IState> {
         const {
             project,
             classes,
+            className,
             ...restProps
         } = this.props
         const {
@@ -63,6 +76,7 @@ class ProjectDetailDialog extends Component<IProps, IState> {
         return (
             <Dialog
                 {...restProps}
+                className={clsx(className, classes.DialogRoot)}
                 open={Boolean(project)}
                 fullWidth
                 maxWidth="sm"
@@ -110,7 +124,7 @@ class ProjectDetailDialog extends Component<IProps, IState> {
 
                                 <Grid container spacing={2} className="mt-2">
                                     <Grid item xs={6}>
-                                        <Paper className="p-3">
+                                        <Paper className="p-3 h-100">
                                             <Box className="mb-1" color="text.hint" fontSize={14}>專案來源</Box>
                                             <ProjectSourceLabel project={project} />
                                         </Paper>
@@ -119,7 +133,7 @@ class ProjectDetailDialog extends Component<IProps, IState> {
                                         <Paper className="p-3 h-100">
                                             <Grid container>
                                                 <Grid item>
-                                                    <Box className="mb-1" color="text.hint" fontSize={14}>進行中專案</Box>
+                                                    <Box className="mb-1" color="text.hint" fontSize={14}>進行中任務</Box>
                                                     <Typography component="div" >
                                                         <Box fontSize={30}>
                                                             {project.tasks ? project.tasks.reduce((count, task) => {
@@ -151,12 +165,34 @@ class ProjectDetailDialog extends Component<IProps, IState> {
                                     </Paper>
                                 ) : null}
                             </DialogContent>
-                            <DialogContent style={{ minHeight: 600 }}>
-                                <Paper className="d-flex align-items-center p-1">
-                                    <IconButton onClick={() => this.setState({ displayTasks: false })}>
-                                        <ArrowBackIosIcon />
-                                    </IconButton>
-                                    <Typography variant="subtitle2" className="ml-1">進行中任務</Typography>
+                            <DialogContent>
+                                <Paper>
+                                    <Box className="d-flex align-items-center p-1">
+                                        <IconButton onClick={() => this.setState({ displayTasks: false })}>
+                                            <ArrowBackIosIcon />
+                                        </IconButton>
+                                        <Typography variant="subtitle2" className="ml-1">任務列表</Typography>
+                                    </Box>
+                                    <Divider className="mt-1" />
+                                    <List>
+                                        {project.tasks && project.tasks.map(task => (
+                                            <ListItem key={task.id}>
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <TaskIcon />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={task.name}
+                                                    secondary={`${task.start_datetime.format('YYYY-MM-DD')} ~ ${task.deadline_datetime.format('YYYY-MM-DD')}`}
+                                                />
+                                                <TaskStatusLabel task={task} />
+                                            </ListItem>
+                                        ))}
+                                        {project.tasks && project.tasks.length === 0 ? (
+                                            <ListItem>無進行中任務</ListItem>
+                                        ) : null}
+                                    </List>
                                 </Paper>
                             </DialogContent>
                         </SwipeableViews>
