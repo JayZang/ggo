@@ -9,10 +9,11 @@ import ContentWrapper from './ContentWrapper'
 import AuthPage from 'pages/Auth'
 import { Switch, Route, Redirect } from 'react-router'
 import { Box } from '@material-ui/core'
+import { IUser } from 'contracts/user'
 
 type IProps = {
     init: () => Promise<void>
-    isLogin: boolean
+    user: IUser | null
 }
 
 type IState = {
@@ -39,7 +40,7 @@ class App extends Component<IProps, IState> {
             initialed
         } = this.state
         const {
-            isLogin
+            user
         } = this.props
 
         return (
@@ -49,10 +50,10 @@ class App extends Component<IProps, IState> {
                 {(() => {
                     return initialed ? (
                         <Switch>
-                            <Route path="/auth" render={() => isLogin ? <Redirect to="/" /> : <AuthPage />} />
-                            <Route render={() => isLogin ? (
+                            <Route path="/auth" render={() => !!user ? <Redirect to="/" /> : <AuthPage />} />
+                            <Route render={() => user ? (
                                 <Box>
-                                    <Header />
+                                    <Header user={user} />
                                     <MenuDrawer />
                                     <ContentWrapper />
                                     <MobileBottomBar />

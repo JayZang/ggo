@@ -76,6 +76,7 @@ export default class DashboardMain extends Component<IProps, IState> {
 
                         <TaskList  
                             tasks={tasks}
+                            hiddenCheckbox={user && user.permissions && user.permissions.project_management ? false : true}
                             onListTasksChange={tasks => this.setState({
                                 listedTasks: tasks
                             })}

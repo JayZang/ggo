@@ -5,7 +5,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { checkAuthToken } from 'stores/auth/action';
 
 const mapStateToProps = (state: RootState) => ({
-    isLogin: !!state.auth.token
+    user: state.auth.user
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({

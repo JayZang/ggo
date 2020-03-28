@@ -21,7 +21,7 @@ import clsx from 'clsx';
 
 import styles from './styles';
 import TaskManagementListItem from './TaskManagementListItem'
-import { Permissions } from 'contracts/user';
+import { Permissions, IUser } from 'contracts/user';
 import { Box } from '@material-ui/core';
 
 interface IProps extends WithStyles<typeof styles> {

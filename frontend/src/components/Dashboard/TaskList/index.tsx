@@ -8,6 +8,7 @@ import TaskDetailDialog from 'components/Dashboard/TaskDetailDialog'
 
 type IProps = {
     tasks: ITask[]
+    hiddenCheckbox?: boolean
     onListTasksChange?: (tasks: ITask[]) => void
     onCheckBoxChange?: (checked: boolean) => void
 }
@@ -64,14 +65,16 @@ export default class TaskList extends Component<IProps, IState> {
         return (
             <Paper>
                 <Box className="p-3 d-flex align-items-center">
-                    <Checkbox
-                        className="p-0 mr-3"
-                        defaultChecked
-                        color="primary"
-                        onChange={(event, checked) => {
-                            this.props.onCheckBoxChange && this.props.onCheckBoxChange(checked)
-                        }}
-                    />
+                    {this.props.hiddenCheckbox ? null : (
+                        <Checkbox
+                            className="p-0 mr-3"
+                            defaultChecked
+                            color="primary"
+                            onChange={(event, checked) => {
+                                this.props.onCheckBoxChange && this.props.onCheckBoxChange(checked)
+                            }}
+                        />
+                    )}
                     <Typography variant="h6">
                         進行中任務
                     </Typography>
