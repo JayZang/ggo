@@ -18,7 +18,9 @@ type IProps = {
 }
 
 type IState = {
-    listedTasks: ITask[]
+    listedTasks: ITask[],
+    displayProjectInCalendar: boolean,
+    displayTaskInCalendar: boolean
 }
 
 export default class DashboardMain extends Component<IProps, IState> {
@@ -26,7 +28,9 @@ export default class DashboardMain extends Component<IProps, IState> {
         super(props)
 
         this.state = {
-            listedTasks: props.tasks
+            listedTasks: props.tasks,
+            displayProjectInCalendar: true,
+            displayTaskInCalendar: true
         }
     }
 
@@ -43,7 +47,9 @@ export default class DashboardMain extends Component<IProps, IState> {
             projects
         } = this.props
         const {
-            listedTasks
+            listedTasks,
+            displayProjectInCalendar,
+            displayTaskInCalendar
         } = this.state
 
         return (
@@ -61,6 +67,9 @@ export default class DashboardMain extends Component<IProps, IState> {
                             <Box marginBottom={3}>
                                 <ProjectList
                                     projects={projects}
+                                    onCheckBoxChange={checked => this.setState({
+                                        displayProjectInCalendar: checked
+                                    })}
                                 />
                             </Box>
                         ) : null}
@@ -70,10 +79,16 @@ export default class DashboardMain extends Component<IProps, IState> {
                             onListTasksChange={tasks => this.setState({
                                 listedTasks: tasks
                             })}
+                            onCheckBoxChange={checked => this.setState({
+                                displayTaskInCalendar: checked
+                            })}
                         />
                     </Grid>
                     <Grid item xs={8}>
-                        <ProjectAndTaskScheduler tasks={listedTasks} projects={projects} />
+                        <ProjectAndTaskScheduler 
+                            tasks={displayTaskInCalendar ? listedTasks : [] } 
+                            projects={displayProjectInCalendar ? projects : [] } 
+                        />
                     </Grid>
                 </Grid>
             </AppContent>

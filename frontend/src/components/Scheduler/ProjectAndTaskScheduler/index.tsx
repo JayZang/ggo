@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ViewState, EditingState, ChangeSet } from '@devexpress/dx-react-scheduler'
+import { ViewState, EditingState, ChangeSet, Resource } from '@devexpress/dx-react-scheduler'
 import { 
     Scheduler, 
     MonthView, 
@@ -11,40 +11,71 @@ import {
     DateNavigator,
     TodayButton,
     AppointmentTooltip,
+    Resources,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { Paper } from '@material-ui/core';
 
 import CustomViewSwitcher from 'components/Scheduler/CustomComponent/CustomViewSwitcher'
-import TaskAppointmentToolTip from 'components/Scheduler/CustomComponent/TaskAppointmentToolTip'
+import AppointmentToolTip from 'components/Scheduler/CustomComponent/AppointmentToolTip'
 import { IProject } from 'contracts/project';
 import { ITask } from 'contracts/task';
+import { green, blue } from '@material-ui/core/colors';
 
 type IProps = {
-    projects?: IProject[]
+    projects: IProject[]
     tasks: ITask[]
 }
 
-class ProjectAndTaskScheduler extends Component<IProps> {
-    render() {
-        const {
-            tasks
-        } = this.props
+export const AppointmentCategoryFieldName = 'category'
+export enum AppointmentCategory {
+    project = 'project',
+    task = 'task'
+}
 
+class ProjectAndTaskScheduler extends Component<IProps> {
+    resources: Resource[] = [{
+        fieldName: AppointmentCategoryFieldName,
+        title: 'Catrgory',
+        instances: [
+            { id: AppointmentCategory.project, text: '專案', color: blue },
+            { id: AppointmentCategory.task, text: '工作任務', color: green }
+        ]
+    }]
+
+    getTaskData() {
+        return this.props.tasks.map(task => ({
+            title: task.name,
+            startDate: task.start_datetime.toDate(),
+            endDate: task.deadline_datetime.toDate(),
+            category: AppointmentCategory.task,
+            task,
+        }))
+    }
+
+    getProjectData() {
+        return this.props.projects.map(project => ({
+            title: project.name,
+            startDate: project.start_datetime.toDate(),
+            endDate: project.deadline_datetime.toDate(),
+            category: AppointmentCategory.project,
+            project,
+        }))
+    }
+
+    render() {
         return (
             <Paper>
                 <Scheduler
-                    data={tasks.map(task => ({
-                        title: task.name,
-                        startDate: task.start_datetime.toDate(),
-                        endDate: task.deadline_datetime.toDate(),
-                        task
-                    }))}
+                    data={[
+                        ...this.getTaskData(),
+                        ...this.getProjectData()
+                    ]}
                 >
                     <ViewState />
 
                     <MonthView />
-                    <WeekView />
-                    <DayView />
+                    {/* <WeekView />
+                    <DayView /> */}
                     <Appointments />
 
                     <Toolbar />
@@ -57,7 +88,11 @@ class ProjectAndTaskScheduler extends Component<IProps> {
                     /> */}
                     {/* <EditRecurrenceMenu /> */}
                     <Appointments />
-                    <TaskAppointmentToolTip />
+                    <Resources
+                        data={this.resources}
+                        mainResourceName={AppointmentCategoryFieldName}
+                    />
+                    <AppointmentToolTip />
                     {/* <AppointmentTooltip /> */}
                     {/* <DragDropProvider /> */}
                 </Scheduler>

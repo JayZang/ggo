@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemIcon, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select } from '@material-ui/core';
+import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemIcon, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select, Checkbox } from '@material-ui/core';
 import TaskIcon from '@material-ui/icons/Assignment';
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -7,8 +7,9 @@ import { ITask, TaskStatus } from 'contracts/task';
 import TaskDetailDialog from 'components/Dashboard/TaskDetailDialog'
 
 type IProps = {
-    tasks: ITask[],
+    tasks: ITask[]
     onListTasksChange?: (tasks: ITask[]) => void
+    onCheckBoxChange?: (checked: boolean) => void
 }
 
 type IState = {
@@ -63,6 +64,14 @@ export default class TaskList extends Component<IProps, IState> {
         return (
             <Paper>
                 <Box className="p-3 d-flex align-items-center">
+                    <Checkbox
+                        className="p-0 mr-3"
+                        defaultChecked
+                        color="primary"
+                        onChange={(event, checked) => {
+                            this.props.onCheckBoxChange && this.props.onCheckBoxChange(checked)
+                        }}
+                    />
                     <Typography variant="h6">
                         進行中任務
                     </Typography>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select } from '@material-ui/core';
+import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select, Checkbox } from '@material-ui/core';
 import ProjectIcon from '@material-ui/icons/BusinessCenter';
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -8,6 +8,7 @@ import ProjectDetailDialog from 'components/Dashboard/ProjectDetailDialog'
 
 type IProps = {
     projects: IProject[]
+    onCheckBoxChange?: (checked: boolean) => void
 }
 
 type IState = {
@@ -34,6 +35,14 @@ export default class ProjectList extends Component<IProps, IState> {
         return (
             <Paper>
                 <Box className="p-3 d-flex align-items-center">
+                    <Checkbox
+                        className="p-0 mr-3"
+                        defaultChecked
+                        color="primary"
+                        onChange={(event, checked) => {
+                            this.props.onCheckBoxChange && this.props.onCheckBoxChange(checked)
+                        }}
+                    />
                     <Typography variant="h6">
                         進行中專案
                     </Typography>
