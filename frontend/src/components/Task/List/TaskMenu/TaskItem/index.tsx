@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Paper, Grid, Typography, Box, Tooltip } from '@material-ui/core'
+import { Paper, Grid, Typography, Box, Tooltip, Button } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { WithStyles, withStyles } from '@material-ui/styles'
 import clsx from 'clsx'
@@ -12,14 +12,23 @@ import styles from './style'
 type IProps = WithStyles<typeof styles> & {
     task: ITask,
     className?: string
+    disableProjectLink?: boolean
+    disableAssignmentLink?: boolean
+    onViewBtnClick?: () => void
 }
 
 class TaskItem extends Component<IProps> {
+    handleViewBtnClick() {
+        this.props.onViewBtnClick && this.props.onViewBtnClick()
+    }
+
     render() {
         const {
             task,
+            classes,
             className,
-            classes
+            disableProjectLink,
+            disableAssignmentLink
         } = this.props
 
         return (
@@ -30,21 +39,28 @@ class TaskItem extends Component<IProps> {
                         <Box color="text.hint" fontSize={14}>任務名稱</Box>
                     </Grid>
                     <Grid item className={clsx(classes.field, 'projectName')}>
-                        <Link to={`/projects/${task.project_id}`} >
-                            <Tooltip title="檢視專案" placement="bottom-start">
+                        {(() => {
+                            const content = (
                                 <Box>
                                     <Typography>
                                         <Box component="span">{task.project && task.project.name}</Box>
                                         {
-                                            task.project && task.project.finish_datetime ? 
+                                            task.project && task.project.finish_datetime ?
                                                 <Box component="span" className="badge badge-success ml-1">已結案</Box> :
-                                                null    
+                                                null
                                         }
                                     </Typography>
                                     <Box color="text.hint" fontSize={14}>所屬專案</Box>
                                 </Box>
-                            </Tooltip>
-                        </Link>
+                            )
+                            return disableProjectLink ?
+                                content :
+                                <Link to={`/projects/${task.project_id}`} >
+                                    <Tooltip title="檢視專案" placement="bottom-start">
+                                        {content}
+                                    </Tooltip>
+                                </Link>
+                        })()}
                     </Grid>
                     <Grid item className={clsx(classes.field, 'date')}>
                         <Typography>{task.start_datetime.format('YYYY-MM-DD')}</Typography>
@@ -55,10 +71,13 @@ class TaskItem extends Component<IProps> {
                         <Box color="text.hint" fontSize={14}>最後期限日期</Box>
                     </Grid>
                     <Grid item className={clsx(classes.field, 'assignment')}>
-                        <AssignmentLabel  task={task} />
+                        <AssignmentLabel task={task} disableLink={disableAssignmentLink} />
                     </Grid>
                     <Grid item className={clsx(classes.field, 'status')}>
                         <StatusLabel  task={task} editable={!!task.project && !task.project.finish_datetime} />
+                    </Grid>
+                    <Grid item className={clsx(classes.field, 'action')}>
+                        <Button variant="outlined" color="primary" onClick={this.handleViewBtnClick.bind(this)}>查看</Button>
                     </Grid>
                 </Grid>
             </Paper>

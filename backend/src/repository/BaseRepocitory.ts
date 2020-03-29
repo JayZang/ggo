@@ -15,12 +15,30 @@ export class BaseRepository<T> extends Repository<T> {
         this.queryBuilder = this.createQueryBuilder(this.entityAlias)
     }
 
+    public limit(take: number) {
+        this.queryBuilder.limit(take)
+        return this
+    }
+
+    public offset(offset: number) {
+        this.queryBuilder.offset(offset)
+        return this
+    }
+
+    public getManyAndCount() {
+        return this.queryBuilder.getManyAndCount()
+    }
+
     public getMany() {
-        return this.queryBuilder.printSql().getMany()
+        return this.queryBuilder.getMany()
     }
 
     public getOne() {
         return this.queryBuilder.getOne()
+    }
+
+    public getCount() {
+        return this.queryBuilder.getCount()
     }
 
     public withCreateAtOrder(order: "ASC" | "DESC" = 'ASC') {

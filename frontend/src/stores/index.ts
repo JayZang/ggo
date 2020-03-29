@@ -12,10 +12,12 @@ import teamReducer from './team/reducers'
 import customerReducer from './customer/reducers'
 import projectReducer from './project/reducer'
 import taskReducer from './task/reducer'
+import userAreaReducer from './userArea/reducer'
 
 const rootReducer = combineReducers({
   view: viewReducer,
   dashboard: dashboardReducer,
+  userArea: userAreaReducer,
   auth: authReducer,
   iam: iamReducer,
   member: memberReducer,

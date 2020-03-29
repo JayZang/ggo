@@ -17,15 +17,18 @@ import GavelIcon from '@material-ui/icons/Gavel';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import MoneyIcon from '@material-ui/icons/LocalAtm';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import TaskIcon from '@material-ui/icons/Assignment';
 import clsx from 'clsx';
 
 import styles from './styles';
 import TaskManagementListItem from './TaskManagementListItem'
-import { Permissions, IUser } from 'contracts/user';
+import { Permissions, IUser, UserIdentityType } from 'contracts/user';
 import { Box } from '@material-ui/core';
+import { appName } from 'utils/viewConfig';
 
 interface IProps extends WithStyles<typeof styles> {
-    open: boolean,
+    user: IUser
+    open: boolean
     toggleDrawer: () => void
     permissions: Permissions
     isIAMAvailable: boolean
@@ -35,8 +38,9 @@ function MenuDrawer(props: IProps) {
     const theme = useTheme();
     const useMobileDrawer = !useMediaQuery(theme.breakpoints.up('sm'));
     const {
-        classes,
+        user,
         open,
+        classes,
         toggleDrawer,
         permissions,
         isIAMAvailable
@@ -50,7 +54,7 @@ function MenuDrawer(props: IProps) {
         <div>
             <div className={props.classes.toolbar}>
                 <Typography variant="h5" noWrap>
-                    GGO Management
+                    {appName}
                 </Typography>
             </div>
             <Divider />
@@ -60,9 +64,20 @@ function MenuDrawer(props: IProps) {
                         <ListItemIcon>
                             <DashboardIcon />
                         </ListItemIcon>
-                        <ListItemText primary="資料面板" />
+                        <ListItemText primary="首頁" />
                     </ListItem>
                 </Link>
+
+                {user.identity_type === UserIdentityType.member ? (
+                    <Link to="/m/tasks">
+                        <ListItem button onClick={handleMenuItemClick}>
+                            <ListItemIcon>
+                                <TaskIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="我的任務" />
+                        </ListItem>
+                    </Link>
+                ) : null}
 
                 {permissions.member_management || 
                 permissions.team_management || 
@@ -164,10 +179,7 @@ function MenuDrawer(props: IProps) {
             <SwipeableDrawer
                 classes={{
                     root: classes.root,
-                    paper: clsx({
-                        [classes.drawerPaper]: true,
-                        open
-                    }),
+                    paper: clsx(classes.drawerPaper, { open }),
                 }}
                 variant={useMobileDrawer ? "temporary" : "persistent"}
                 open={useMobileDrawer ? open : true}

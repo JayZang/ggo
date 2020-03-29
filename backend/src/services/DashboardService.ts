@@ -8,6 +8,7 @@ import TaskRepo from '@/repository/TaskRepository'
 import { TaskAssignmentType } from '@/entity/TaskAssignment'
 import User, { UserIdentityType } from '@/entity/User'
 import { TaskStatus } from '@/entity/Task'
+import TeamRepo from '@/repository/TeamRepository'
 
 @Service()
 export default class DashboardService {
@@ -27,8 +28,19 @@ export default class DashboardService {
                 return null
             else if (user.identity_type === UserIdentityType.admin)
                 taskRepo.withAssignmentRelation()
-            else if (user.identity_type === UserIdentityType.member)
-                taskRepo.withAssignmentCondition(TaskAssignmentType.Member, user.identity!.id)
+            else if (user.identity_type === UserIdentityType.member) {
+                const memberId = user.identity!.id
+                const teamRepo = getCustomRepository(TeamRepo)
+                const teams = await teamRepo.getByMember(memberId)
+                
+                taskRepo.withAssignmentCondition([{
+                    type: TaskAssignmentType.Member,
+                    targetIds: [memberId]
+                }, {
+                    type: TaskAssignmentType.Team,
+                    targetIds: teams.map(team => team.id)
+                }])
+            }
 
             return await taskRepo
                 .withProjectRelation()

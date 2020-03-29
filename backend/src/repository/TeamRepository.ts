@@ -1,11 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm'
+import { EntityRepository } from 'typeorm'
 import _ from 'lodash'
 
 import Team from '@/entity/Team'
 import TaskAssignment, { TaskAssignmentType } from '@/entity/TaskAssignment'
+import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Team)
-class TeamRepository extends Repository<Team> {
+class TeamRepository extends BaseRepository<Team> {
 
     /**
      * Insert one team
@@ -22,17 +23,53 @@ class TeamRepository extends Repository<Team> {
         return this.save(team)
     }
 
-    /**
-     * Get teams
-     * 
-     * @param isTemporary 
-     */
-    public async getMany(isTemporary: boolean) {
-        return this.createQueryBuilder('team')
-            .leftJoinAndMapMany('team.task_assignments', TaskAssignment, 'taskAssignment', 'taskAssignment.target_id = team.id AND taskAssignment.type = :type', { type: TaskAssignmentType.Team })
-            .leftJoinAndSelect('team.leader', 'leader')
-            .where('is_temporary = :isTemporary', { isTemporary })
-            .getMany()
+    public async getByMember(memberId: string | number) {
+        const [ teamsAsLeader, teamsAsMember ] = await Promise.all([
+            this.initQueryBuilder()
+                .withLeaderCondition(memberId)
+                .getMany(),
+            this.initQueryBuilder()
+                .withMemberCondition(memberId)
+                .getMany()
+        ])
+        return [
+            ...teamsAsLeader,
+            ...teamsAsMember
+        ]
+    }
+
+    public withTaskAssignmentsRelation() {
+        this.queryBuilder.leftJoinAndMapMany(
+            `${this.entityAlias}.task_assignments`, 
+            TaskAssignment, 
+            'taskAssignment', 
+            `taskAssignment.target_id = ${this.entityAlias}.id AND taskAssignment.type = :type`, 
+            { type: TaskAssignmentType.Team })
+        return this
+    }
+
+    public withLeaderRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.leader`, 'leader')
+        return this
+    }
+
+    public withIsTemporaryCondition(isTemporary: boolean) {
+        this.queryBuilder.andWhere('is_temporary = :isTemporary', { isTemporary })
+        return this
+    }
+
+    public withLeaderCondition(memberId: string | number) {
+        this.queryBuilder.andWhere(`${this.entityAlias}.leader_id = :leaderId`, { leaderId: memberId })
+        return this
+    }
+
+    public withMemberCondition(memberId: string | number) {
+        this.queryBuilder.innerJoinAndSelect(
+            `${this.entityAlias}.members`, 
+            'members', 
+            `members.id = :memberId`,
+            { memberId })
+        return this
     }
 }
 

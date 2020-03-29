@@ -11,7 +11,7 @@ export default (theme: Theme) => createStyles ({
         '&.date': {
             maxWidth: 100
         },
-        '&.status': {
+        '&.status, &.action': {
             maxWidth: 65
         }
     }

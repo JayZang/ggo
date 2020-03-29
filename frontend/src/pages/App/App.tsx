@@ -54,7 +54,7 @@ class App extends Component<IProps, IState> {
                             <Route render={() => user ? (
                                 <Box>
                                     <Header user={user} />
-                                    <MenuDrawer />
+                                    <MenuDrawer user={user} />
                                     <ContentWrapper />
                                     <MobileBottomBar />
                                 </Box>

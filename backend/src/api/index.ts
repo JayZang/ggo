@@ -9,6 +9,7 @@ import customerRouter from './routes/customer'
 import projectRouter from './routes/project'
 import taskRouter from './routes/task'
 import dashboardRouter from './routes/dashboard'
+import userRouter from './routes/user/index'
 
 export default () => {
     const app = Router()
@@ -23,6 +24,7 @@ export default () => {
     projectRouter(app)
     taskRouter(app)
     dashboardRouter(app)
+    userRouter(app)
 
     return app
 }

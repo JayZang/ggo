@@ -140,18 +140,32 @@ class TaskRepository extends BaseRepository<Task> {
     }
 
     public withStatusCondition(status: TaskStatus[]) {
-        this.queryBuilder.where({
-            status: In(status)
-        })
+        this.queryBuilder.andWhere('status IN (:status)', { status })
         return this
     }
 
-    public withAssignmentCondition(type: TaskAssignmentType, targetId: string | number) {
+    public withAssignmentCondition(_assigments: {
+        type: TaskAssignmentType, 
+        targetIds: string[] | number[]
+    }[]) {
+        const assigments = _assigments.filter(assignment => assignment.targetIds.length !== 0)
+
+        if (assigments.length === 0)
+            return this
+
         this.queryBuilder.innerJoinAndSelect(
             `${this.entityAlias}.assignment`,
             `taskAssignment`,
-            `taskAssignment.type = :type AND taskAssignment.target_id = :targetId`,
-            { type, targetId }
+            assigments.map((assigment, index) => {
+                return `(taskAssignment.type = :type${index} AND taskAssignment.target_id IN (:targetIds${index}))`
+            }).join(' OR '),
+            {
+                ...assigments.reduce((obj, assigment, index) => ({
+                    ...obj,
+                    [`type${index}`]: assigment.type,
+                    [`targetIds${index}`]: assigment.targetIds
+                }), {})
+            }
         )
         return this
     }

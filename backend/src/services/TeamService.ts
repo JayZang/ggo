@@ -34,7 +34,12 @@ export default class TeamService {
      */
     public async getPermanentTeams() {
         const teamRepo = getCustomRepository(TeamRepo)
-        return await teamRepo.getMany(false)
+        return await teamRepo
+            .initQueryBuilder()
+            .withTaskAssignmentsRelation()
+            .withLeaderRelation()
+            .withIsTemporaryCondition(false)
+            .getMany()
     }
 
     /**
@@ -42,7 +47,12 @@ export default class TeamService {
      */
     public async getTemporaryTeams() {
         const teamRepo = getCustomRepository(TeamRepo)
-        return await teamRepo.getMany(true)
+        return await teamRepo
+            .initQueryBuilder()
+            .withTaskAssignmentsRelation()
+            .withLeaderRelation()
+            .withIsTemporaryCondition(true)
+            .getMany()
     }
 
     /**
