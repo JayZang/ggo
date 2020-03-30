@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 import EmergencyContact from './EmergencyContact'
 import Team from './Team'
 import User from './User'
+import WorkReport from './WorkReport'
 
 @Entity()
 export default class Member {
@@ -67,6 +68,11 @@ export default class Member {
         cascade: true
     })
     teams_as_leader: Team[]
+
+    @OneToMany(type => WorkReport, workReport => workReport.submitter, {
+        cascade: true
+    })
+    workReports: WorkReport[]
 
     isUser?: boolean
 }

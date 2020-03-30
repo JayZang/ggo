@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
 import Project from './Project'
 import TaskAssignment from './TaskAssignment'
+import WorkReport from './WorkReport'
 
 @Entity()
 export default class Task {
@@ -56,6 +57,11 @@ export default class Task {
         cascade: true
     })
     assignment: TaskAssignment
+
+    @OneToMany(type => WorkReport, workReport => workReport.task, {
+        cascade: true
+    })
+    workReports: WorkReport[]
 }
 
 export enum TaskStatus {

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Grid, Paper, Typography, Box, Divider } from '@material-ui/core'
+import { Grid, Paper, Typography, Box, Divider, ButtonGroup, Button } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add';
 
 import AssignmentLabel from 'components/Task/AssignmentLabel'
+import TaskStatusLabel from 'components/Task/StatusLabel'
 import MobileHeader from 'components/MobileHeader'
 import AppContent from 'pages/App/Content'
 import { ITask } from 'contracts/task'
@@ -43,11 +45,14 @@ class TaskDetail extends Component<IProps, IState> {
                     />
                 )}
             >
-                <Grid container>
+                <Grid container spacing={3}>
                     <Grid item style={{ minWidth: 400 }}>
                         <Paper>
-                            <Typography className="p-3" variant="h5" component="div">
-                                <Box fontWeight={500}>{task && task.name}</Box>
+                            <Typography className="p-3 d-flex align-items-cente" variant="h5" component="div">
+                                <Box marginRight="auto" fontWeight={500}>{task && task.name}</Box>
+                                {task && (
+                                    <TaskStatusLabel task={task} editable={false} />
+                                )}
                             </Typography>
                             <Divider />
                             <Box className="p-3 d-flex align-items-center">
@@ -116,14 +121,29 @@ class TaskDetail extends Component<IProps, IState> {
                                 <Typography className="flex-shrink-0" variant="subtitle2" style={{ width: 115 }}>
                                     備註
                                 </Typography>
-                                <Typography>
+                                <Typography style={{ whiteSpace: 'pre-line' }} variant="body2">
                                     {task && task.remark}
                                 </Typography>
                             </Box>
                         </Paper>
                     </Grid>
-                    <Grid item>
-
+                    <Grid item className="flex-grow-1">
+                        <Paper>
+                            <Box className="p-3 d-flex align-items-center">
+                                <Typography className="mr-auto" variant="h5" component="div">
+                                    <Box fontWeight={500}>工作報告</Box>
+                                </Typography>
+                                <ButtonGroup size="small" color="primary">
+                                    <Button startIcon={<AddIcon />}>新增</Button>
+                                </ButtonGroup>
+                            </Box>
+                            <Divider />
+                            <Box>
+                                <Box className="px-3 py-2">
+                                    <Button color="primary" startIcon={<AddIcon />} fullWidth>新增工作報告</Button>
+                                </Box>
+                            </Box>
+                        </Paper>
                     </Grid>
                 </Grid>
             </AppContent>
