@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { UserAreaState, UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC } from './types'
+import { UserAreaState, UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO } from './types'
 
 const initState: UserAreaState = {
     taskPage: {
@@ -13,6 +13,9 @@ const initState: UserAreaState = {
                 totalCount: 0,
                 data: null
             }
+        },
+        detail: {
+            task: null
         }
     }
 }
@@ -47,6 +50,18 @@ export default function taskReducer(state: UserAreaState = initState, action: Us
                                 ...action.payload.data
                             ] : action.payload.data
                         }
+                    }
+                }
+            }
+
+        case GET_TASK_INFO:
+            return {
+                ...state,
+                taskPage: {
+                    ...state.taskPage,
+                    detail: {
+                        ...state.taskPage.detail,
+                        task: action.payload.task
                     }
                 }
             }

@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 import * as userAreaTaskApi from 'api/userArea/task'
 import { regularizeTaskData } from "stores/task/utils";
-import { UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC } from "./types";
+import { UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO } from "./types";
 import { RootState } from "stores";
 
 export const fetchSimpleStatistic = () => async (dispatch: Dispatch) => {
@@ -35,6 +35,19 @@ export const fetchTasks = () => async (dispatch: Dispatch, getState: () => RootS
             totalCount: res.data.count,
             data: res.data.tasks.map(task => regularizeTaskData(task)),
             append: !!tasks
+        }
+    }
+
+    dispatch(action)
+}
+
+export const fetchTaskInfo = (id: number) => async (dispatch: Dispatch) => {
+    const res = await userAreaTaskApi.getTaskInfo(id)
+
+    const action: UserAreaActionType = {
+        type: GET_TASK_INFO,
+        payload: {
+            task: regularizeTaskData(res.data)
         }
     }
 

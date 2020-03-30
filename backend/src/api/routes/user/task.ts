@@ -31,4 +31,13 @@ export default (app: Router) => {
             res.json(statistic) :
             res.status(400).end()
     })
+
+    router.get('/:id', async (req, res) => {
+        const member = req.user!.identity
+        const task = await memberTaskService.getOne(member, req.params.id)
+
+        return task ?
+            res.json(task) :
+            res.status(400).end()
+    })
 }
