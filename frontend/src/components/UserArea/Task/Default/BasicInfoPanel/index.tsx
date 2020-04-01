@@ -41,7 +41,7 @@ class TaskBasicInfoPanel extends Component<IProps> {
                         {task && task.project && (
                             <Box className="d-flex align-items-center">
                                 {task.project.name}
-                                {task.project.finish_datetime || true ? <Box component="span" className="badge badge-success ml-1">已結案</Box> : null}
+                                {task.project.finish_datetime ? <Box component="span" className="badge badge-success ml-1">已結案</Box> : null}
                             </Box>
                         )}
                     </Typography>

@@ -1,6 +1,8 @@
 import React, { Component, ChangeEvent, FormEvent } from 'react'
 import ScheduleIcon from '@material-ui/icons/Schedule';
-import { Box, Button, TextField, InputAdornment } from '@material-ui/core'
+import { Box, Button, TextField, InputAdornment, Paper } from '@material-ui/core'
+import BraftEditor from 'braft-editor'
+import 'braft-editor/dist/index.css'
 
 type Fields = {
     title: string
@@ -47,6 +49,10 @@ class WorkReportEditPanel extends Component<IProps, IState> {
         console.log(13)
     }
 
+    handleEditorChange = (content: any, editor: any) => {
+        console.log('Content was updated:', content);
+      }
+
     render() {
         const {
             fields
@@ -64,37 +70,38 @@ class WorkReportEditPanel extends Component<IProps, IState> {
                         value={fields.title}
                         onChange={this.handleInputChange.bind(this, 'title')}
                     />
-                    <TextField
-                        className="mt-4"
-                        required
-                        label="內容"
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        multiline
-                        rows={10}
-                        value={fields.content}
-                        onChange={this.handleInputChange.bind(this, 'content')}
-                    />
-                    <TextField
-                        className="mt-4"
-                        required
-                        label="花費時長"
-                        variant="outlined"
-                        size="medium"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <ScheduleIcon color="primary" />
-                                </InputAdornment>
-                            )
-                        }}
-                        value={fields.spend_time}
-                        onChange={this.handleInputChange.bind(this, 'spend_time')}
-                    />
-                    <Button className="mt-4" color="primary" variant="outlined" fullWidth type="submit">
-                        提交
-                    </Button>
+
+                    <Paper className="mt-3">
+                        <BraftEditor
+                            value={null}
+                            language="zh-hant"
+                            // onChange={this.handleEditorChange}
+                            // onSave={this.submitContent}
+                        />
+                    </Paper>
+
+                    <Box className="d-flex" alignItems="baseline">
+                        <TextField
+                            className="mt-4"
+                            required
+                            label="花費時長"
+                            variant="outlined"
+                            size="medium"
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <ScheduleIcon color="primary" />
+                                    </InputAdornment>
+                                )
+                            }}
+                            value={fields.spend_time}
+                            onChange={this.handleInputChange.bind(this, 'spend_time')}
+                        />
+
+                        <Button className="ml-auto px-5" color="primary" variant="contained" type="submit">
+                            提交
+                        </Button>
+                    </Box>
                 </form>
             </Box>
         )
