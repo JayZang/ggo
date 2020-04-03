@@ -50,7 +50,7 @@ class TaskDetail extends Component<IProps, IState> {
                         <TaskBasicInfoPanel task={task} />
                     </Grid>
                     <Grid item className="flex-grow-1">
-                        <WorkReportPanel />
+                        <WorkReportPanel  task={task} />
                     </Grid>
                 </Grid>
             </AppContent>

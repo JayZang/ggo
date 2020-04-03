@@ -7,10 +7,14 @@ import MemberRepo from './MemberRepository'
 import TeamRepo from './TeamRepository'
 import Project from '@/entity/Project'
 import { BaseRepository } from './BaseRepocitory'
+import WorkReport from '@/entity/WorkReport'
 
 @EntityRepository(Task)
 class TaskRepository extends BaseRepository<Task> {
-    
+    projectAlias = 'project'
+    assignmentAlias = 'taskAssignment'
+    workReportsAlias = 'workReports'
+
     /**
      * Insert one Project
      *  
@@ -130,12 +134,19 @@ class TaskRepository extends BaseRepository<Task> {
     }
 
     public withAssignmentRelation() {
-        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.assignment`, 'taskAssignment')
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.assignment`, this.assignmentAlias)
         return this
     }
 
     public withProjectRelation() {
-        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.project`, 'project')
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.project`, this.projectAlias)
+        return this
+    }
+
+    public withWorkReportRelation(withSubmitterRelation = true) {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.workReports`, this.workReportsAlias)
+        if (withSubmitterRelation)
+            this.queryBuilder.leftJoinAndSelect(`${this.workReportsAlias}.submitter`, 'workReportSubmitter')
         return this
     }
 
@@ -155,9 +166,9 @@ class TaskRepository extends BaseRepository<Task> {
 
         this.queryBuilder.innerJoinAndSelect(
             `${this.entityAlias}.assignment`,
-            `taskAssignment`,
+            this.assignmentAlias,
             assigments.map((assigment, index) => {
-                return `(taskAssignment.type = :type${index} AND taskAssignment.target_id IN (:targetIds${index}))`
+                return `(${this.assignmentAlias}.type = :type${index} AND ${this.assignmentAlias}.target_id IN (:targetIds${index}))`
             }).join(' OR '),
             {
                 ...assigments.reduce((obj, assigment, index) => ({
@@ -167,6 +178,14 @@ class TaskRepository extends BaseRepository<Task> {
                 }), {})
             }
         )
+        return this
+    }
+
+    public withWorkReportOrder(
+        field: keyof WorkReport = 'create_at', 
+        order: 'DESC' | 'ASC' = 'DESC'
+    ) {
+        this.queryBuilder.orderBy(`${this.workReportsAlias}.${field}`, order)
         return this
     }
 }

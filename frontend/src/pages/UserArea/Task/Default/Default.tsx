@@ -47,6 +47,7 @@ type IProps = RouteComponentProps & {
     countOfTotal: number
     countOfCompleted: number
     countOfProcessing: number
+    countOfWorkReport: number
     tasks: ITask[] | null
     init: () => Promise<void>
     fetchTasks: () => Promise<void>
@@ -99,6 +100,7 @@ class TaskDefault extends Component<IProps, IState> {
             countOfTotal,
             countOfCompleted,
             countOfProcessing,
+            countOfWorkReport,
             tasks
         } = this.props
 
@@ -146,7 +148,7 @@ class TaskDefault extends Component<IProps, IState> {
                     <Grid item xs={3}>
                         <TaskCountCard
                             title="我的工作報告"
-                            count={0}
+                            count={countOfWorkReport}
                             color="white"
                             bgcolor={`linear-gradient(10deg, ${amber[500]} 30%, ${amber[200]} 100%)`}
                         />

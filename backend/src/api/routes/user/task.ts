@@ -1,12 +1,15 @@
-import { Router } from 'express'
+import { Router, Response, Request } from 'express'
 import { Container } from 'typedi'
 
 import validateIdentity from '@/api/middleware/validateIdentity'
-import MemberTaskService from '@/services/UserArea/MemberTaskService'
+import TaskWorkReportService from '@/services/UserArea/MemberTask/TaskWorkReportService'
+import MemberTaskService from '@/services/UserArea/MemberTask/MemberTaskService'
 import { UserIdentityType } from '@/entity/User'
+import { CreateWorkReportValidator } from '@/api/validators/workReport'
 
 const router = Router()
 const memberTaskService = Container.get(MemberTaskService)
+const taskWorkReportService = Container.get(TaskWorkReportService)
 
 export default (app: Router) => {
     app.use('/tasks', validateIdentity(UserIdentityType.member), router)
@@ -38,6 +41,29 @@ export default (app: Router) => {
 
         return task ?
             res.json(task) :
+            res.status(400).end()
+    })
+
+    router.post('/:id/work-report', CreateWorkReportValidator(), async (req: Request, res: Response) => {
+        const member = req.user!.identity
+        const workReport = await taskWorkReportService.create(member, req.params.id, req.body)
+
+        return workReport ?
+            res.json(workReport) :
+            res.status(400).end()
+    })
+
+    router.put('/:taskId/work-report/:workReportId', CreateWorkReportValidator(), async (req: Request, res: Response) => {
+        const member = req.user!.identity
+        const workReport = await taskWorkReportService.update(
+            member, 
+            req.params.taskId, 
+            req.params.workReportId, 
+            req.body
+        )
+
+        return workReport ?
+            res.json(workReport) :
             res.status(400).end()
     })
 }

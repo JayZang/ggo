@@ -6,6 +6,8 @@ import { ITask, ITaskAssignment, TaskAssignType, TaskStatus } from 'contracts/ta
 import { regularizeProjectData } from "stores/project/utils";
 import { regularizeMemberData } from "stores/member/utils";
 import { regularizeTeamData } from "stores/team/utils";
+import { regularizeWorkReportData } from 'stores/utils/regularizeWorkReportData';
+import { IWorkReport } from 'contracts/workReport';
 
 export function regularizeTaskData(data: any): ITask {
     return {
@@ -16,6 +18,7 @@ export function regularizeTaskData(data: any): ITask {
         project: data.project && regularizeProjectData(data.project),
         create_at: moment(data.create_at),
         assignment: data.assignment && regularizeTaskAssignmentData(data.assignment),
+        workReports: data.workReports && data.workReports.map((workReport: IWorkReport) => regularizeWorkReportData(workReport)),
         get statusLabel() {
             if (this.status === TaskStatus.Normal) {
                 return (

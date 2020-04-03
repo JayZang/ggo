@@ -3,6 +3,7 @@ import { Repository, SelectQueryBuilder } from "typeorm";
 export class BaseRepository<T> extends Repository<T> {
     protected queryBuilder: SelectQueryBuilder<T>
     protected entityAlias: string = 'entity'
+    protected ID = 'id'
     protected CREATE_AT = 'create_at'
     protected UPDATE_AT = 'update_at'
 
@@ -39,6 +40,11 @@ export class BaseRepository<T> extends Repository<T> {
 
     public getCount() {
         return this.queryBuilder.getCount()
+    }
+
+    public withIdCondition(id: number | string) {
+        this.queryBuilder.andWhere(`${this.entityAlias}.${this.ID} = :id`, {  id })
+        return this
     }
 
     public withCreateAtOrder(order: "ASC" | "DESC" = 'ASC') {

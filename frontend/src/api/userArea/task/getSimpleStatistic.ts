@@ -7,5 +7,6 @@ export function getSimpleStatistic() {
         countOfTotal: number
         countOfCompleted: number
         countOfProcessing: number
+        countOfWorkReport: number
     }>(URL)
 }

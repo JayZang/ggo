@@ -1,3 +1,5 @@
 export * from './getTaskList'
 export * from './getSimpleStatistic'
 export * from './getTaskInfo'
+export * from './createWorkReport'
+export * from './updateWorkReport'

@@ -2,20 +2,22 @@ import { Moment } from "moment";
 import { IProject } from "./project";
 import { IMember } from "./member";
 import { ITeam } from "./team";
+import { IWorkReport } from "./workReport";
 
 export  type ITask = {
-    id: number | string
+    id: number
     name: string
     description: string | null
     start_datetime: Moment
     deadline_datetime: Moment
     finish_datetime: Moment | null
-    remark: string | null,
+    remark: string | null
     status: TaskStatus
     project_id: number
     project?: IProject | null
-    create_at: Moment,
-    assignment: ITaskAssignment,
+    create_at: Moment
+    assignment: ITaskAssignment
+    workReports?: IWorkReport[]
     statusLabel: string
 }
 

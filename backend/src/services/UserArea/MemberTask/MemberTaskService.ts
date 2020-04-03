@@ -1,11 +1,13 @@
 import { Service } from 'typedi'
 import { getCustomRepository } from 'typeorm'
 
+import WorkReportRepo from '@/repository/WorkReportRepository'
 import TeamRepo from '@/repository/TeamRepository'
 import TaskRepo from '@/repository/TaskRepository'
 import { TaskAssignmentType } from '@/entity/TaskAssignment'
-import Task, { TaskStatus } from '@/entity/Task'
+import { TaskStatus } from '@/entity/Task'
 import Member from '@/entity/Member'
+import TaskHelper from '@/helper/TaskHelper'
 
 @Service()
 export default class MemberTaskService {
@@ -46,12 +48,14 @@ export default class MemberTaskService {
     public async getTaskSimpleStatistic(member: Member) {
         try {
             const taskRepo = getCustomRepository(TaskRepo)
+            const workReportRepo = getCustomRepository(WorkReportRepo)
             const assignmentConditions = await this.getTaskAssignmentConditions(member.id)
 
             const [
                 countOfTotal,
                 countOfCompleted,
-                countOfProcessing
+                countOfProcessing,
+                countOfWorkReport
             ] = await Promise.all([
                 taskRepo.initQueryBuilder()
                     .withAssignmentCondition(assignmentConditions)
@@ -63,13 +67,17 @@ export default class MemberTaskService {
                 taskRepo.initQueryBuilder()
                     .withStatusCondition([TaskStatus.Normal])
                     .withAssignmentCondition(assignmentConditions)
+                    .getCount(),
+                workReportRepo.initQueryBuilder()
+                    .withSubmitterIdCondition(member.id)
                     .getCount()
             ])
 
             return {
                 countOfTotal,
                 countOfCompleted,
-                countOfProcessing
+                countOfProcessing,
+                countOfWorkReport
             }
         } catch (err) {
             console.log("Get member's task simple statistic fail")
@@ -85,8 +93,18 @@ export default class MemberTaskService {
         try {
             const taskRepo = getCustomRepository(TaskRepo)
 
-            const task = await taskRepo.findOneOrFail(taskId, { relations: ['assignment', 'project'] })
-            const isAvailable = await this.isTaskAvailableByMember(task, member.id)
+            const task = await taskRepo
+                .initQueryBuilder()
+                .withIdCondition(taskId)
+                .withAssignmentRelation()
+                .withProjectRelation()
+                .withWorkReportRelation()
+                .withWorkReportOrder('create_at', 'DESC')
+                .getOne()
+
+            if (!task) return null
+
+            const isAvailable = await TaskHelper.isTaskAvailableByMember(task, member.id)
 
             if (!isAvailable) return null
 
@@ -96,19 +114,6 @@ export default class MemberTaskService {
             console.log(err)
             return null
         }
-    }
-
-    private async isTaskAvailableByMember(task: Task, memberId: number) {
-        const teamRepo = getCustomRepository(TeamRepo)
-
-        if (task.assignment.type === TaskAssignmentType.Member)
-            return task.assignment.target_id === memberId
-        else if (task.assignment.type === TaskAssignmentType.Team) {
-            const teams = await teamRepo.getByMember(memberId)
-            return teams.map(team => team.id).includes(task.assignment.target_id)
-        }
-
-        return false
     }
 
     private async getTaskAssignmentConditions(memberId: number) {

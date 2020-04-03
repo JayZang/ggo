@@ -1,8 +1,11 @@
 import { ITask } from 'contracts/task'
+import { IWorkReport } from 'contracts/workReport'
 
 export const GET_TASK_SIMPLE_STATISTIC = 'GET_TASK_SIMPLE_STATISTIC'
 export const GET_TASK_LIST = 'GET_TASK_LIST'
 export const GET_TASK_INFO = 'GET_TASK_INFO'
+export const ADD_TASK_WORK_REPORT = 'ADD_TASK_WORK_REPORT'
+export const UPDATE_TASK_WORK_REPORT = 'UPDATE_TASK_WORK_REPORT'
 
 export type UserAreaState = {
     taskPage: {
@@ -11,6 +14,7 @@ export type UserAreaState = {
                 countOfTotal: number
                 countOfCompleted: number
                 countOfProcessing: number
+                countOfWorkReport: number
             }
             listData: {
                 totalCount: number
@@ -29,6 +33,7 @@ type GetTaskSimpleStatistic = {
         countOfTotal: number
         countOfCompleted: number
         countOfProcessing: number
+        countOfWorkReport: number
     }
 }
 
@@ -48,7 +53,23 @@ type GetTaskInfo = {
     }
 }
 
+type AddTaskWorkReport = {
+    type: typeof ADD_TASK_WORK_REPORT,
+    payload: {
+        workReport: IWorkReport
+    }
+}
+
+type UpdateTaskWorkReport = {
+    type: typeof UPDATE_TASK_WORK_REPORT,
+    payload: {
+        workReport: IWorkReport
+    }
+}
+
 export type UserAreaActionType =
     GetTaskSimpleStatistic |
     GetTaskList |
-    GetTaskInfo
+    GetTaskInfo |
+    AddTaskWorkReport |
+    UpdateTaskWorkReport

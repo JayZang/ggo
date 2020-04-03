@@ -16,7 +16,7 @@ export default class WorkReport {
     title: string
 
     @Column({
-        type: 'text'
+        type: 'longtext'
     })
     content: string
 
@@ -46,10 +46,10 @@ export default class WorkReport {
     @Column({
         type: 'tinyint'
     })
-    submit_type: WorkReportSubmitType
+    submit_from: WorkReportSubmitFrom
 }
 
-export enum WorkReportSubmitType {
+export enum WorkReportSubmitFrom {
     Web = 0,
     Line = 1
 }
