@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
-import { Box, Typography, Divider, Paper, Grid, Avatar } from '@material-ui/core'
+import { Box, Typography, Divider } from '@material-ui/core'
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ScheduleIcon from '@material-ui/icons/Schedule';
+import DevicesIcon from '@material-ui/icons/Devices';
 import styled from 'styled-components'
 import clsx from 'clsx'
 
-import { IWorkReport } from 'contracts/workReport'
+import { IWorkReport, WorkReportSubmitFrom } from 'contracts/workReport'
+import MemberLabel from 'components/Members/MemberLabel'
 
 type IProps = {
     className?: string
@@ -23,17 +25,30 @@ class WorkReportDisplayPanel extends Component<IProps> {
             <Box className={clsx(className, 'p-4')}>
                 <Box className="d-flex align-items-center">
                     <Box>
-                        <Typography variant="h4">{workReport.title}</Typography>
+                        <Typography variant="h5">{workReport.title}</Typography>
                         <Box className="mt-2 d-flex align-items-center">
                             <Typography component="div" variant="body2">
                                 <Box className="d-flex align-items-center" color="text.hint">
-                                    <CalendarTodayIcon className="mr-1" fontSize="small" /> {workReport.create_at.format('YYYY-MM-DD')}
+                                    <CalendarTodayIcon className="mr-2" fontSize="small" />{workReport.create_at.format('YYYY-MM-DD')}
                                 </Box>
                             </Typography>
-                            <Box marginX={1} />
+                            <Box marginX={2} />
                             <Typography component="div" variant="body2">
                                 <Box className="d-flex align-items-center" color="text.hint">
-                                    <ScheduleIcon className="mr-1" fontSize="small" /> {workReport.spend_time}
+                                    <ScheduleIcon className="mr-2" fontSize="small" />{workReport.spend_time}
+                                </Box>
+                            </Typography>
+                            <Box marginX={2} />
+                            <Typography component="div" variant="body2">
+                                <Box className="d-flex align-items-center" color="text.hint">
+                                    <DevicesIcon className="mr-2" fontSize="small" /> 
+                                    {(() => {
+                                        if (workReport.submit_from === WorkReportSubmitFrom.Web)
+                                            return '網站'
+                                        else if (workReport.submit_from === WorkReportSubmitFrom.Line)
+                                            return 'Line'
+                                        return null
+                                    })()}
                                 </Box>
                             </Typography>
                         </Box>
@@ -41,21 +56,7 @@ class WorkReportDisplayPanel extends Component<IProps> {
                     <Box marginLeft="auto">
                         {workReport.submitter && (
                             <Box minWidth={170}>
-                                <Paper className="px-3 py-2">
-                                    <Grid container alignItems="center" spacing={2}>
-                                        <Avatar src={workReport.submitter.avatar} />
-                                        <Grid item>
-                                            <Grid container direction="column">
-                                                <Typography component="div">
-                                                    <Box fontWeight="bold">{workReport.submitter.name}</Box>
-                                                </Typography>
-                                                <Typography variant="body2" component="div">
-                                                    <Box color="text.hint">提交者</Box>
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
+                                <MemberLabel member={workReport.submitter} hint="提交者" />
                             </Box>
                         )}
                     </Box>

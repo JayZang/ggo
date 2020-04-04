@@ -1,7 +1,6 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable, ManyToOne, RelationCount, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, RelationCount, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm'
 
 import Member from './Member'
-import Task from './Task'
 import TaskAssignment from './TaskAssignment'
 
 @Entity()
@@ -37,9 +36,7 @@ export default class Team {
     create_at: Date
 
     @ManyToOne(type => Member, member => member.teams_as_leader, {
-        nullable: false, 
-        onDelete: 'NO ACTION',
-        onUpdate: 'CASCADE'
+        nullable: false
     })
     @JoinColumn({ name: 'leader_id' },)
     leader: Member
