@@ -28,10 +28,6 @@ export function regularizeUserData(data: any): IUser {
         policies: data.policies && data.policies.map((policy: IPolicy) => regularizePolicyData(policy)),
         groups: data.groups && data.groups.map((group: IGroup) => regularizeGroupData(group)),
         identity: data.identity && data.identity_type === UserIdentityType.member ?
-            regularizeMemberData(data.identity) : undefined,
-        permissions: data.permissions && data.permissions.reduce((obj: any, permission: string) => {
-            obj[permission as any] = true
-            return obj
-        }, {})
+            regularizeMemberData(data.identity) : undefined
     }
 }

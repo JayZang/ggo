@@ -5,7 +5,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AddIcon from '@material-ui/icons/Add';
 
-import WorkReportDisplayPanel from './WorkReportDisplayPanel'
+import WorkReportDisplayPanel from 'components/WorkReport/WorkReportDisplayPanel'
 import WorkReportEditPanel from './WorkReportEditPanel'
 import WorkReportList from './WorkReportList'
 import { ITask, TaskStatus } from 'contracts/task';

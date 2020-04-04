@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm'
 import Group from './Group'
-import Policy from './Policy'
+import Policy, { Permissions } from './Policy'
 import Member from './Member'
 
 @Entity()
@@ -69,7 +69,7 @@ export default class User {
 
     total_policies?: Policy[]
 
-    permissions?: string[]
+    permissions?: Permissions
 }
 
 export enum UserIdentityType {

@@ -21,3 +21,12 @@ export default class Policy {
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
 }
+
+export type Permissions = Record<PermissionsList, undefined | boolean>
+
+type PermissionsList =
+    'member_management' |
+    'team_management' |
+    'customer_management' |
+    'project_management' |
+    'task_management'

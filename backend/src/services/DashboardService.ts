@@ -9,24 +9,22 @@ import { TaskAssignmentType } from '@/entity/TaskAssignment'
 import User, { UserIdentityType } from '@/entity/User'
 import { TaskStatus } from '@/entity/Task'
 import TeamRepo from '@/repository/TeamRepository'
+import WorkReportRepo from '@/repository/WorkReportRepository'
 
 @Service()
 export default class DashboardService {
 
     /**
      * Get dashboard tasks
-     * only admin and member identity return tasks
+     * only user who has task permission and member identity return tasks
      */
     public async getInProgressTasks(user: User) {
         try {
             const taskRepo = getCustomRepository(TaskRepo).initQueryBuilder()
 
-            if (![
-                UserIdentityType.admin,
-                UserIdentityType.member
-            ].includes(user.identity_type))
+            if (!user.permissions.task_management && user.identity_type !== UserIdentityType.member)
                 return null
-            else if (user.identity_type === UserIdentityType.admin)
+            else if (user.permissions.task_management)
                 taskRepo.withAssignmentRelation()
             else if (user.identity_type === UserIdentityType.member) {
                 const memberId = user.identity!.id
@@ -57,13 +55,13 @@ export default class DashboardService {
 
     /**
      * Get dashboard projects
-     * only admin identity return tasks
+     * only user who has project permission return tasks
      */
     public async getInProgressProjects(user: User) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
 
-            if (user.identity_type !== UserIdentityType.admin)
+            if (!user.permissions.project_management)
                 return null
 
             return await projectRepo
@@ -79,6 +77,32 @@ export default class DashboardService {
                 }))
         } catch (err) {
             console.log('Get dashboard projects fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Get dashboard work reports
+     * only user who has task permission and member identity return work reports
+     */
+    public async getLatestWorkReport(user: User) {
+        try {
+            const workReportRepo = getCustomRepository(WorkReportRepo).initQueryBuilder()
+
+            if (!user.permissions.task_management && user.identity_type !== UserIdentityType.member)
+                return null
+            else if (user.identity_type === UserIdentityType.member)
+                workReportRepo.withSubmitterIdCondition(user.identity_id)
+
+            return await workReportRepo
+                .withTaskRelation()
+                .withSubmitterRelation()
+                .withCreateAtOrder('DESC')
+                .limit(10)
+                .getMany()
+        } catch (err) {
+            console.log('Get dashboard work reports fail')
             console.log(err.toString())
             return null
         }

@@ -25,4 +25,12 @@ export default (app: Router) => {
             res.json(projects) :
             res.status(400).end()
     })
+
+    router.get('/work-reports', async (req: Request, res: Response) => {
+        const workReports = await dashboardService.getLatestWorkReport(req.user)
+
+        return workReports ?
+            res.json(workReports) :
+            res.status(400).end()
+    })
 }

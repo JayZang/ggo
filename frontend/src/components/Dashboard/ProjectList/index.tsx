@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select, Checkbox } from '@material-ui/core';
+import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import ProjectIcon from '@material-ui/icons/BusinessCenter';
 import SearchIcon from '@material-ui/icons/Search'
 
-import { IProject } from 'contracts/project';
 import ProjectDetailDialog from 'components/Dashboard/ProjectDetailDialog'
+import { IProject } from 'contracts/project';
+import { Link } from 'react-router-dom';
+import { blue } from '@material-ui/core/colors';
 
 type IProps = {
     projects: IProject[]
@@ -34,7 +37,7 @@ export default class ProjectList extends Component<IProps, IState> {
 
         return (
             <Paper>
-                <Box className="p-3 d-flex align-items-center">
+                <Box className="p-3 d-flex align-items-center" borderLeft={`4px solid ${blue[400]}`}>
                     <Checkbox
                         className="p-0 mr-3"
                         defaultChecked
@@ -46,19 +49,6 @@ export default class ProjectList extends Component<IProps, IState> {
                     <Typography variant="h6">
                         進行中專案
                     </Typography>
-                    <Box marginLeft="auto">
-                        {/* <Select
-                            inputProps={{
-                                className: "py-2"
-                            }}
-                            value={this.state.taskStatusCondition}
-                            variant="outlined"
-                            onChange={this.handleFilterTypeChange.bind(this)}
-                        >
-                            <MenuItem value={TaskStatus.Normal}>執行中</MenuItem>
-                            <MenuItem value={TaskStatus.Pause}>暫停中</MenuItem>
-                        </Select> */}
-                    </Box>
                 </Box>
                 <Divider />
                 <Box maxHeight={300} overflow="auto">
@@ -87,6 +77,14 @@ export default class ProjectList extends Component<IProps, IState> {
                             <ListItem>無進行中專案</ListItem>
                         ) : null}
                     </List>
+                </Box>
+                <Divider />
+                <Box paddingY={1} paddingX={2} color="primary.main" textAlign="right">
+                    <Link to="/projects">
+                        <Typography component="span" variant="subtitle2">
+                            <ArrowRightAltIcon /> 查看更多
+                        </Typography>
+                    </Link>
                 </Box>
 
                 <ProjectDetailDialog

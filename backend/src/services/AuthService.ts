@@ -9,7 +9,7 @@ import { client as redisClient } from '@/loaders/redis'
 import { jwt as jwtConfig } from '@/config'
 import User, { UserIdentityType } from '@/entity/User'
 import PolicyRepo from '@/repository/PolicyRepository'
-import Policy from '@/entity/Policy'
+import Policy, { Permissions } from '@/entity/Policy'
 
 @Service()
 export default class AuthService {
@@ -96,7 +96,10 @@ export default class AuthService {
             })
         }
 
-        user.permissions = policies.map(policy => policy.variable_name)
+        user.permissions = policies.reduce((obj, policy) => ({
+            ...obj,
+            [policy.variable_name]: true
+        }), {}) as Permissions
         return user
     }
 

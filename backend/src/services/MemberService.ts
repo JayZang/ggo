@@ -98,12 +98,14 @@ export default class MemberService {
             const memberRepo = getCustomRepository(MemberRepo)
             const userRepo = getCustomRepository(UserRepo)
             const member = await memberRepo.findOneOrFail(id)
+            
+            await memberRepo.remove(member)
             await userRepo.removeByIdentity(
                 UserIdentityType.member,
                 member.id
             )
 
-            return await memberRepo.remove(member)
+            return member
         } catch (err) {
             console.log('Delete member fail')
             console.log(err.toString())

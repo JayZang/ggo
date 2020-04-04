@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
-import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemIcon, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select, Checkbox } from '@material-ui/core';
+import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select, Checkbox } from '@material-ui/core';
+import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import TaskIcon from '@material-ui/icons/Assignment';
 import SearchIcon from '@material-ui/icons/Search'
 
 import { ITask, TaskStatus } from 'contracts/task';
 import TaskDetailDialog from 'components/Dashboard/TaskDetailDialog'
+import { Link } from 'react-router-dom';
+import { green } from '@material-ui/core/colors';
 
 type IProps = {
     tasks: ITask[]
+    moreLink: string | null
     hiddenCheckbox?: boolean
     onListTasksChange?: (tasks: ITask[]) => void
     onCheckBoxChange?: (checked: boolean) => void
@@ -64,7 +68,7 @@ export default class TaskList extends Component<IProps, IState> {
 
         return (
             <Paper>
-                <Box className="p-3 d-flex align-items-center">
+                <Box className="p-3 d-flex align-items-center" borderLeft={`4px solid ${green[400]}`}>
                     {this.props.hiddenCheckbox ? null : (
                         <Checkbox
                             className="p-0 mr-3"
@@ -120,6 +124,17 @@ export default class TaskList extends Component<IProps, IState> {
                         ) : null}
                     </List>
                 </Box>
+                <Divider />
+                {this.props.moreLink !== null ? (
+                    <Box paddingY={1} paddingX={2} color="primary.main" textAlign="right">
+                        <Link to={this.props.moreLink}>
+                            <Typography component="span" variant="subtitle2">
+                                <ArrowRightAltIcon /> 查看更多
+                            </Typography>
+                        </Link>
+                    </Box>
+                ) : null}
+
                 <TaskDetailDialog 
                     task={taskToDisplayDetail} 
                     onClose={() => this.setState({ 

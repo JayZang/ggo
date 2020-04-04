@@ -4,20 +4,24 @@ import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 
 import ProjectAndTaskScheduler from 'components/Scheduler/ProjectAndTaskScheduler'
-import TaskList from 'components/Dashboard/TaskList'
+import WorkReportList from 'components/Dashboard/WorkReportList'
 import ProjectList from 'components/Dashboard/ProjectList'
+import TaskList from 'components/Dashboard/TaskList'
 import { ITask } from 'contracts/task'
 import { IProject } from 'contracts/project'
-import { IUser } from 'contracts/user'
+import { IUser, UserIdentityType } from 'contracts/user'
+import { IWorkReport } from 'contracts/workReport'
 
 type IProps = {
     init: (user: IUser) => Promise<void>
     user: IUser | null
     tasks: ITask[]
     projects: IProject[]
+    workReports: IWorkReport[]
 }
 
 type IState = {
+    initialed: boolean
     listedTasks: ITask[],
     displayProjectInCalendar: boolean,
     displayTaskInCalendar: boolean
@@ -28,7 +32,8 @@ export default class DashboardMain extends Component<IProps, IState> {
         super(props)
 
         this.state = {
-            listedTasks: props.tasks,
+            initialed: false,
+            listedTasks: [],
             displayProjectInCalendar: true,
             displayTaskInCalendar: true
         }
@@ -37,22 +42,26 @@ export default class DashboardMain extends Component<IProps, IState> {
     componentDidMount() {
         if (!this.props.user)
             return
-        this.props.init(this.props.user)
+        this.props.init(this.props.user).then(() => {
+            this.setState({ initialed: true })
+        })
     }
 
     render() {
         const {
             user,
             tasks,
-            projects
+            projects,
+            workReports
         } = this.props
         const {
+            initialed,
             listedTasks,
             displayProjectInCalendar,
             displayTaskInCalendar
         } = this.state
 
-        return (
+        return user && (
             <AppContent
                 mobileHeader={(
                     <MobileHeader
@@ -74,21 +83,34 @@ export default class DashboardMain extends Component<IProps, IState> {
                             </Box>
                         ) : null}
 
-                        <TaskList  
-                            tasks={tasks}
-                            hiddenCheckbox={user && user.permissions && user.permissions.project_management ? false : true}
-                            onListTasksChange={tasks => this.setState({
-                                listedTasks: tasks
-                            })}
-                            onCheckBoxChange={checked => this.setState({
-                                displayTaskInCalendar: checked
-                            })}
-                        />
+                        {user && ((user.permissions && user.permissions.task_management) || user.identity_type === UserIdentityType.member) ? (
+                            <Box marginBottom={3}>
+                                <TaskList
+                                    tasks={tasks}
+                                    moreLink={(() => {
+                                        if (user.identity_type === UserIdentityType.member)
+                                            return '/m/tasks'
+                                        else if (user.permissions && user.permissions.task_management)
+                                            return '/tasks'
+                                        return null
+                                    })()}
+                                    hiddenCheckbox={user && user.permissions && user.permissions.project_management ? false : true}
+                                    onListTasksChange={tasks => this.setState({
+                                        listedTasks: tasks
+                                    })}
+                                    onCheckBoxChange={checked => this.setState({
+                                        displayTaskInCalendar: checked
+                                    })}
+                                />
+                            </Box>
+                        ) : null}
+
+                        <WorkReportList workReports={workReports} />
                     </Grid>
                     <Grid item xs={8}>
                         <ProjectAndTaskScheduler 
-                            tasks={displayTaskInCalendar ? listedTasks : [] } 
-                            projects={displayProjectInCalendar ? projects : [] } 
+                            tasks={initialed && displayTaskInCalendar ? listedTasks : [] } 
+                            projects={initialed && displayProjectInCalendar ? projects : [] } 
                         />
                     </Grid>
                 </Grid>
