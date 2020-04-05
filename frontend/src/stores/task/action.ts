@@ -1,6 +1,6 @@
 import { Dispatch } from "redux"
 
-import { ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, GET_PROJECT_TASKS, UPDATE_TASK_STATUS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TEAM_TASKS } from "./types"
+import { ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, GET_PROJECT_TASKS, UPDATE_TASK_STATUS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TEAM_TASKS, GET_TASK_DETAIL_INFO } from "./types"
 
 import * as memberApi from 'api/member'
 import * as teamApi from 'api/team'
@@ -172,4 +172,17 @@ export const fetchTasksByTeam = (id: string | number, refresh: boolean = true) =
     }
 
     dispatch(action) 
+}
+
+export const fetchTaskDetailInfo = (id: number | string) => async (dispatch: Dispatch) => {
+    const res = await taskApi.getTetail(id)
+
+    const action: TaskActionType = {
+        type: GET_TASK_DETAIL_INFO,
+        payload: {
+            task: regularizeTaskData(res.data)
+        }
+    }
+
+    dispatch(action)
 }

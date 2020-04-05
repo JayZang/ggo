@@ -5,9 +5,9 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AddIcon from '@material-ui/icons/Add';
 
-import WorkReportDisplayPanel from 'components/WorkReport/WorkReportDisplayPanel'
-import WorkReportEditPanel from './WorkReportEditPanel'
-import WorkReportList from './WorkReportList'
+import WorkReportDisplayPanel from 'components/WorkReport/WorkReportPanel/WorkReportDisplayPanel'
+import WorkReportEditPanel from 'components/WorkReport/WorkReportPanel/WorkReportEditPanel'
+import WorkReportList from 'components/WorkReport/WorkReportPanel/WorkReportList'
 import { ITask, TaskStatus } from 'contracts/task';
 import { IWorkReport } from 'contracts/workReport';
 
@@ -19,6 +19,7 @@ enum TabIndex {
 
 type IProps = {
     task: ITask | null
+    editable: boolean
 }
 
 type IState = {
@@ -83,7 +84,8 @@ class WorkReportPanel extends Component<IProps, IState> {
 
     render() {
         const {
-            task
+            task,
+            editable
         } = this.props
         const {
             tabIndex,
@@ -101,7 +103,7 @@ class WorkReportPanel extends Component<IProps, IState> {
                         </Box>
                     </Typography>
                     <ButtonGroup size="small" color="primary">
-                        {task && task.status === TaskStatus.Normal && tabIndex === TabIndex.default? (
+                        {editable && task && task.status === TaskStatus.Normal && tabIndex === TabIndex.default? (
                             <Button
                                 startIcon={<AddIcon />}
                                 onClick={this.handleCreateBtnClick}
@@ -127,7 +129,7 @@ class WorkReportPanel extends Component<IProps, IState> {
                         onChangeIndex={index => this.setState({ tabIndex: index })}
                     >
                         <Box className="px-4 py-2" style={{ display: this.isDisplay(TabIndex.default) }}>
-                            {task && task.status === TaskStatus.Normal && task.workReports && task.workReports.length === 0 ? (
+                            {editable && task && task.status === TaskStatus.Normal && task.workReports && task.workReports.length === 0 ? (
                                 <Button 
                                     color="primary" 
                                     startIcon={<AddIcon />} 
@@ -138,7 +140,7 @@ class WorkReportPanel extends Component<IProps, IState> {
                                 </Button>
                             ) : (
                                 <WorkReportList 
-                                    editable={!!task && task.status === TaskStatus.Normal}
+                                    editable={editable && !!task && task.status === TaskStatus.Normal}
                                     workReports={task && task.workReports ? task.workReports : []}
                                     onWorkReportEditBtnClick={this.handleEditBtnClick}
                                     onWorkReportViewBtnClick={this.handleViewBtnClick}

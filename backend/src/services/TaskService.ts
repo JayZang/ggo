@@ -127,4 +127,29 @@ export default class TaskService {
             return null
         }
     }
+
+    /**
+     * get one task by id
+     */
+    public async getOneByTaskId(id: string | number) {
+        try {
+            const taskRepo = getCustomRepository(TaskRepo)
+           
+            const task = await taskRepo.initQueryBuilder()
+                .withIdCondition(id)
+                .withAssignmentRelation()
+                .withProjectRelation()
+                .withWorkReportRelation()
+                .withWorkReportOrder('create_at', 'DESC')
+                .getOne()
+
+            if (!task) return null
+
+            return (await taskRepo.attachTasksAssignment([task]))[0]
+        } catch (err) {
+            console.log('Get one task by id fail')
+            console.log(err.toString())
+            return null
+        }
+    }
 }

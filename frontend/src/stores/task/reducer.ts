@@ -1,4 +1,4 @@
-import { TaskState, ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, UPDATE_TASK_STATUS, GET_PROJECT_TASKS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TEAM_TASKS } from "./types";
+import { TaskState, ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, UPDATE_TASK_STATUS, GET_PROJECT_TASKS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TEAM_TASKS, GET_TASK_DETAIL_INFO } from "./types";
 import _ from 'lodash'
 
 const initState: TaskState = {
@@ -14,6 +14,9 @@ const initState: TaskState = {
     },
     statistic: {
         totalCount: 0
+    },
+    detailPage: {
+        task: null
     }
 }
 
@@ -129,6 +132,15 @@ export default function taskReducer(state: TaskState = initState, action: TaskAc
                         ...(state.tasksOfTeam.tasks || []),
                         ...action.payload.tasks
                      ] : action.payload.tasks
+                }
+            }
+
+        case GET_TASK_DETAIL_INFO:
+            return {
+                ...state,
+                detailPage: {
+                    ...state.detailPage,
+                    task: action.payload.task
                 }
             }
 

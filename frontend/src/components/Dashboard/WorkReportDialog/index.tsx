@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/styles'
-import { Dialog, DialogProps, Paper, DialogTitle, Box, DialogContent, Typography, Theme, createStyles, WithStyles, Grid, IconButton, DialogActions } from '@material-ui/core'
-import EventNoteIcon from '@material-ui/icons/EventNote'
+import { Dialog, DialogProps, DialogTitle, Box, Typography, Theme, createStyles, WithStyles, IconButton, DialogActions } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
-import WorkReportDispalyPanel from 'components/WorkReport/WorkReportDisplayPanel'
+import WorkReportDispalyPanel from 'components/WorkReport/WorkReportPanel/WorkReportDisplayPanel'
 import { IWorkReport } from 'contracts/workReport'
 
 const styles = (theme: Theme) => createStyles({

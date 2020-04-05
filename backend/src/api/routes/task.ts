@@ -46,4 +46,12 @@ export default (app: Router) => {
             res.json(task) : 
             res.status(400).end()
     })
+
+    router.get('/:id', async (req: Request, res: Response) => {
+        const task = await taskService.getOneByTaskId(req.params.id)
+
+        return task ? 
+            res.json(task) : 
+            res.status(400).end()
+    })
 }

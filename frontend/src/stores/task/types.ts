@@ -19,6 +19,8 @@ export const CLEAR_MEMBER_SELECTION_LIST = 'CLEAR_MEMBER_SELECTION_LIST'
 export const ADD_TEAM_SELECTION_LIST = 'ADD_TEAM_SELECTION_LIST'
 export const CLEAR_TEAM_SELECTION_LIST = 'CLEAR_TEAM_SELECTION_LIST'
 
+export const GET_TASK_DETAIL_INFO = 'GET_TASK_DETAIL_INFO'
+
 export type TaskState = {
     taskList: ITask[] | null
     tasksOfProject: ITask[] | null
@@ -32,6 +34,9 @@ export type TaskState = {
     },
     statistic: {
         totalCount: number
+    },
+    detailPage: {
+        task: ITask | null
     }
 }
 
@@ -110,6 +115,13 @@ type GetTeamTasks = {
     }
 }
 
+type GetTaskDetailInfo = {
+    type: typeof GET_TASK_DETAIL_INFO
+    payload: {
+        task: ITask
+    }
+}
+
 export type TaskActionType = 
     GetCountStatistic |
     AddTasksToList |
@@ -122,4 +134,5 @@ export type TaskActionType =
     ClearMemberSelectionList |
     AddTeamSelectionList |
     ClearTeamSelectionList |
-    GetTeamTasks
+    GetTeamTasks | 
+    GetTaskDetailInfo

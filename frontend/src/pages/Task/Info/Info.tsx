@@ -1,46 +1,45 @@
 import React, { Component } from 'react'
+
+import AppContent from 'pages/App/Content'
+import MobileHeader from 'components/MobileHeader'
+import TaskBasicInfoPanel from 'components/Task/BasicInfoPanel'
+import WorkReportPanel from 'components/WorkReport/WorkReportPanel'
+import { ITask } from 'contracts/task'
 import { Grid } from '@material-ui/core'
 
-import WorkReportPanel from 'components/WorkReport/WorkReportPanel'
-import TaskBasicInfoPanel from 'components/Task/BasicInfoPanel'
-import MobileHeader from 'components/MobileHeader'
-import AppContent from 'pages/App/Content'
-import { ITask } from 'contracts/task'
-
-
 type IProps = {
+    id: number | string
     task: ITask | null
-    taskId: string
-    init: (id: number) => Promise<void>
+    load: (id: number | string) => Promise<void>
 }
 
-type IState = {
-    initialed: boolean
+type IStatus = {
+    loaded: boolean
 }
 
-class TaskDetail extends Component<IProps, IState> {
+class TaskInfo extends Component<IProps, IStatus> {
     constructor(props: IProps) {
         super(props)
 
         this.state = {
-            initialed: false
+            loaded: false
         }
     }
 
     componentDidMount() {
-        this.props.init(Number(this.props.taskId)).then(() => {
-            this.setState({ initialed: true })
+        this.props.load(this.props.id).then(() => {
+            this.setState({ loaded: true })
         })
     }
 
     render() {
-        const task = this.state.initialed ? this.props.task : null
+        const task = this.state.loaded ? this.props.task : null
 
         return (
             <AppContent
                 mobileHeader={(
                     <MobileHeader
-                        title="任務資訊"
+                        title="工作任務"
                         defaultHidden={false}
                     />
                 )}
@@ -50,7 +49,7 @@ class TaskDetail extends Component<IProps, IState> {
                         <TaskBasicInfoPanel task={task} />
                     </Grid>
                     <Grid item className="flex-grow-1">
-                        <WorkReportPanel  task={task} editable={false} />
+                        <WorkReportPanel task={task} editable={false} />
                     </Grid>
                 </Grid>
             </AppContent>
@@ -58,4 +57,4 @@ class TaskDetail extends Component<IProps, IState> {
     }
 }
 
-export default TaskDetail
+export default TaskInfo

@@ -3,8 +3,9 @@ import { Box } from '@material-ui/core'
 
 import { ITask } from 'contracts/task'
 import TaskItem from './TaskItem'
+import { withRouter, RouteComponentProps } from 'react-router'
 
-type IProps = {
+type IProps = RouteComponentProps & {
     tasks: ITask[]
 }
 
@@ -17,11 +18,16 @@ class TaskMenu extends Component<IProps> {
         return (
             <Box>
                 {(() => tasks.map(task => (
-                    <TaskItem className="mb-3" key={task.id} task={task} />
+                    <TaskItem 
+                        className="mb-3" 
+                        key={task.id} 
+                        task={task}
+                        onViewBtnClick={() => this.props.history.push(`/tasks/${task.id}`)}
+                    />
                 )))()}
             </Box>
         )
     }
 }
 
-export default TaskMenu
+export default withRouter(TaskMenu)
