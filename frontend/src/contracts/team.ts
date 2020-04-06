@@ -9,15 +9,16 @@ export enum TeamStatus {
 }
 
 export type ITeam = {
-    id: number | string,
-    name: string,
-    description: string,
-    is_temporary: boolean,
-    status: TeamStatus,
-    leader_id: number | string,
-    create_at: Moment,
+    id: number | string
+    name: string
+    description: string
+    is_temporary: boolean
+    status: TeamStatus
+    leader_id: number | string
+    create_at: Moment
     members_count: number
-    leader?: IMember,
-    task_assignments?: ITaskAssignment[],
+    leader?: IMember
+    members?: IMember[]
+    task_assignments?: ITaskAssignment[]
     status_name: string
 }

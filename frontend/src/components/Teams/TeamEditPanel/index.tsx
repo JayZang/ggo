@@ -1,22 +1,26 @@
-import { ThunkDispatch } from 'redux-thunk'
 import { connect } from 'react-redux'
+import { ThunkDispatch } from 'redux-thunk'
 
 import TeamEditPanel from './TeamEditPanel'
-import { fetchMembers } from 'stores/member/action'
-import { createTeam, getTemporaryTeams, getPermanentTeams } from 'stores/team/action'
+import { createTeam, fetchEditPanelMemberSelection } from 'stores/team/action'
+import { RootState } from 'stores'
+
+const mapStateToProps = (state: RootState) => ({
+    memberSelectionMenu: state.team.editPanel.memberSelectionMenu || []
+})
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
-    load: async function () {
+    load: async () => {
         await Promise.all([
-            // 載入成員，成員選擇元件才可以得到成員列表
-            dispatch(fetchMembers())
-        ])
-        
-        return 
+            dispatch(fetchEditPanelMemberSelection())
+        ])        
     },
-    create: async function (data: any) {
+    create: async (data: any) => {
         await dispatch(createTeam(data))
     }
 })
 
-export default connect(null, mapDispatchToProps)(TeamEditPanel)
+export default connect(
+    mapStateToProps, 
+    mapDispatchToProps
+)(TeamEditPanel)

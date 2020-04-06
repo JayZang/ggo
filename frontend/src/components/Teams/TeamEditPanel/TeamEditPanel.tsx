@@ -16,17 +16,18 @@ import {
 import {
     ExpandMore as ExpandMoreIcon
 } from '@material-ui/icons'
-
-import { IMember } from 'contracts/member'
-import MemberSelectionMenu from 'components/Members/SelectionMenu'
-import styles from './styles'
-import clsx from 'clsx'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
+import clsx from 'clsx'
+
+import styles from './styles'
+import { IMember } from 'contracts/member'
+import MemberSelectionMenu from 'components/Members/SelectionMenu/SelectionMenu'
 
 type IProps = WithStyles<typeof styles> &  WithSnackbarProps & {
     load: () => Promise<void>
     create: (data: any) => Promise<void>
     onSubmitSuccess?: () => void
+    memberSelectionMenu: IMember[]
 }
 
 type Fields = {
@@ -171,7 +172,8 @@ class TeamEditPanel extends Component<IProps, IState> {
 
     render() {
         const {
-            classes
+            classes,
+            memberSelectionMenu
         } = this.props
         const {
             fields,
@@ -251,6 +253,7 @@ class TeamEditPanel extends Component<IProps, IState> {
                             root: classes.memberSelectionWrapper
                         }}>
                             <MemberSelectionMenu
+                                members={memberSelectionMenu}
                                 onChange={this.handleLeaderSelectionChange.bind(this)!}
                             />
                         </ExpansionPanelDetails>
@@ -268,7 +271,9 @@ class TeamEditPanel extends Component<IProps, IState> {
                         <ExpansionPanelDetails classes={{
                             root: classes.memberSelectionWrapper
                         }}>
-                            <MemberSelectionMenu multiple 
+                            <MemberSelectionMenu 
+                                members={memberSelectionMenu}
+                                multiple 
                                 filtered={fields.leader ? [fields.leader] : undefined}
                                 onChange={this.handleMembersSelectionChange.bind(this)}
                             />

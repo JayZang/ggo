@@ -17,6 +17,7 @@ class TeamRepository extends BaseRepository<Team> {
         team.name = data.name
         team.description = data.description
         team.leader = data.leader
+        team.members = data.members
         team.is_temporary = temporary
         team.status = 1
 

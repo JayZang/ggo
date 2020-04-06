@@ -3,6 +3,7 @@ import { Service } from 'typedi'
 import TeamRepo from '@/repository/TeamRepository'
 import { getCustomRepository } from 'typeorm'
 import MemberRepository from '@/repository/MemberRepository'
+import { MemberStatus } from '@/entity/Member'
 
 @Service()
 export default class TeamService {
@@ -14,12 +15,27 @@ export default class TeamService {
         try {
             const teamRepo = getCustomRepository(TeamRepo)
             const memberRepo = getCustomRepository(MemberRepository)
+
+            const [leader, members] = await Promise.all([
+                memberRepo.initQueryBuilder()
+                    .withStatusCondition(MemberStatus.active)
+                    .withIdCondition(data.leader)
+                    .getOne(),
+                memberRepo.initQueryBuilder()
+                    .withStatusCondition(MemberStatus.active)
+                    .withIdsCondition(data.members)
+                    .getMany()
+            ])
+
+            if (!leader || members.length === 0)
+                return null
+
             const team = await teamRepo.createAndSave({
                 ...data,
-                leader: await memberRepo.findOne(data.leader)
+                leader,
+                members
             })
-            team.members = await memberRepo.findByIds(data.members)
-            await teamRepo.save(team)
+
             team.members_count = team.members.length
             return team
         } catch (err) {
@@ -82,7 +98,7 @@ export default class TeamService {
         try {
             const teamRepo = getCustomRepository(TeamRepo)
             return await teamRepo.findOneOrFail(id,{
-                relations: ['leader']
+                relations: ['leader', 'members']
             })
         } catch (err) {
             console.log('Get team by id fail')

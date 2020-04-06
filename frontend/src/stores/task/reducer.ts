@@ -1,13 +1,9 @@
-import { TaskState, ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, UPDATE_TASK_STATUS, GET_PROJECT_TASKS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TEAM_TASKS, GET_TASK_DETAIL_INFO } from "./types";
+import { TaskState, ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, UPDATE_TASK_STATUS, GET_PROJECT_TASKS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TASK_DETAIL_INFO } from "./types";
 import _ from 'lodash'
 
 const initState: TaskState = {
     taskList: null,
     tasksOfProject: null,
-    tasksOfTeam: {
-        count: 0,
-        tasks: null
-    },
     editPanel: {
         members: null,
         teams: null
@@ -120,18 +116,6 @@ export default function taskReducer(state: TaskState = initState, action: TaskAc
                 editPanel: {
                     ...state.editPanel,
                     teams: null
-                }
-            }
-
-        case GET_TEAM_TASKS:
-            return {
-                ...state,
-                tasksOfTeam: {
-                    count: action.payload.count,
-                    tasks: action.payload.append ? [
-                        ...(state.tasksOfTeam.tasks || []),
-                        ...action.payload.tasks
-                     ] : action.payload.tasks
                 }
             }
 

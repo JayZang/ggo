@@ -1,5 +1,5 @@
 import { Service } from 'typedi'
-import { getCustomRepository } from 'typeorm'
+import { getCustomRepository, ObjectLiteral } from 'typeorm'
 import _ from 'lodash'
 
 import MemberRepo from '@/repository/MemberRepository'
@@ -33,10 +33,17 @@ export default class MemberService {
     public async get(option?: {
         skip: number,
         take: number,
-    }) {
-        const memberRepo = getCustomRepository(MemberRepo)
+    }, query?: ObjectLiteral) {
+        const memberRepo = getCustomRepository(MemberRepo).initQueryBuilder()
 
-        const [members, count] = await memberRepo.findAndCount(option)
+        query && Object.keys(query).forEach(key => {
+            memberRepo.withFieldCondition(key, query[key])
+        })
+
+        const [members, count] = await memberRepo
+            .limit(option.take)
+            .offset(option.skip)
+            .getManyAndCount()
         await MemberHelper.attachIsUserField(members)
 
         return {

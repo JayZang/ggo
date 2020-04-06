@@ -6,8 +6,8 @@ import { ThunkDispatch } from 'redux-thunk'
 import { RootState } from 'stores'
 
 const mapStateToProps = (state: RootState) => ({
-    permanentTeams: state.team.permanentTeams,
-    temporaryTeams: state.team.temporaryTeams,
+    permanentTeams: state.team.listPage.permanentTeams,
+    temporaryTeams: state.team.listPage.temporaryTeams,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({

@@ -8,7 +8,6 @@ import {
     ADD_EMERGENCY_CONTACT,
     REMOVE_EMERGENCY_CONTACT,
     GET_MEMBER_COUNT_STATISTIC,
-    GET_TEAM_MEMBERS,
     GET_MEMBER_LIST,
     ADD_MEMBER_TO_LIST
 } from './types'
@@ -24,8 +23,7 @@ const initState: MemberState = {
     },
     infoPage: {
         member: null
-    },
-    teamMembers: null
+    }
 }
 
 export default function memberReducer(state = initState, action: MemberActionTypes | IAMActionTypes): MemberState {
@@ -143,12 +141,6 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                         })
                     }
                 }
-            }
-
-        case GET_TEAM_MEMBERS:
-            return {
-                ...state,
-                teamMembers: action.payload.members
             }
 
         case REGISTER_MEMBER_USER:

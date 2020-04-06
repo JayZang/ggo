@@ -72,6 +72,11 @@ class MemberRepository extends BaseRepository<Member> {
         this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.emergencyContacts`, this.emergencyContactsAlias)
         return this
     }
+
+    withStatusCondition(status: MemberStatus) {
+        this.withFieldCondition('status', status)
+        return this
+    }
 }
 
 export default MemberRepository

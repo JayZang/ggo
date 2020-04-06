@@ -1,13 +1,13 @@
 import { Dispatch } from "redux"
 
-import { ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, GET_PROJECT_TASKS, UPDATE_TASK_STATUS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TEAM_TASKS, GET_TASK_DETAIL_INFO } from "./types"
+import { ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, GET_PROJECT_TASKS, UPDATE_TASK_STATUS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TASK_DETAIL_INFO } from "./types"
 
 import * as taskApi from 'api/task'
 import * as teamApi from 'api/team'
 import * as projectApi from 'api/project'
 import * as memberApi from 'api/member'
 import { regularizeMemberData } from "stores/utils/regularizeMemberData"
-import { regularizeTeamData } from "stores/team/utils"
+import { regularizeTeamData } from "stores/utils/regularizeTeamData"
 import { regularizeTaskData } from "./utils"
 import { TaskStatus } from "contracts/task"
 import { RootState } from "stores"
@@ -147,31 +147,6 @@ export const clearTeamSelection = () => {
     }
  
    return action
-}
-
-export const fetchTasksByTeam = (id: string | number, refresh: boolean = true) => async (dispatch: Dispatch, getState: () => RootState) => {
-    const {count, tasks} = refresh ? { 
-        count: 0,
-        tasks: null
-     }: getState().task.tasksOfTeam
-
-    if (tasks && tasks.length >= count) return
-
-    const res = await teamApi.getTasksByTeam(id, {
-        offset: tasks ? tasks.length : 0,
-        count: 10
-    })
-
-    const action: TaskActionType = {
-        type: GET_TEAM_TASKS,
-        payload: {
-            count: res.data.count,
-            tasks: res.data.tasks.map(task => regularizeTaskData(task)),
-            append: !!tasks && count >  tasks.length
-        }
-    }
-
-    dispatch(action) 
 }
 
 export const fetchTaskDetailInfo = (id: number | string) => async (dispatch: Dispatch) => {

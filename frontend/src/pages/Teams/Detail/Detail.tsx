@@ -4,20 +4,18 @@ import { Grid, withStyles, Card, CardContent, Tabs, Tab, Divider } from '@materi
 
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
-import TeamLeaderCard from 'components/Teams/Detail/LeaderCard'
-import TeamBaseInfo from 'components/Teams/Detail/BaseInfo'
-import TeamMemberList from 'components/Teams/Detail/MemberList'
 import TeamTaskList from 'components/Teams/Detail/TaskList'
+import TeamBaseInfo from 'components/Teams/Detail/BaseInfo'
+import TeamLeaderCard from 'components/Teams/Detail/LeaderCard'
+import TeamMemberList from 'components/Teams/Detail/MemberList'
 import styles from './style'
-import { ITeam } from 'contracts/team'
-import { IMember } from 'contracts/member'
 import { ITask } from 'contracts/task'
+import { ITeam } from 'contracts/team'
 
 type IProps = WithStyles<typeof styles> & {
     id: number | string
     load: (id: string | number) => Promise<void>
     team: ITeam | null
-    members: IMember[] | null
     tasks: ITask[] | null,
     taskTotalCount: number,
     fetchTasks: (id: string | number) => Promise<void>
@@ -39,12 +37,11 @@ class TeamDetail extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.props.load(this.props.id)
-            .then(() => {
-                this.setState({
-                    loaded: true
-                })
+        this.props.load(this.props.id).then(() => {
+            this.setState({
+                loaded: true
             })
+        })
     }
 
     render() {
@@ -52,7 +49,6 @@ class TeamDetail extends Component<IProps, IState> {
             id,
             classes,
             team,
-            members,
             tasks,
             taskTotalCount,
             fetchTasks
@@ -84,7 +80,7 @@ class TeamDetail extends Component<IProps, IState> {
                                 textColor="primary"
                             >
                                 <Tab label="團隊資訊" />
-                                <Tab label={`團隊成員 (${loaded && members ? members.length : 0})`} />
+                                <Tab label={`團隊成員 (${loaded && team && team.members ? team.members.length : 0})`} />
                                 <Tab label={`團隊任務 (${loaded ? taskTotalCount : 0})`} />
                             </Tabs>
 
@@ -93,7 +89,7 @@ class TeamDetail extends Component<IProps, IState> {
                             <CardContent className={classes.contentWrapper}>
                                 {(() => {
                                     return tabIndex === 0 ? <TeamBaseInfo  team={loaded ? team : null} /> : 
-                                        (tabIndex === 1 ? <TeamMemberList members={loaded && members ? members : []} /> : 
+                                        (tabIndex === 1 ? <TeamMemberList members={loaded && team && team.members ? team.members : []} /> : 
                                         (tabIndex === 2 ? <TeamTaskList tasks={loaded && tasks ? tasks : []} totalCount={taskTotalCount} fetchTasks={fetchTasks.bind(this, id)} /> : ''))
                                 })()}
                             </CardContent>

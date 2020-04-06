@@ -1,16 +1,13 @@
 import axios from 'axios'
+import queryString from 'query-string'
+import { IMember } from 'contracts/member'
 
 const URL = '/api/members'
 
 export function get(option: {
     offset: number
     count: number
-}) {
-    const {
-        offset,
-        count
-    } = option
-
+} & Partial<Record<keyof IMember, string | number>>) {
     return axios.get<{
         members: {
             id: number
@@ -27,5 +24,5 @@ export function get(option: {
             update_at: string
         }[],
         count: number
-    }>(`${URL}?offset=${offset}&count=${count}`)
+    }>(`${URL}?${queryString.stringify(option)}`)
 }

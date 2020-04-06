@@ -10,9 +10,6 @@ export const GET_MEMBER_DETAIL_INFO = 'GET_MEMBER_DETAIL_INFO'
 export const ADD_EMERGENCY_CONTACT = 'ADD_EMERGENCY_CONTACT'
 export const REMOVE_EMERGENCY_CONTACT = 'REMOVE_EMERGENCY_CONTACT'
 
-
-export const GET_TEAM_MEMBERS = 'GET_TEAM_MEMBERS'
-
 export type MemberState = {
     /**
      * Member list page
@@ -30,9 +27,7 @@ export type MemberState = {
      */
     infoPage: {
         member: IMember | null,
-    },
-
-    teamMembers: IMember[] | null,
+    }
 }
 
 type ClearMembers  = {
@@ -98,13 +93,6 @@ type RemoveEmergencyContact = {
     }
 }
 
-type GetTeamMembers = {
-    type: typeof GET_TEAM_MEMBERS,
-    payload: {
-        members: IMember[]
-    }
-}
-
 export type MemberActionTypes = 
     GetMemberCountStatistic |
     GetMemberList |
@@ -114,5 +102,4 @@ export type MemberActionTypes =
     RemoveMember |
     GetMemberDetailInfo |
     AddEmergencyContact |
-    RemoveEmergencyContact |
-    GetTeamMembers
+    RemoveEmergencyContact

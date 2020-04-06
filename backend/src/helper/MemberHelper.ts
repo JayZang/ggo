@@ -8,6 +8,9 @@ export default class MemberHelper {
         const userRepo = getCustomRepository(UserRepo)
         const memberIdsMapping: Member[] = []
 
+        if (members.length === 0)
+            return members
+
         members.forEach(member => {
             memberIdsMapping[member.id] = member
         })

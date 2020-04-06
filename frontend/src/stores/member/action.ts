@@ -12,7 +12,6 @@ import {
     ADD_EMERGENCY_CONTACT,
     REMOVE_EMERGENCY_CONTACT,
     GET_MEMBER_COUNT_STATISTIC,
-    GET_TEAM_MEMBERS,
     GET_MEMBER_LIST,
     ADD_MEMBER_TO_LIST,
 } from './types'
@@ -137,19 +136,6 @@ export const deleteEmergencyContact = (id: number | string) => async (dispatch: 
         type: REMOVE_EMERGENCY_CONTACT,
         payload: {
             id
-        }
-    }
-
-    dispatch(action)
-}
-
-export const fetchMembersByTeam = (id: string | number) => async (dispatch: Dispatch) => {
-    const res = await teamAPI.getMembersByTeam(id)
-
-    const action: MemberActionTypes = {
-        type: GET_TEAM_MEMBERS,
-        payload: {
-            members: res.data.map(member => regularizeMemberData(member))
         }
     }
 

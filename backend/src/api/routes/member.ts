@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
+import _ from 'lodash'
 
 import MemberService from '@/services/MemberService'
 import TeamService from '@/services/TeamService'
@@ -24,7 +25,7 @@ export default (app: Router) => {
         const members = await memberService.get({
             skip: req.query.offset || 0,
             take: req.query.count || 10
-        })
+        }, _.omit(req.query, 'offset', 'count'))
 
         return res.json(members)
     })

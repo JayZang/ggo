@@ -42,8 +42,21 @@ export class BaseRepository<T> extends Repository<T> {
         return this.queryBuilder.getCount()
     }
 
+    public withFieldCondition(field: string, value: any, type: 'AND' | 'OR' = 'AND') {
+        if (type === 'AND')
+            this.queryBuilder.andWhere(`${this.entityAlias}.${field} = :${field}`, { [field]: value })
+        else
+            this.queryBuilder.orWhere(`${this.entityAlias}.${field} = :${field}`, { [field]: value })
+        return this
+    }
+
     public withIdCondition(id: number | string) {
-        this.queryBuilder.andWhere(`${this.entityAlias}.${this.ID} = :id`, {  id })
+        this.queryBuilder.andWhere(`${this.entityAlias}.${this.ID} = :id`, { id })
+        return this
+    }
+
+    public withIdsCondition(ids: number[] | string[]) {
+        this.queryBuilder.andWhere(`${this.entityAlias}.${this.ID} IN (:ids)`, { ids })
         return this
     }
 

@@ -8,6 +8,7 @@ export function regularizeTeamData(data: any): ITeam {
         ...data,
         create_at: mement(data.create_at),
         leader: data.leader && regularizeMemberData(data.leader),
+        members: data.members && data.members.map((member: any) => regularizeMemberData(member)),
         status_name: data.status === TeamStatus.active ? '啟用中' : '停用中'
     }
 }

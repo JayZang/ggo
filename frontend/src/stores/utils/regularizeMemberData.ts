@@ -3,7 +3,7 @@ import moment from "moment";
 import { IMember, MemberGender } from "contracts/member"
 import defaultManAvatar from 'assets/svgs/default-man-avatar.svg'
 import defaultWomanAvatar from 'assets/svgs/default-woman-avatar.svg'
-import { regularizeTeamData } from "stores/team/utils";
+import { regularizeTeamData } from "stores/utils/regularizeTeamData";
 
 export function regularizeMemberData(data: any): IMember {
     const defaultAvatar = data.gender === MemberGender.female ? defaultWomanAvatar : defaultManAvatar

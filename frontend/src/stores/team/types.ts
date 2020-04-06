@@ -1,15 +1,29 @@
 import { ITeam } from 'contracts/team'
+import { ITask } from 'contracts/task'
+import { IMember } from 'contracts/member'
 
 export const GET_PERMANENT_TEAMS = 'GET_PERMANENT_TEAMS'
 export const GET_TEMPORARAY_TEAMS = 'GET_TEMPORARAY_TEAMS'
 export const ADD_PERMANENT_TEAM = 'ADD_PERMANENT_TEAM'
 export const GET_TEAM_DETAIL_INFO = 'GET_TEAM_DETAIL_INFO'
+export const GET_TEAM_TASKS = 'GET_TEAM_TASKS'
+export const GET_TEAM_EDIT_PANEL_MEMBER_SELECTION = 'GET_TEAM_EDIT_PANEL_MEMBER_SELECTION'
 
 export type TeamState = {
-    permanentTeams: ITeam[] | null,
-    temporaryTeams: ITeam[] | null,
-    teamsOfMember: ITeam[] | null,
-    teamDetail: ITeam | null
+    listPage: {
+        permanentTeams: ITeam[] | null
+        temporaryTeams: ITeam[] | null
+    }
+    infoPage: {
+        team: ITeam | null
+        tasksOfTeam: {
+            tasks: ITask[] | null
+            totalCount: number
+        }
+    },
+    editPanel: {
+        memberSelectionMenu: IMember[] | null
+    }
 }
 
 type GetPermanentTeams = {
@@ -40,8 +54,26 @@ type GetTeamDetailInfo = {
     }
 }
 
+type GetTeamTasks = {
+    type: typeof GET_TEAM_TASKS,
+    payload: {
+        tasks: ITask[]
+        refresh: boolean
+        totalCount: number
+    }
+}
+
+type GetEditPanelMemberSelection = {
+    type: typeof GET_TEAM_EDIT_PANEL_MEMBER_SELECTION,
+    payload: {
+        members: IMember[]
+    }
+}
+
 export type TeamActionType = 
     GetPermanentTeams |
     GetTemporaryTeams | 
     AddPermanentTeam |
-    GetTeamDetailInfo
+    GetTeamDetailInfo |
+    GetTeamTasks |
+    GetEditPanelMemberSelection
