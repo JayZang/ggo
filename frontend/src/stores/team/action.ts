@@ -8,8 +8,6 @@ import {
     GET_PERMANENT_TEAMS, 
     GET_TEMPORARAY_TEAMS, 
     ADD_PERMANENT_TEAM,
-    GET_TEAMS_OF_MEMBER,
-    CLEAR_TEAMS_OF_MEMBER,
     GET_TEAM_DETAIL_INFO
 } from "./types";
 
@@ -50,25 +48,6 @@ export const createTeam = (data: any) => async (dispatch: Dispatch) => {
     }
 
     dispatch(action)
-}
-
-export const getTeamsByMember = (id: string | number) => async (dispatch: Dispatch) => {
-    const res = await memberAPI.getTeamsByMember(id)
-
-    const action: TeamActionType = {
-        type: GET_TEAMS_OF_MEMBER,
-        payload: {
-            teams: res.data.map(team => regularizeTeamData(team))
-        }
-    }
-
-    dispatch(action)
-}
-
-export const clearTeamsOfMember = () => {
-    return {
-        type: CLEAR_TEAMS_OF_MEMBER
-    }
 }
 
 export const getTeamById = (id: string | number) => async (dispatch: Dispatch) => {

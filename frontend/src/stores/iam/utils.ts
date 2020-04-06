@@ -2,7 +2,7 @@ import moment from "moment";
 import { IPolicy } from "contracts/policy";
 import { IGroup } from "contracts/group";
 import { IUser, UserIdentityType } from "contracts/user";
-import { regularizeMemberData } from "stores/member/utils";
+import { regularizeMemberData } from "stores/utils/regularizeMemberData";
 
 export function regularizePolicyData(data: any): IPolicy {
     return {

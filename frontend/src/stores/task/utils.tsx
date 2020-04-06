@@ -3,9 +3,9 @@ import moment from "moment";
 import { Box } from "@material-ui/core";
 
 import { ITask, ITaskAssignment, TaskAssignType, TaskStatus } from 'contracts/task'
-import { regularizeProjectData } from "stores/project/utils";
-import { regularizeMemberData } from "stores/member/utils";
 import { regularizeTeamData } from "stores/team/utils";
+import { regularizeProjectData } from "stores/project/utils";
+import { regularizeMemberData } from "stores/utils/regularizeMemberData";
 import { regularizeWorkReportData } from 'stores/utils/regularizeWorkReportData';
 import { IWorkReport } from 'contracts/workReport';
 

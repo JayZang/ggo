@@ -4,10 +4,11 @@ import _ from 'lodash'
 
 import MemberRepo from '@/repository/MemberRepository'
 import EmergencyContactRepo from '@/repository/EmergencyContactRepository'
-import Member, { MemberStatus } from '@/entity/Member'
+import { MemberStatus } from '@/entity/Member'
 import TeamRepository from '@/repository/TeamRepository'
 import UserRepo from '@/repository/UserRepository'
 import { UserIdentityType } from '@/entity/User'
+import MemberHelper from '@/helper/MemberHelper'
 
 @Service()
 export default class MemberService {
@@ -34,29 +35,18 @@ export default class MemberService {
         take: number,
     }) {
         const memberRepo = getCustomRepository(MemberRepo)
-        const userRepo = getCustomRepository(UserRepo)
 
-        const members = await memberRepo.find(option)
-        const memberIdsMapping: Member[] = []
+        const [members, count] = await memberRepo.findAndCount(option)
+        await MemberHelper.attachIsUserField(members)
 
-        members.forEach(member => {
-            memberIdsMapping[member.id] = member
-        })
-
-        const users = await userRepo.getByIdentities(
-            UserIdentityType.member, 
-            Object.keys(memberIdsMapping) as any[]
-        )
-
-        users.forEach(user => {
-            memberIdsMapping[user.identity_id].isUser = !!user
-        })
-
-        return members
+        return {
+            members,
+            count
+        }
     }
 
     /**
-     * Get Members
+     * Get Count Statistic
      */
     public async getCountStatistic() {
         const memberRepo = getCustomRepository(MemberRepo)
@@ -80,7 +70,10 @@ export default class MemberService {
     public async update(id: string | number, data: any) {
         try {
             const memberRepo = getCustomRepository(MemberRepo)
-            return await memberRepo.updateById(id, data)
+
+            const member = await memberRepo.updateById(id, data)
+            await MemberHelper.attachIsUserField([member])
+            return member
         } catch (err) {
             console.log('Update member fail')
             console.log(err.toString())
@@ -118,10 +111,16 @@ export default class MemberService {
      * 
      * @param id    Member id
      */
-    public async getBaseInfoById(id: string | number) {
+    public async getDetailInfoById(id: string | number) {
         try {
             const memberRepo = getCustomRepository(MemberRepo)
-            return await memberRepo.findOneOrFail(id)
+            return await memberRepo
+                .initQueryBuilder()
+                .withIdCondition(id)
+                .withTeamsRelation()
+                .withTeamsAsLeaderRelation()
+                .withEmergencyContactsRelation()
+                .getOne()
         } catch (err) {
             console.log('Find member fail')
             console.log(err.toString())

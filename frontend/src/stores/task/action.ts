@@ -2,11 +2,11 @@ import { Dispatch } from "redux"
 
 import { ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, GET_PROJECT_TASKS, UPDATE_TASK_STATUS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TEAM_TASKS, GET_TASK_DETAIL_INFO } from "./types"
 
-import * as memberApi from 'api/member'
+import * as taskApi from 'api/task'
 import * as teamApi from 'api/team'
 import * as projectApi from 'api/project'
-import * as taskApi from 'api/task'
-import { regularizeMemberData } from "stores/member/utils"
+import * as memberApi from 'api/member'
+import { regularizeMemberData } from "stores/utils/regularizeMemberData"
 import { regularizeTeamData } from "stores/team/utils"
 import { regularizeTaskData } from "./utils"
 import { TaskStatus } from "contracts/task"
@@ -107,13 +107,13 @@ export const updateTaskStatus = (id: string | number, status: TaskStatus) => asy
 export const fetchMemberSelection = () => async (dispatch : Dispatch) => {
     const res = await memberApi.get({
         offset: 0,
-        count: 1
+        count: 10
     })
  
     const action: TaskActionType = {
         type: ADD_MEMBER_SELECTION_LIST,
         payload: {
-            members: res.data.map(member => regularizeMemberData(member))
+            members: res.data.members.map(member => regularizeMemberData(member))
         }
     }
  

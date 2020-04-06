@@ -54,7 +54,7 @@ export default (app: Router) => {
     })
 
     router.get('/:id', async (req, res) => {
-        const member = await memberService.getBaseInfoById(
+        const member = await memberService.getDetailInfoById(
             req.params.id
         )
 

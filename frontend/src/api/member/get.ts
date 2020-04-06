@@ -12,6 +12,7 @@ export function get(option: {
     } = option
 
     return axios.get<{
+        members: {
             id: number
             name: string
             gender: number
@@ -24,5 +25,7 @@ export function get(option: {
             status: number
             create_at: string
             update_at: string
-    }[]>(`${URL}?offset=${offset}&count=${count}`)
+        }[],
+        count: number
+    }>(`${URL}?offset=${offset}&count=${count}`)
 }

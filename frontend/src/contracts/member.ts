@@ -1,5 +1,5 @@
 import { Moment } from 'moment'
-import { IUser } from './user'
+import { ITeam } from './team'
 
 export type IMember = {
     id: number
@@ -15,6 +15,9 @@ export type IMember = {
     isUser?: boolean
     create_at: Moment
     update_at: Moment
+    teams?: ITeam[]
+    teams_as_leader?: ITeam[]
+    emergencyContacts?: IEmergencyContact[]
 }
 
 export enum MemberStatus {

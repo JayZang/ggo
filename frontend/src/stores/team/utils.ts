@@ -1,7 +1,7 @@
 import mement from 'moment'
 
 import { ITeam, TeamStatus } from 'contracts/team'
-import { regularizeMemberData } from 'stores/member/utils'
+import { regularizeMemberData } from 'stores/utils/regularizeMemberData'
 
 export function regularizeTeamData(data: any): ITeam {
     return {

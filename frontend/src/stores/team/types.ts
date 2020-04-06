@@ -3,8 +3,6 @@ import { ITeam } from 'contracts/team'
 export const GET_PERMANENT_TEAMS = 'GET_PERMANENT_TEAMS'
 export const GET_TEMPORARAY_TEAMS = 'GET_TEMPORARAY_TEAMS'
 export const ADD_PERMANENT_TEAM = 'ADD_PERMANENT_TEAM'
-export const GET_TEAMS_OF_MEMBER = 'GET_TEAMS_OF_MEMBER'
-export const CLEAR_TEAMS_OF_MEMBER = 'CLEAR_TEAMS_OF_MEMBER'
 export const GET_TEAM_DETAIL_INFO = 'GET_TEAM_DETAIL_INFO'
 
 export type TeamState = {
@@ -35,17 +33,6 @@ type AddPermanentTeam = {
     }
 }
 
-type GetTeamsOfMember = {
-    type: typeof GET_TEAMS_OF_MEMBER,
-    payload: {
-        teams: ITeam[]
-    }
-}
-
-type ClearTeamsOfMember = {
-    type: typeof CLEAR_TEAMS_OF_MEMBER,
-}
-
 type GetTeamDetailInfo = {
     type: typeof GET_TEAM_DETAIL_INFO,
     payload: {
@@ -57,6 +44,4 @@ export type TeamActionType =
     GetPermanentTeams |
     GetTemporaryTeams | 
     AddPermanentTeam |
-    GetTeamsOfMember | 
-    ClearTeamsOfMember |
     GetTeamDetailInfo

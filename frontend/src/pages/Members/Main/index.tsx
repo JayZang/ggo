@@ -6,24 +6,26 @@ import { clearMembers, fetchMembers, fetchMemberCountStatistic } from 'stores/me
 import { RootState } from 'stores';
 
 const mapStateToProps = (state: RootState) => {
-    const members = state.member.members
+    const members = state.member.listPage
     return {
         members: members.list,
-        isAllMemberFetched: !!members.list && members.list.length >= members.totalCount
+        isAllMemberFetched: !!members.list && members.list.length >= members.listCount
     }
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     load: async () => {
-        await dispatch<Promise<void>>(fetchMemberCountStatistic()).then(() => {
-            return dispatch(fetchMembers())
-        })
+        await Promise.all([
+            dispatch(fetchMemberCountStatistic()),
+            dispatch(fetchMembers())
+        ])
     },
     reload: async () => {
         dispatch(clearMembers())
-        await dispatch<Promise<void>>(fetchMemberCountStatistic()).then(() => {
-            return dispatch(fetchMembers())
-        })
+        await Promise.all([
+            dispatch(fetchMemberCountStatistic()),
+            dispatch(fetchMembers())
+        ])
     },
     fetchMembers: async () => {
         await dispatch(fetchMembers())

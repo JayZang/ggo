@@ -2,20 +2,19 @@ import { Dispatch } from 'redux'
 
 import * as memberAPI from 'api/member'
 import * as teamAPI from 'api/team'
-import { regularizeMemberData } from './utils'
+import { regularizeMemberData } from 'stores/utils/regularizeMemberData'
 import {
     CLEAR_MEMBERS,
-    ADD_MEMBER_LIST,
     UPDATE_MEMBER,
     REMOVE_MEMBER,
     MemberActionTypes,
-    GET_MEMBER_BASE_INFO,
-    CLEAR_MEMBER_INFO,
-    GET_MEMBER_EMERGENCY_CONTACT,
+    GET_MEMBER_DETAIL_INFO,
     ADD_EMERGENCY_CONTACT,
     REMOVE_EMERGENCY_CONTACT,
     GET_MEMBER_COUNT_STATISTIC,
     GET_TEAM_MEMBERS,
+    GET_MEMBER_LIST,
+    ADD_MEMBER_TO_LIST,
 } from './types'
 import { IEmergencyContactEditDTO } from 'contracts/member'
 import { RootState } from 'stores'
@@ -38,10 +37,10 @@ export const fetchMemberCountStatistic = () => async (dispatch: Dispatch) => {
 export const fetchMembers = () => async (dispatch: Dispatch, getState: () => RootState) => {
     const {
         list: memberList,
-        totalCount
-    } = getState().member.members
+        listCount
+    } = getState().member.listPage
 
-    if (memberList && memberList.length >= totalCount)
+    if (memberList && memberList.length >= listCount)
         return
 
     const res = await memberAPI.get({
@@ -50,12 +49,10 @@ export const fetchMembers = () => async (dispatch: Dispatch, getState: () => Roo
     })
 
     const action: MemberActionTypes = {
-        type: ADD_MEMBER_LIST,
+        type: GET_MEMBER_LIST,
         payload: {
-            members: res.data.map(member => {
-                return regularizeMemberData(member)
-            }),
-            totalCountIncrement: 0
+            members: res.data.members.map(member => regularizeMemberData(member)),
+            listCount: res.data.count
         }
     }
 
@@ -72,10 +69,9 @@ export const createMember = (data: any) => async (dispatch: Dispatch, getState: 
     const res = await memberAPI.create(data)
 
     const action: MemberActionTypes = {
-        type: ADD_MEMBER_LIST,
+        type: ADD_MEMBER_TO_LIST,
         payload: {
-            members: [regularizeMemberData(res.data)],
-            totalCountIncrement: 1
+            member: regularizeMemberData(res.data)
         }
     }
 
@@ -108,26 +104,13 @@ export const removeMember = (id: number | string) => async (dispatch: Dispatch) 
     dispatch(action)
 }
 
-export const getMemberBaseInfo = (id: number | string) => async (dispatch: Dispatch) => {
+export const fetchMemberDetailInfo = (id: number | string) => async (dispatch: Dispatch) => {
     const res = await memberAPI.getBaseInfo(id)
 
     const action: MemberActionTypes = {
-        type: GET_MEMBER_BASE_INFO,
+        type: GET_MEMBER_DETAIL_INFO,
         payload: {
             member: regularizeMemberData(res.data)
-        }
-    }
-
-    dispatch(action)
-}
-
-export const getMemberEmergencyContacts = (id: number | string) => async (dispatch: Dispatch) => {
-    const res = await memberAPI.getEmergencyContacts(id)
-
-    const action: MemberActionTypes = {
-        type: GET_MEMBER_EMERGENCY_CONTACT,
-        payload: {
-            emergencyContacts: res.data
         }
     }
 
@@ -158,12 +141,6 @@ export const deleteEmergencyContact = (id: number | string) => async (dispatch: 
     }
 
     dispatch(action)
-}
-
-export const clearMemberInfo = () => {
-    return {
-        type: CLEAR_MEMBER_INFO
-    }
 }
 
 export const fetchMembersByTeam = (id: string | number) => async (dispatch: Dispatch) => {

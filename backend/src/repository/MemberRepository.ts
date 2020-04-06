@@ -1,10 +1,14 @@
-import { EntityRepository, Repository, getCustomRepository } from 'typeorm'
 import _ from 'lodash'
+import { EntityRepository } from 'typeorm'
 
+import { BaseRepository } from './BaseRepocitory'
 import Member, { MemberStatus } from '@/entity/Member'
 
 @EntityRepository(Member)
-class MemberRepository extends Repository<Member> {
+class MemberRepository extends BaseRepository<Member> {
+    protected teamsAlias = 'teams'
+    protected teamsAsLeaderAlias = 'teamsAsLeader'
+    protected emergencyContactsAlias = 'emergencyContacts'
 
     /**
      * Create and save a  new member
@@ -52,6 +56,21 @@ class MemberRepository extends Repository<Member> {
         ]))
 
         return this.save(member)
+    }
+
+    withTeamsRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.teams`, this.teamsAlias)
+        return this
+    }
+
+    withTeamsAsLeaderRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.teams_as_leader`, this.teamsAsLeaderAlias)
+        return this
+    }
+
+    withEmergencyContactsRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.emergencyContacts`, this.emergencyContactsAlias)
+        return this
     }
 }
 

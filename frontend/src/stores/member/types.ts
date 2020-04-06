@@ -1,34 +1,35 @@
 import { IMember, IEmergencyContact } from 'contracts/member'
 
-export const CLEAR_MEMBERS = 'CLEAR_MEMBERS'
 export const GET_MEMBER_COUNT_STATISTIC = 'GET_MEMBER_COUNT_STATISTIC'
-export const ADD_MEMBER_LIST = 'ADD_MEMBER_LIST'
+export const GET_MEMBER_LIST = 'GET_MEMBER_LIST'
+export const ADD_MEMBER_TO_LIST = 'ADD_MEMBER_TO_LIST'
+export const CLEAR_MEMBERS = 'CLEAR_MEMBERS'
 export const UPDATE_MEMBER = 'UPDATE_MEMBER'
 export const REMOVE_MEMBER = 'REMOVE_MEMBER'
-export const GET_MEMBER_BASE_INFO = 'GET_MEMBER_BASE_INFO'
-export const GET_MEMBER_EMERGENCY_CONTACT = 'GET_MEMBER_EMERGENCY_CONTACT'
+export const GET_MEMBER_DETAIL_INFO = 'GET_MEMBER_DETAIL_INFO'
 export const ADD_EMERGENCY_CONTACT = 'ADD_EMERGENCY_CONTACT'
 export const REMOVE_EMERGENCY_CONTACT = 'REMOVE_EMERGENCY_CONTACT'
-export const CLEAR_MEMBER_INFO = 'CLEAR_MEMBER_INFO'
+
+
 export const GET_TEAM_MEMBERS = 'GET_TEAM_MEMBERS'
 
 export type MemberState = {
     /**
-     * Member list
+     * Member list page
      */
-    members: {
-        list: IMember[] | null,
-        totalCount: number,
-        activeCount: number,
+    listPage: {
+        list: IMember[] | null
+        listCount: number
+        totalCount: number
+        activeCount: number
         inactiveCount: number
     },
 
     /**
-     * Member Detail Information
+     * Member detail information page
      */
-    memberInfo: {
-        baseInfo: IMember | null,
-        emergenctContacts: IEmergencyContact[] | null
+    infoPage: {
+        member: IMember | null,
     },
 
     teamMembers: IMember[] | null,
@@ -47,11 +48,18 @@ type GetMemberCountStatistic = {
     }
 }
 
-type AddMemberList = {
-    type: typeof ADD_MEMBER_LIST,
+type GetMemberList = {
+    type: typeof GET_MEMBER_LIST,
     payload: {
         members: IMember[],
-        totalCountIncrement: number
+        listCount: number
+    }
+}
+
+type AddMemberToList = {
+    type: typeof ADD_MEMBER_TO_LIST,
+    payload: {
+        member: IMember
     }
 }
 
@@ -69,17 +77,10 @@ type RemoveMember = {
     }
 }
 
-type GetMemberBaseInfo = {
-    type: typeof GET_MEMBER_BASE_INFO,
+type GetMemberDetailInfo = {
+    type: typeof GET_MEMBER_DETAIL_INFO,
     payload: {
         member: IMember
-    }
-}
-
-type GetEmergencyContacts = {
-    type: typeof GET_MEMBER_EMERGENCY_CONTACT,
-    payload: {
-        emergencyContacts: IEmergencyContact[]
     }
 }
 
@@ -97,10 +98,6 @@ type RemoveEmergencyContact = {
     }
 }
 
-type ClearMemberInfo = {
-    type: typeof CLEAR_MEMBER_INFO
-}
-
 type GetTeamMembers = {
     type: typeof GET_TEAM_MEMBERS,
     payload: {
@@ -110,13 +107,12 @@ type GetTeamMembers = {
 
 export type MemberActionTypes = 
     GetMemberCountStatistic |
-    AddMemberList | 
+    GetMemberList |
+    AddMemberToList | 
     ClearMembers | 
     UpdateMember | 
     RemoveMember |
-    GetMemberBaseInfo |
-    GetEmergencyContacts |
+    GetMemberDetailInfo |
     AddEmergencyContact |
     RemoveEmergencyContact |
-    ClearMemberInfo | 
     GetTeamMembers
