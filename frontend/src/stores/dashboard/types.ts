@@ -4,7 +4,7 @@ import { IWorkReport } from 'contracts/workReport'
 
 export const GET_TASKS = 'GET_TASKS'
 export const GET_PROJECTS = 'GET_PROJECTS'
-export const GET_WORK_REPORTS = 'GET_WORK_REPORTS'
+export const GET_DASHBOARD_WORK_REPORTS = 'GET_DASHBOARD_WORK_REPORTS'
 
 export type DashboardState = {
     tasks: ITask[] | null
@@ -27,7 +27,7 @@ type GetProjects = {
 }
 
 type GetWorkReports = {
-    type: typeof GET_WORK_REPORTS,
+    type: typeof GET_DASHBOARD_WORK_REPORTS,
     payload: {
         workReports: IWorkReport[]
     }

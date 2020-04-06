@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import * as dashboardApi from 'api/dashboard'
-import { DashboardActionType, GET_TASKS, GET_PROJECTS, GET_WORK_REPORTS } from "./types";
+import { DashboardActionType, GET_TASKS, GET_PROJECTS, GET_DASHBOARD_WORK_REPORTS } from "./types";
 import { regularizeTaskData } from "stores/task/utils";
 import { regularizeProjectData } from "stores/project/utils";
 import { regularizeWorkReportData } from "stores/utils/regularizeWorkReportData";
@@ -36,7 +36,7 @@ export const fetchWorkReports = () => async (dispatch : Dispatch) => {
    const res = await dashboardApi.getWorkReports()
 
    const action: DashboardActionType = {
-       type: GET_WORK_REPORTS,
+       type: GET_DASHBOARD_WORK_REPORTS,
        payload: {
            workReports: res.data.map(workReport => regularizeWorkReportData(workReport))
        }

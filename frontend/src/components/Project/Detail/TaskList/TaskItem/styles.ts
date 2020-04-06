@@ -2,7 +2,7 @@ import { Theme, createStyles } from "@material-ui/core";
 
 export default (theme: Theme) => createStyles({
     fieldTaskName: {
-        width: 250,
+        width: 200,
         display: 'flex'
     },
     fieldHint: {

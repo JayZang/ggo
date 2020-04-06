@@ -61,9 +61,11 @@ class TaskManagementListItem extends Component<IProps, IStates> {
                     <ListItemText primary="任務項目" />
                 </ListItem>
             </Link>
-            <ListItem button>
-              <ListItemText primary="工作報告" />
-            </ListItem>
+            <Link to="/work-reports">
+              <ListItem button>
+                <ListItemText primary="工作報告" />
+              </ListItem>
+            </Link>
           </List>
         </Collapse>
       </div>

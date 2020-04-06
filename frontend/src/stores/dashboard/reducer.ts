@@ -1,4 +1,4 @@
-import { DashboardState, DashboardActionType, GET_TASKS, GET_PROJECTS, GET_WORK_REPORTS } from "./types"
+import { DashboardState, DashboardActionType, GET_TASKS, GET_PROJECTS, GET_DASHBOARD_WORK_REPORTS } from "./types"
 
 const initState: DashboardState = {
     tasks: null,
@@ -20,7 +20,7 @@ export default function dashboardReducer(state: DashboardState = initState, acti
                 projects: action.payload.projects
             }
 
-        case GET_WORK_REPORTS:
+        case GET_DASHBOARD_WORK_REPORTS:
             return {
                 ...state,
                 workReports: action.payload.workReports

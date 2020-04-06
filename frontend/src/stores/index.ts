@@ -12,6 +12,7 @@ import teamReducer from './team/reducers'
 import customerReducer from './customer/reducers'
 import projectReducer from './project/reducer'
 import taskReducer from './task/reducer'
+import workReportReducer from './workReport/reducer'
 import userAreaReducer from './userArea/reducer'
 
 const rootReducer = combineReducers({
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   customer: customerReducer,
   project: projectReducer,
   task: taskReducer,
+  workReport: workReportReducer,
   loadingBar: loadingBarReducer
 })
 
