@@ -63,7 +63,7 @@ class WorkReportList extends Component<IProps, IState> {
                             </ListItem>
                         ))}
                         {workReports.length === 0 ? (
-                            <ListItem>最新提交之工作報告</ListItem>
+                            <ListItem>尚無最新提交之工作報告</ListItem>
                         ) : null}
                     </List>
                 </Box>

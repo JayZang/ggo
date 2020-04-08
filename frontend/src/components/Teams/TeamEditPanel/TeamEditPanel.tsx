@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { Component, ChangeEvent, FormEvent } from 'react'
 import {
     FormControl,
     Grid,
@@ -20,14 +20,17 @@ import { withSnackbar, WithSnackbarProps } from 'notistack'
 import clsx from 'clsx'
 
 import styles from './styles'
+import { ITeam } from 'contracts/team'
 import { IMember } from 'contracts/member'
 import MemberSelectionMenu from 'components/Members/SelectionMenu/SelectionMenu'
 
 type IProps = WithStyles<typeof styles> &  WithSnackbarProps & {
+    team?: ITeam | null
     load: () => Promise<void>
     create: (data: any) => Promise<void>
+    update: (id: number | string, data: any) => Promise<void>
     onSubmitSuccess?: () => void
-    memberSelectionMenu: IMember[]
+    memberSelectionMenu: IMember[] | null
 }
 
 type Fields = {
@@ -47,12 +50,15 @@ class TeamEditPanel extends Component<IProps, IState> {
     constructor (props: IProps) {
         super(props)
 
+        const team = this.props.team
+
+        this.handleSubmit = this.handleSubmit.bind(this)
         this.state = {
             fields: {
-                name: '',
-                description: '',
-                leader: null,
-                members: []
+                name: team ? team.name :'',
+                description: team ? team.description : '',
+                leader: team ? team.leader! : null,
+                members: team ? team.members! : []
             },
             errors: {
                 name: '',
@@ -74,7 +80,7 @@ class TeamEditPanel extends Component<IProps, IState> {
             return members
         else
             return members.filter(member => {
-                return member !== leader
+                return member.id !== leader.id
             })
     }
 
@@ -133,10 +139,15 @@ class TeamEditPanel extends Component<IProps, IState> {
         return !errMsg
     }
 
-    handleSubmitClick() {
+    handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+
         const {
             fields
         } = this.state
+        const {
+            team
+        } = this.props
         let isAllPass = true
 
         Object.keys(fields).forEach((key: any) => {
@@ -146,20 +157,23 @@ class TeamEditPanel extends Component<IProps, IState> {
         if (!isAllPass)
             return
 
+        const actionFunc = team ? this.props.update.bind(this, team.id) : this.props.create
+        const actionName = team ? '編輯' : '新增'
+
         this.setState({ isSubmitting: true })
-        this.props.create({
+        actionFunc({
             name: fields.name,
             description: fields.description,
             leader: fields.leader!.id,
-            members: fields.members.map(member => member.id)
+            members: this.members.map(member => member.id)
         }).then(() => {
-            this.props.enqueueSnackbar('新增團隊成功！', {
+            this.props.enqueueSnackbar(`${actionName}團隊成功！`, {
                 variant: 'success'
             })
             this.props.onSubmitSuccess && this.props.onSubmitSuccess()
             this.setState({ isSubmitting: false })
         }).catch(() => {
-            this.props.enqueueSnackbar('新增團隊失敗！', {
+            this.props.enqueueSnackbar(`${actionName}團隊失敗！`, {
                 variant: 'error'
             })
             this.setState({ isSubmitting: false })
@@ -167,11 +181,12 @@ class TeamEditPanel extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.props.load()
+        this.props.memberSelectionMenu || this.props.load()
     }
 
     render() {
         const {
+            team,
             classes,
             memberSelectionMenu
         } = this.props
@@ -181,121 +196,131 @@ class TeamEditPanel extends Component<IProps, IState> {
         } = this.state
         
         return (
-            <Grid container direction="column" spacing={2}>
-                <Grid item className={classes.gridItem}>
-                    <FormControl fullWidth>
-                        <TextField
-                            value={fields.name}
-                            label="團隊名稱" type="text" variant="outlined" fullWidth
-                            InputProps={{ margin: "dense" }}
-                            InputLabelProps={{
-                                margin: 'dense',
-                                style: { fontSize: 14 },
-                            }}
-                            onChange={(event) => {
-                                this.setState({
-                                    fields: {
-                                        ...this.state.fields,
-                                        name: event.target.value.trimLeft()
-                                    }
-                                }, () => {
-                                    this.checkFields('name')
-                                })
-                            }}
-                        />
-                        {errors.name ? (<FormHelperText>{errors.name}</FormHelperText>) : null}
-                    </FormControl>
-                </Grid>
-                
-                <Grid item className={classes.gridItem}>
-                    <FormControl fullWidth className="form-group">
-                        <label className={classes.label}>描述</label>
-                        <textarea 
-                            rows={3}
-                            className={clsx("form-control", classes.textarea)}
-                            value={fields.description}
-                            onChange={(event) => {
-                                this.setState({
-                                    fields: {
-                                        ...this.state.fields,
-                                        description: event.target.value.trimLeft()
-                                    }
-                                }, () => {
-                                    this.checkFields('description')
-                                })
-                            }}
-                        />
-                        {errors.description ? (<FormHelperText>{errors.description}</FormHelperText>) : null}
-                    </FormControl>
-                </Grid>
+            <form onSubmit={this.handleSubmit}>
+                <Grid container direction="column" spacing={2}>
+                    <Grid item className={classes.gridItem}>
+                        <FormControl fullWidth>
+                            <TextField
+                                required
+                                value={fields.name}
+                                label="團隊名稱" type="text" variant="outlined" fullWidth
+                                InputProps={{ margin: "dense" }}
+                                InputLabelProps={{
+                                    margin: 'dense',
+                                    style: { fontSize: 14 },
+                                }}
+                                onChange={(event) => {
+                                    this.setState({
+                                        fields: {
+                                            ...this.state.fields,
+                                            name: event.target.value.trimLeft()
+                                        }
+                                    }, () => {
+                                        this.checkFields('name')
+                                    })
+                                }}
+                            />
+                            {errors.name ? (<FormHelperText>{errors.name}</FormHelperText>) : null}
+                        </FormControl>
+                    </Grid>
+                    
+                    <Grid item className={classes.gridItem}>
+                        <FormControl fullWidth className="form-group">
+                            <label className={classes.label}>描述</label>
+                            <textarea
+                                required
+                                rows={3}
+                                className={clsx("form-control", classes.textarea)}
+                                value={fields.description}
+                                onChange={(event) => {
+                                    this.setState({
+                                        fields: {
+                                            ...this.state.fields,
+                                            description: event.target.value.trimLeft()
+                                        }
+                                    }, () => {
+                                        this.checkFields('description')
+                                    })
+                                }}
+                            />
+                            {errors.description ? (<FormHelperText>{errors.description}</FormHelperText>) : null}
+                        </FormControl>
+                    </Grid>
 
-                <Grid item className={classes.gridItem}>
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                        >
-                            {!fields.leader && <Typography noWrap>團隊負責人</Typography> }
-                            {fields.leader && (function () {
-                                return (
-                                    <Grid container alignItems="center" spacing={2}>
-                                        <Avatar src={fields.leader.avatar} />
-                                        <Grid item>
-                                            <Grid container direction="column">
-                                                <Typography className={classes.leaderName}>{fields.leader.name}</Typography>
-                                                <Typography  variant="body2" className={classes.leaderHint}>團隊負責人</Typography>
+                    <Grid item className={classes.gridItem}>
+                        <ExpansionPanel>
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                            >
+                                {!fields.leader && <Typography noWrap>團隊負責人</Typography> }
+                                {fields.leader && (function () {
+                                    return (
+                                        <Grid container alignItems="center" spacing={2}>
+                                            <Avatar src={fields.leader.avatar} />
+                                            <Grid item>
+                                                <Grid container direction="column">
+                                                    <Typography className={classes.leaderName}>{fields.leader.name}</Typography>
+                                                    <Typography  variant="body2" className={classes.leaderHint}>團隊負責人</Typography>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Grid>
-                                )
-                            })()}
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails classes={{
-                            root: classes.memberSelectionWrapper
-                        }}>
-                            <MemberSelectionMenu
-                                members={memberSelectionMenu}
-                                onChange={this.handleLeaderSelectionChange.bind(this)!}
-                            />
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    {errors.leader ? (<FormHelperText>{errors.leader}</FormHelperText>) : null}
-                </Grid>
+                                    )
+                                })()}
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails classes={{
+                                root: classes.memberSelectionWrapper
+                            }}>
+                                {memberSelectionMenu ? (
+                                    <MemberSelectionMenu
+                                        defaultMembers={team? [team.leader!] : null}
+                                        members={memberSelectionMenu}
+                                        onChange={this.handleLeaderSelectionChange.bind(this)!}
+                                    />
+                                ) : ''}
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        {errors.leader ? (<FormHelperText>{errors.leader}</FormHelperText>) : null}
+                    </Grid>
 
-                <Grid item className={classes.gridItem}>
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
+                    <Grid item className={classes.gridItem}>
+                        <ExpansionPanel>
+                            <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                            >
+                                <Typography>團隊成員 <span>{this.members.length}</span> 人</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails classes={{
+                                root: classes.memberSelectionWrapper
+                            }}>
+                                {memberSelectionMenu ? (
+                                    <MemberSelectionMenu 
+                                        defaultMembers={team? team.members! : null}
+                                        members={memberSelectionMenu || []}
+                                        multiple 
+                                        filtered={fields.leader ? [fields.leader] : undefined}
+                                        onChange={this.handleMembersSelectionChange.bind(this)}
+                                    />
+                                ) : ''}
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                        {errors.members ? (<FormHelperText>{errors.members}</FormHelperText>) : null}
+                    </Grid>
+
+                    <Grid item className={classes.gridItem}></Grid>
+
+                    <Grid item className={classes.gridItem}>
+                        <Button 
+                            variant="contained" 
+                            color="primary" 
+                            fullWidth
+                            disabled={this.state.isSubmitting}
+                            type="submit"
                         >
-                            <Typography>團隊成員 <span>{this.members.length}</span> 人</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails classes={{
-                            root: classes.memberSelectionWrapper
-                        }}>
-                            <MemberSelectionMenu 
-                                members={memberSelectionMenu}
-                                multiple 
-                                filtered={fields.leader ? [fields.leader] : undefined}
-                                onChange={this.handleMembersSelectionChange.bind(this)}
-                            />
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    {errors.members ? (<FormHelperText>{errors.members}</FormHelperText>) : null}
+                            {team ? '編輯' : '新增'}
+                        </Button>
+                    </Grid>
                 </Grid>
-
-                <Grid item className={classes.gridItem}></Grid>
-
-                <Grid item className={classes.gridItem}>
-                    <Button 
-                        variant="contained" 
-                        color="primary" 
-                        fullWidth
-                        onClick={this.handleSubmitClick.bind(this)}
-                        disabled={this.state.isSubmitting}
-                    >
-                        儲存
-                    </Button>
-                </Grid>
-            </Grid>
+            </form>
         )
     }
 }

@@ -6,7 +6,8 @@ import {
     Paper,
     Tabs,
     Tab,
-    Button
+    Button,
+    Box
 } from '@material-ui/core'
 import {
     Add as AddIcon
@@ -27,20 +28,40 @@ type IProps = WithStyles<typeof styles> & {
 }
 
 type IState = {
-    tabIndex: number,
+    tabIndex: number
     openEditPanel: boolean
+    teamToEdit: ITeam | null
 }
 
 class TeamList extends Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props)
+
+        this.handleTeamEditEvent = this.handleTeamEditEvent.bind(this)
+        this.state = {
+            tabIndex: 0,
+            openEditPanel: false,
+            teamToEdit: null
+        }
+    }
+
     state = {
         tabIndex: 0,
-        openEditPanel: false
+        openEditPanel: false,
+        teamToEdit: null
     }
 
     componentDidMount() {
         if (!this.props.permanentTeams || 
             !this.props.temporaryTeams)
             this.props.load()
+    }
+
+    handleTeamEditEvent(team: ITeam) {
+        this.setState({
+            teamToEdit: team,
+            openEditPanel: true
+        })
     }
 
     render() {
@@ -51,7 +72,8 @@ class TeamList extends Component<IProps, IState> {
         } = this.props
         const {
             tabIndex,
-            openEditPanel
+            openEditPanel,
+            teamToEdit
         } = this.state
 
         return (
@@ -79,13 +101,14 @@ class TeamList extends Component<IProps, IState> {
                     </Grid>
                 </Grid>
 
-                <TeamEditDrawer 
+                <TeamEditDrawer
+                    team={teamToEdit}
                     open={openEditPanel}
                     onOpen={() => this.setState({ openEditPanel: true })}
-                    onClose={() => this.setState({ openEditPanel: false })}
+                    onClose={() => this.setState({ openEditPanel: false, teamToEdit: null })}
                 />
 
-                <div className="mt-4">
+                <Box className="mt-4">
                     <Paper>
                         <Tabs
                             classes={{
@@ -102,19 +125,24 @@ class TeamList extends Component<IProps, IState> {
                     </Paper>
 
                     <SwipeableViews
-                        className="mt-3"
                         axis="x"
                         index={tabIndex}
                         onChangeIndex={newIndex => this.setState({ tabIndex: newIndex })}
                     >
-                        <div>
-                            <TeamMenu teams={permanentTeams} />
-                        </div>
-                        <div>
-                            <TeamMenu teams={temporaryTeams} />
-                        </div>
+                        <Box>
+                            <TeamMenu 
+                                teams={permanentTeams} 
+                                onTeamEdit={this.handleTeamEditEvent}
+                            />
+                        </Box>
+                        <Box>
+                            <TeamMenu 
+                                teams={temporaryTeams} 
+                                onTeamEdit={this.handleTeamEditEvent}
+                            />
+                        </Box>
                     </SwipeableViews>
-                </div>
+                </Box>
             </AppContent>
         )
     }

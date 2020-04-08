@@ -24,9 +24,20 @@ import { ITeam } from 'contracts/team'
 
 type IProps = WithStyles<typeof styles> & {
     team: ITeam
+    onEditBtnClick?: () => void
 }
 
 class TeamItem extends Component<IProps> {
+    constructor(props: IProps) {
+        super(props)
+
+        this.handleEditBtnClick = this.handleEditBtnClick.bind(this)
+    }
+
+    handleEditBtnClick() {
+        this.props.onEditBtnClick && this.props.onEditBtnClick()
+    }
+
     render() {
         const {
             classes,
@@ -90,8 +101,9 @@ class TeamItem extends Component<IProps> {
                         </Grid>
                     </Box>
                     <Box marginLeft="auto">
+                        <Button className={classes.button} size="small"  color="primary" onClick={this.handleEditBtnClick}>編輯</Button>
                         <Link to={`/teams/${team.id}`}>
-                            <Button  size="small" variant="outlined" color="primary">查看</Button>
+                            <Button className={classes.button} size="small"  color="primary">查看</Button>
                         </Link>
                     </Box>
                 </CardContent>

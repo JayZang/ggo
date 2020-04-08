@@ -2,11 +2,11 @@ import { connect } from 'react-redux'
 import { ThunkDispatch } from 'redux-thunk'
 
 import TeamEditPanel from './TeamEditPanel'
-import { createTeam, fetchEditPanelMemberSelection } from 'stores/team/action'
+import { createTeam, fetchEditPanelMemberSelection, updateTeam } from 'stores/team/action'
 import { RootState } from 'stores'
 
 const mapStateToProps = (state: RootState) => ({
-    memberSelectionMenu: state.team.editPanel.memberSelectionMenu || []
+    memberSelectionMenu: state.team.editPanel.memberSelectionMenu
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
@@ -17,6 +17,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     },
     create: async (data: any) => {
         await dispatch(createTeam(data))
+    },
+    update: async (id: number | string, data: any) => {
+        await dispatch(updateTeam(id, data))
     }
 })
 

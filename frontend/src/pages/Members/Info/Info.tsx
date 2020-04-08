@@ -11,11 +11,14 @@ import MemberBaseInfoCard from 'components/Members/Info/BaseInfoCard'
 import EmergencyContactMenu from 'components/Members/Info/EmergencyContactMenu'
 import TeamMenu from 'components/Members/Info/TeamMenu'
 import styles from './styles'
-import { IMember } from 'contracts/member'
+import { IMember, IEmergencyContact } from 'contracts/member'
+import { ITeam } from 'contracts/team'
 
 type IProps = WithStyles<typeof styles> & {
     id: string | number
     member: IMember | null
+    emergencyContacts: IEmergencyContact[] | null
+    teams: ITeam[] | null
     load: (id: string | number) => Promise<void>
 }
 
@@ -47,6 +50,8 @@ class MemberInfo extends Component<IProps, IState> {
             loaded
         } = this.state
         const member = loaded ? this.props.member : null
+        const emergencyContacts = loaded ? this.props.emergencyContacts : null
+        const teams = loaded ? this.props.teams : null
 
         return (
             <AppContent
@@ -64,15 +69,12 @@ class MemberInfo extends Component<IProps, IState> {
                     <div className={classes.emergencyContactMenuWrapper}>
                         <EmergencyContactMenu 
                             memberId={id}
-                            emergencyContacts={member && member.emergencyContacts ? member.emergencyContacts : null}
+                            emergencyContacts={emergencyContacts}
                         />
                         <Box className="mt-4" />
                         <TeamMenu 
                             memberId={id}
-                            teams={member && [
-                                ...(member.teams_as_leader ? member.teams_as_leader : []),
-                                ...(member.teams ? member.teams : [])
-                            ]} 
+                            teams={teams} 
                         />
                     </div>
                 </div>

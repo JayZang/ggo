@@ -46,6 +46,41 @@ export default class TeamService {
     }
 
     /**
+     * Update team
+     */
+    public async update(id: string | number, data: any) {
+        try {
+            const teamRepo = getCustomRepository(TeamRepo)
+            const memberRepo = getCustomRepository(MemberRepository)
+
+            const team = await teamRepo.findOneOrFail(id)
+            const [leader, members] = await Promise.all([
+                memberRepo.initQueryBuilder()
+                    .withStatusCondition(MemberStatus.active)
+                    .withIdCondition(data.leader)
+                    .getOne(),
+                memberRepo.initQueryBuilder()
+                    .withStatusCondition(MemberStatus.active)
+                    .withIdsCondition(data.members)
+                    .getMany()
+            ])
+
+            if (!leader || members.length === 0)
+                return null
+
+            Object.assign(team, data)
+            team.leader = leader
+            team.members = members
+            team.members_count = team.members.length
+            return await teamRepo.save(team)
+        } catch (err) {
+            console.log('Update Team fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
      * Get permanent teams
      */
     public async getPermanentTeams() {
@@ -54,6 +89,7 @@ export default class TeamService {
             .initQueryBuilder()
             .withTaskAssignmentsRelation()
             .withLeaderRelation()
+            .withMembersRelation()
             .withIsTemporaryCondition(false)
             .getMany()
     }
@@ -67,6 +103,7 @@ export default class TeamService {
             .initQueryBuilder()
             .withTaskAssignmentsRelation()
             .withLeaderRelation()
+            .withMembersRelation()
             .withIsTemporaryCondition(true)
             .getMany()
     }

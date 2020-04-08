@@ -106,10 +106,16 @@ export const removeMember = (id: number | string) => async (dispatch: Dispatch) 
 export const fetchMemberDetailInfo = (id: number | string) => async (dispatch: Dispatch) => {
     const res = await memberAPI.getBaseInfo(id)
 
+    const member = regularizeMemberData(res.data)
     const action: MemberActionTypes = {
         type: GET_MEMBER_DETAIL_INFO,
         payload: {
-            member: regularizeMemberData(res.data)
+            member,
+            emergencyContacts: member.emergencyContacts || [],
+            teams: [
+                ...(member.teams_as_leader || []),
+                ...(member.teams || [])
+            ]
         }
     }
 

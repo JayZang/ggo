@@ -22,7 +22,9 @@ const initState: MemberState = {
         inactiveCount: 0
     },
     infoPage: {
-        member: null
+        member: null,
+        emergencyContacts: null,
+        teams: null
     }
 }
 
@@ -109,7 +111,7 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                 ...state,
                 infoPage: {
                     ...(state.infoPage),
-                    member: action.payload.member
+                    ...action.payload
                 }
             }
 
@@ -118,13 +120,10 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                 ...state,
                 infoPage: {
                     ...(state.infoPage),
-                    member: state.infoPage.member && {
-                        ...state.infoPage.member,
-                        emergencyContacts: [
-                            ...(state.infoPage.member.emergencyContacts || []),
-                            action.payload.emergencyContact
-                        ]
-                    }
+                    emergencyContacts: [
+                        ...(state.infoPage.emergencyContacts || []),
+                        action.payload.emergencyContact
+                    ]
                 }
             }
 
@@ -133,13 +132,10 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                 ...state,
                 infoPage: {
                     ...(state.infoPage),
-                    member: state.infoPage.member && {
-                        ...state.infoPage.member,
-                        emergencyContacts: (state.infoPage.member.emergencyContacts || []).filter(emergencyContact => {
-                            if (emergencyContact.id !== action.payload.id)
-                                return emergencyContact
-                        })
-                    }
+                    emergencyContacts: state.infoPage.emergencyContacts && (state.infoPage.emergencyContacts || []).filter(emergencyContact => {
+                        if (emergencyContact.id !== action.payload.id)
+                            return emergencyContact
+                    })
                 }
             }
 

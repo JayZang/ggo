@@ -1,4 +1,5 @@
 import { IMember, IEmergencyContact } from 'contracts/member'
+import { ITeam } from 'contracts/team'
 
 export const GET_MEMBER_COUNT_STATISTIC = 'GET_MEMBER_COUNT_STATISTIC'
 export const GET_MEMBER_LIST = 'GET_MEMBER_LIST'
@@ -26,7 +27,9 @@ export type MemberState = {
      * Member detail information page
      */
     infoPage: {
-        member: IMember | null,
+        member: IMember | null
+        emergencyContacts: IEmergencyContact[] | null
+        teams: ITeam[] | null
     }
 }
 
@@ -76,6 +79,8 @@ type GetMemberDetailInfo = {
     type: typeof GET_MEMBER_DETAIL_INFO,
     payload: {
         member: IMember
+        emergencyContacts: IEmergencyContact[]
+        teams: ITeam[]
     }
 }
 

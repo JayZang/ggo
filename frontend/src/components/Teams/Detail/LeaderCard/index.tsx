@@ -3,7 +3,7 @@ import { Box, Card, CardContent, Typography, Avatar } from '@material-ui/core'
 import styled from 'styled-components'
 
 import { IMember } from 'contracts/member'
-import { Label } from '@material-ui/icons'
+import { Link } from 'react-router-dom'
 
 type IProps = {
     className?: string,
@@ -20,10 +20,14 @@ type IProps = {
         return (
             <Card className={className}>
                 <CardContent>
-                    <Avatar className="leader-avatar" src={leader ? leader.avatar : ''} />
-                    <Typography className="leader-name" variant="h5" align="center">
-                        {leader && leader.name}
-                    </Typography>
+                    <Link to={`/members/${leader ? leader.id : ''}`}>
+                        <Avatar className="leader-avatar" src={leader ? leader.avatar : ''} />
+                    </Link>
+                    <Link to={`/members/${leader ? leader.id : ''}`}>
+                        <Typography className="leader-name" variant="h5" align="center">
+                            {leader && leader.name}
+                        </Typography>
+                    </Link>
                     <Typography className="leader-email" variant="body1" align="center">
                         {leader && leader.email}
                     </Typography>

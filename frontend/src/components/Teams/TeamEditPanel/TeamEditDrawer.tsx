@@ -6,20 +6,29 @@ import {
 import TeamEditPanel from './index'
 import RightDrawerContainer from 'components/RightDrawerContainer'
 import MobileHeader from 'components/MobileHeader'
+import { ITeam } from 'contracts/team'
 
 type IProps = {
-    open: boolean,
-    onOpen: () => void,
+    team?: ITeam | null
+    open: boolean
+    onOpen: () => void
     onClose: () => void
 }
 
 class MemberEditDrawer extends Component<IProps> {
+    get isEditMode() {
+        return !!this.props.team
+    }
+    
     render() {
         const {
+            team,
             open,
             onOpen,
             onClose
         } = this.props
+
+        const title = this.isEditMode ? '編輯團隊' : '新增團隊'
 
         return (
             <RightDrawerContainer
@@ -28,7 +37,7 @@ class MemberEditDrawer extends Component<IProps> {
                 onClose={onClose}
                 headComponent={
                     <MobileHeader
-                        title="新增團隊"
+                        title={title}
                         defaultHidden={true}
                         leftComponent={(
                             <BackIcon onClick={onClose} />
@@ -37,6 +46,7 @@ class MemberEditDrawer extends Component<IProps> {
                 }
             >
                 <TeamEditPanel 
+                    team={team}
                     onSubmitSuccess={onClose}
                 />
             </RightDrawerContainer>

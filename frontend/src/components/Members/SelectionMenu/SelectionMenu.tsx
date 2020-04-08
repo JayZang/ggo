@@ -23,11 +23,11 @@ import { IMember } from 'contracts/member'
 import styles from './styles'
 
 type IProps =  WithStyles<typeof styles> & {
+    defaultMembers?: IMember[] | null
     members: IMember[]
     multiple?: boolean
     filtered?: IMember[]
     onChange?: (members: IMember[] | IMember | null) => void
-    fetchMember?: () => Promise<void>
 }
 
 type IState = {
@@ -40,13 +40,11 @@ class MemberSelectionMenu extends Component<IProps, IState> {
         super(props)
 
         this.state = {
-            checked: [],
+            checked: props.defaultMembers ? props.members.filter(member => {
+                return props.defaultMembers!.findIndex(dMember => dMember.id === member.id) !== -1
+            }) : [],
             searchInput: ''
         }
-    }
-
-    componentDidMount() {
-        this.props.fetchMember && !this.props.members.length && this.props.fetchMember()
     }
 
     handleToggle(member: IMember) {
@@ -84,7 +82,7 @@ class MemberSelectionMenu extends Component<IProps, IState> {
 
     filterMembers() {
         return this.props.members.filter(member => {
-            if (this.props.filtered && this.props.filtered.includes(member))
+            if (this.props.filtered && this.props.filtered.findIndex(fMember => fMember.id === member.id) !== -1)
                 return false
             return member.name.includes(this.state.searchInput) ||
                 member.email.includes(this.state.searchInput)

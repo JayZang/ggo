@@ -8,7 +8,9 @@ import {
 import { RootState } from 'stores';
 
 const mapStateToProps = (state: RootState) => ({
-    member: state.member.infoPage.member
+    member: state.member.infoPage.member,
+    emergencyContacts: state.member.infoPage.emergencyContacts,
+    teams: state.member.infoPage.teams
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({

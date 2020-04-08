@@ -31,6 +31,13 @@ export default (app: Router) => {
         return res.json(teams)
     })
 
+    router.put('/:id', CreateTeamValidator(), async (req: Request, res: Response) => {
+        const team = await teamService.update(req.params.id, req.body)
+        return team ?
+            res.json(team) :
+            res.status(400).end() 
+    })
+    
     router.get('/:id', async (req, res) => {
         const team = await teamService.getById(req.params.id)
         return team ?

@@ -6,11 +6,12 @@ import { regularizeTeamData } from 'stores/utils/regularizeTeamData'
 import { 
     TeamActionType, 
     GET_PERMANENT_TEAMS, 
-    GET_TEMPORARAY_TEAMS, 
+    GET_TEMPORARY_TEAMS, 
     ADD_PERMANENT_TEAM,
     GET_TEAM_DETAIL_INFO,
     GET_TEAM_TASKS,
-    GET_TEAM_EDIT_PANEL_MEMBER_SELECTION
+    GET_TEAM_EDIT_PANEL_MEMBER_SELECTION,
+    UPDATE_TEAM
 } from "./types";
 import { RootState } from "stores";
 import { regularizeTaskData } from "stores/task/utils";
@@ -34,7 +35,7 @@ export const getTemporaryTeams = () => async (dispatch : Dispatch) => {
     const res = await teamAPI.getTemporaryTeams()
 
     const action: TeamActionType = {
-        type: GET_TEMPORARAY_TEAMS,
+        type: GET_TEMPORARY_TEAMS,
         payload: {
             teams: res.data.map(team => regularizeTeamData(team))
         }
@@ -48,6 +49,19 @@ export const createTeam = (data: any) => async (dispatch: Dispatch) => {
 
     const action: TeamActionType = {
         type: ADD_PERMANENT_TEAM,
+        payload: {
+            team: regularizeTeamData(res.data)
+        }
+    }
+
+    dispatch(action)
+}
+
+export const updateTeam = (id: number | string, data: any) => async (dispatch: Dispatch) => {
+    const res = await teamAPI.updateTeam(id, data)
+
+    const action: TeamActionType = {
+        type: UPDATE_TEAM,
         payload: {
             team: regularizeTeamData(res.data)
         }

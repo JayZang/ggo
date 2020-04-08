@@ -59,5 +59,8 @@ export default (theme: Theme) => createStyles({
     countNumber: {
         fontSize: 16,
         marginLeft: theme.spacing(0.5)
+    },
+    button: {
+        minWidth: 40
     }
 })

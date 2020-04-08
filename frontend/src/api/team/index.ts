@@ -1,6 +1,7 @@
 export * from './getPermanentTeams'
 export * from './getTemporaryTeams'
 export * from './createTeam'
+export * from './updateTeam'
 export * from './getById'
 export * from './getMembersByTeam'
 export * from './getTasksByTeam'

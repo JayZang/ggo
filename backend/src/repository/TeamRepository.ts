@@ -54,6 +54,11 @@ class TeamRepository extends BaseRepository<Team> {
         return this
     }
 
+    public withMembersRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.members`, 'members')
+        return this
+    }
+
     public withIsTemporaryCondition(isTemporary: boolean) {
         this.queryBuilder.andWhere('is_temporary = :isTemporary', { isTemporary })
         return this
