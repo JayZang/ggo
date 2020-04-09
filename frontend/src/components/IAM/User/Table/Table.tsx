@@ -357,6 +357,10 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
     }
 
     handleSelectOne(user: IUser) {
+        // manager users are not selectable to delete
+        if (user.identity_type === UserIdentityType.manager)
+            return
+
         const selectedUsers = this.state.selectedUsers
         const index = selectedUsers.indexOf(user)
 
@@ -477,10 +481,12 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                     >
                                         {selectable ? (
                                             <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={selected}
-                                                />
+                                                {user.identity_type === UserIdentityType.manager ? null : (
+                                                    <Checkbox
+                                                        color="primary"
+                                                        checked={selected}
+                                                    />
+                                                )}
                                             </TableCell>
                                         ) : null}
 
@@ -493,7 +499,10 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                                 if (!user.identity) return null
 
                                                 switch (user.identity_type) {
+                                                    case UserIdentityType.manager:
                                                     case UserIdentityType.member:
+                                                        let identityName = user.identity_type === UserIdentityType.manager ?
+                                                            '管理者' : '成員'
                                                         return (
                                                             <Link to={`/members/${user.identity_id}`}>
                                                                 <Tooltip title="檢視身份" placement="bottom-start">
@@ -502,7 +511,7 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                                                         <Typography component="div">
                                                                             {user.identity.name}
                                                                             <Box color="text.hint" style={{ fontSize: 14 }}>
-                                                                                成員
+                                                                                {identityName}
                                                                             </Box>
                                                                         </Typography>
                                                                     </Box>
@@ -522,6 +531,7 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
 
                                         <TableCell align="center">
                                             <Switch
+                                                disabled={user.identity_type === UserIdentityType.manager}
                                                 checked={user.loginable}
                                                 color="primary"
                                                 edge='start'
@@ -531,24 +541,28 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                         </TableCell>
 
                                         <TableCell align="right" size="small">
-                                            <Button
-                                                color="primary"
-                                                onClick={event => this.handleDisplayUserPoliciesBtnClick(event, user)}
-                                            >
-                                                查看權限
-                                            </Button>
-                                            <Button
-                                                color="primary"
-                                                onClick={event => this.handleResetPwdBtnClick(event, user)}
-                                            >
-                                                密碼重設
-                                            </Button>
-                                            <Button
-                                                color="primary"
-                                                onClick={event => this.handleEditUserBtnClick(event, user)}
-                                            >
-                                                權限編輯
-                                            </Button>
+                                            {user.identity_type === UserIdentityType.manager ? null : (
+                                                <Box>
+                                                    <Button
+                                                        color="primary"
+                                                        onClick={event => this.handleDisplayUserPoliciesBtnClick(event, user)}
+                                                    >
+                                                        查看權限
+                                                    </Button>
+                                                    <Button
+                                                        color="primary"
+                                                        onClick={event => this.handleResetPwdBtnClick(event, user)}
+                                                    >
+                                                        密碼重設
+                                                    </Button>
+                                                    <Button
+                                                        color="primary"
+                                                        onClick={event => this.handleEditUserBtnClick(event, user)}
+                                                    >
+                                                        權限編輯
+                                                    </Button>
+                                                </Box>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 )

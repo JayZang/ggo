@@ -27,7 +27,7 @@ export function regularizeUserData(data: any): IUser {
         last_login_datetime: data.last_login_datetime && moment(data.update_at),
         policies: data.policies && data.policies.map((policy: IPolicy) => regularizePolicyData(policy)),
         groups: data.groups && data.groups.map((group: IGroup) => regularizeGroupData(group)),
-        identity: data.identity && data.identity_type === UserIdentityType.member ?
+        identity: data.identity && [UserIdentityType.member, UserIdentityType.manager].includes(data.identity_type) ?
             regularizeMemberData(data.identity) : undefined
     }
 }

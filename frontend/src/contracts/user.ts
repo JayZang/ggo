@@ -21,9 +21,10 @@ export type IUser = {
 
 export enum UserIdentityType {
     admin = 0,
-    member = 1,
-    customer = 2,
-    outsourcing = 3
+    manager = 1,
+    member = 2,
+    customer = 3,
+    outsourcing = 4
 }
 
 export type Permissions = Record<PermissionsList, boolean | undefined>

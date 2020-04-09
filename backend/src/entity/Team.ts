@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, RelationCount, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, RelationCount, JoinColumn, CreateDateColumn, OneToMany, RelationId } from 'typeorm'
 
 import Member from './Member'
 import TaskAssignment from './TaskAssignment'
@@ -29,18 +29,21 @@ export default class Team {
     })
     status: number
 
-    @Column()
-    leader_id: number
-
+    
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
-
+    
     @ManyToOne(type => Member, member => member.teams_as_leader, {
         nullable: false
     })
-    @JoinColumn({ name: 'leader_id' },)
+    @JoinColumn({
+        name: 'leader_id'
+    })
     leader: Member
 
+    @RelationId((team: Team) => team.leader)
+    leader_id: number
+    
     @ManyToMany(type => Member, member => member.teams)
     @JoinTable({
         name: 'team_member'

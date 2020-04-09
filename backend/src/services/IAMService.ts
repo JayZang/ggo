@@ -1,4 +1,4 @@
-import { getCustomRepository, Not } from 'typeorm'
+import { getCustomRepository, Not, In } from 'typeorm'
 import Container, { Service } from 'typedi'
 import bcryptjs from 'bcryptjs'
 import _ from 'lodash'
@@ -123,6 +123,7 @@ export default class IAMService {
                     identity_type: Not(UserIdentityType.admin)
                 },
                 order: {
+                    identity_type: 'ASC',
                     create_at: 'DESC'
                 }
             }).then(async ([users, count]) => {
@@ -186,7 +187,10 @@ export default class IAMService {
             const userRepo = getCustomRepository(UserRepo)
             const user = await userRepo.findOneOrFail(id, {
                 where: {
-                    identity_type: Not(UserIdentityType.admin)
+                    identity_type: Not(In([
+                        UserIdentityType.admin,
+                        UserIdentityType.manager
+                    ]))
                 }
             })
             user.loginable = loginable
@@ -215,7 +219,10 @@ export default class IAMService {
             const policyRepo = getCustomRepository(PolicyRepo)
             const user = await userRepo.findOneOrFail(id, {
                 where: {
-                    identity_type: Not(UserIdentityType.admin)
+                    identity_type: Not(In([
+                        UserIdentityType.admin,
+                        UserIdentityType.manager
+                    ]))
                 }
             })
             const [
@@ -252,7 +259,14 @@ export default class IAMService {
     public async deleteUsers(ids: string[] | number[]) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            const users = await userRepo.findByIds(ids)
+            const users = await userRepo.findByIds(ids, {
+                where: {
+                    identity_type: Not(In([
+                        UserIdentityType.admin,
+                        UserIdentityType.manager
+                    ]))
+                }
+            })
             await Promise.all(
                 users.map(user => authService.logoutUser(user.id))
             )
@@ -271,7 +285,14 @@ export default class IAMService {
     public async resetUserPassword(id: number | string) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            const user = await userRepo.findOneOrFail(id)
+            const user = await userRepo.findOneOrFail(id, {
+                where: {
+                    identity_type: Not(In([
+                        UserIdentityType.admin,
+                        UserIdentityType.manager
+                    ]))
+                }
+            })
             const identity = await this.getIdentity(user.identity_type, user.identity_id)
             const [
                 password,
@@ -311,6 +332,7 @@ export default class IAMService {
         const memberRepo = getCustomRepository(MemberRepo)
 
         switch (identity_type) {
+            case UserIdentityType.manager:
             case UserIdentityType.member:
                 return memberRepo.findOneOrFail(identity_id)
 
@@ -323,6 +345,9 @@ export default class IAMService {
         let identityName: string
 
         switch (user.identity_type) {
+            case UserIdentityType.manager:
+                identityName = '管理者'
+                break
             case UserIdentityType.member:
                 identityName = '成員'
                 break

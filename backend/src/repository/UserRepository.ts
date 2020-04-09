@@ -22,6 +22,7 @@ class UserRepository extends Repository<User> {
             let mapping = undefined
 
             switch (user.identity_type) {
+                case UserIdentityType.manager:
                 case UserIdentityType.member:
                     mapping = memberMapping
                     break

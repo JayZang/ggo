@@ -74,7 +74,8 @@ export default class User {
 
 export enum UserIdentityType {
     admin = 0,
-    member = 1,
-    customer = 2,
-    outsourcing = 3
+    manager = 1,
+    member = 2,
+    customer = 3,
+    outsourcing = 4
 }
