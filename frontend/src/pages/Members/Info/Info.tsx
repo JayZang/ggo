@@ -35,10 +35,13 @@ class MemberInfo extends Component<IProps, IState> {
         }
     }
 
-    componentDidMount() {
-        this.props.load(this.props.id).then(() => {
-            this.setState({ loaded: true })
-        })
+    async componentDidMount() {
+        const { member, id } = this.props
+
+        if (!member || member.id != id)
+            await this.props.load(this.props.id)
+
+        this.setState({ loaded: true })
     }
 
     render() {

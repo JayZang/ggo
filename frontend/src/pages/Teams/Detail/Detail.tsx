@@ -39,12 +39,13 @@ class TeamDetail extends Component<IProps, IState> {
         }
     }
 
-    componentDidMount() {
-        this.props.load(this.props.id).then(() => {
-            this.setState({
-                loaded: true
-            })
-        })
+    async componentDidMount() {
+        const { team, id } = this.props
+
+        if (!team || team.id != id)
+            await this.props.load(this.props.id)
+
+        this.setState({ loaded: true })
     }
 
     render() {
