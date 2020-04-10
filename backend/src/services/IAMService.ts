@@ -182,17 +182,15 @@ export default class IAMService {
     /**
      * Set iam user loginable
      */
-    public async setUserLoginable(id: string | number, loginable: boolean) {
+    public async setUserLoginable(id: string | number, loginable: boolean, operator: User) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            const user = await userRepo.findOneOrFail(id, {
-                where: {
-                    identity_type: Not(In([
-                        UserIdentityType.admin,
-                        UserIdentityType.manager
-                    ]))
-                }
-            })
+            const user = await userRepo.findOneOrFail(id)
+
+            if (user.identity_type === UserIdentityType.admin ||
+                (user.identity_type === UserIdentityType.manager && operator.identity_type !== UserIdentityType.admin))
+                return null
+
             user.loginable = loginable
 
             if (!loginable)
@@ -256,17 +254,25 @@ export default class IAMService {
     /**
      * Delete iam users
      */
-    public async deleteUsers(ids: string[] | number[]) {
+    public async deleteUsers(ids: string[] | number[], operator: User) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            const users = await userRepo.findByIds(ids, {
-                where: {
-                    identity_type: Not(In([
-                        UserIdentityType.admin,
-                        UserIdentityType.manager
-                    ]))
+            let users = await userRepo.findByIds(ids)
+
+            if (users.length === 0)
+                return null
+
+            for (let index = 0; index < users.length; index++) {
+                if (users[index].identity_type === UserIdentityType.admin)
+                    return null
+
+                // manager can't delete manager user
+                if (operator.identity_type === UserIdentityType.manager) {
+                    if (users[index].identity_type === UserIdentityType.manager)
+                        return null
                 }
-            })
+            }
+
             await Promise.all(
                 users.map(user => authService.logoutUser(user.id))
             )
@@ -282,17 +288,15 @@ export default class IAMService {
     /**
      * Reset user password
      */
-    public async resetUserPassword(id: number | string) {
+    public async resetUserPassword(id: number | string, operator: User) {
         try {
             const userRepo = getCustomRepository(UserRepo)
-            const user = await userRepo.findOneOrFail(id, {
-                where: {
-                    identity_type: Not(In([
-                        UserIdentityType.admin,
-                        UserIdentityType.manager
-                    ]))
-                }
-            })
+            const user = await userRepo.findOneOrFail(id)
+
+            if (user.identity_type === UserIdentityType.admin ||
+                (user.identity_type === UserIdentityType.manager && operator.identity_type !== UserIdentityType.admin))
+                return null
+
             const identity = await this.getIdentity(user.identity_type, user.identity_id)
             const [
                 password,

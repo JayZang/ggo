@@ -1,11 +1,12 @@
-import { EntityRepository, Repository, getCustomRepository, In } from 'typeorm'
+import { EntityRepository, getCustomRepository, In } from 'typeorm'
 import _ from 'lodash'
 
 import User, { UserIdentityType } from '@/entity/User'
 import MemberRepo from './MemberRepository'
+import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(User)
-class UserRepository extends Repository<User> {
+class UserRepository extends BaseRepository<User> {
 
     public async getByIdentities(type: UserIdentityType, ids: number[]) {
         return this.find({

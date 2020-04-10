@@ -5,6 +5,7 @@ import { getPolicies, getGroups, getUsers } from 'stores/iam/action'
 import { RootState } from 'stores'
 
 const mapStateToProps = (state: RootState) => ({
+    systemUser: state.auth.user,
     allPolicies: state.iam.policies || [],
     allGroups: state.iam.groups || [],
     users: state.iam.users || []

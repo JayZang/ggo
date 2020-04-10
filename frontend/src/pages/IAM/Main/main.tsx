@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import clsx from 'clsx'
 import { IPolicy } from 'contracts/policy'
 import { IGroup } from 'contracts/group'
-import { IUser } from 'contracts/user'
+import { IUser, UserIdentityType } from 'contracts/user'
 
 enum TabType {
     user = 0,
@@ -19,11 +19,12 @@ enum TabType {
 }
 
 type IProps = {
+    systemUser: IUser | null
+    users: IUser[]
     className?: string
     load: () => Promise<void>
     allPolicies: IPolicy[]
     allGroups: IGroup[],
-    users: IUser[]
 }
 
 type IState = {
@@ -48,6 +49,7 @@ class IamMain extends Component<IProps,IState > {
             className,
             allPolicies,
             allGroups,
+            systemUser,
             users
         } = this.props
         const {
@@ -98,15 +100,22 @@ class IamMain extends Component<IProps,IState > {
                     </Grid>
                 </Box>
 
-                <Box className="mt-4">
-                    {tabIndex === TabType.user ? (
-                        <UserTable users={users} title="使用者列表" selectable={true} />
-                    ) : (tabIndex === TabType.group ? (
-                        <GroupTable title="群組列表" groups={allGroups} selectable={true} editable={true} />
-                    ): (tabIndex === TabType.policy ? (
-                        <PolicyTable title="權限列表" policies={allPolicies} selectable={false} />
-                    ): null))}
-                </Box>
+                {systemUser ? (
+                    <Box className="mt-4">
+                        {tabIndex === TabType.user ? (
+                            <UserTable 
+                                users={users} 
+                                title="使用者列表" 
+                                selectable={true} 
+                                editableOnManager={systemUser.identity_type === UserIdentityType.admin}
+                            />
+                        ) : (tabIndex === TabType.group ? (
+                            <GroupTable title="群組列表" groups={allGroups} selectable={true} editable={true} />
+                        ): (tabIndex === TabType.policy ? (
+                            <PolicyTable title="權限列表" policies={allPolicies} selectable={false} />
+                        ): null))}
+                    </Box>
+                ) : null}
             </AppContent>
         )
     }

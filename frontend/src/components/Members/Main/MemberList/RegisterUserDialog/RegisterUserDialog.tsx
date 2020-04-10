@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
-import { Dialog, DialogTitle, DialogContent, Paper, Grid, Avatar, Typography, Box, DialogActions, Button, Slide } from '@material-ui/core'
-
-import IAMUserAccountSettingPanel from 'components/IAM/User/AccountSettingPanel'
-import { TransitionProps } from '@material-ui/core/transitions'
-import { IMember } from 'contracts/member';
-import { UserIdentityType } from 'contracts/user';
+import { Dialog, DialogTitle, DialogContent, Paper, Grid, Avatar, Typography, Box, DialogActions, Button, Slide, FormControlLabel, Checkbox } from '@material-ui/core'
 import { WithSnackbarProps, withSnackbar } from 'notistack';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
-const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+import IAMUserAccountSettingPanel from 'components/IAM/User/AccountSettingPanel'
+import TransitionDownToUp from 'components/Transition/DownToUpSlideTransition'
+import MemberLabel from 'components/Members/MemberLabel'
+import { UserIdentityType } from 'contracts/user';
+import { IMember } from 'contracts/member';
 
 type IProps = WithSnackbarProps & {
     member: IMember | null
@@ -29,6 +26,7 @@ type IState = {
     submitting: boolean
     isRegisterError: boolean
     isRegisterSuccess: boolean
+    isManager: boolean
 }
 
 class MemberRegisterUserDialog extends Component<IProps, IState> {
@@ -45,7 +43,8 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
             isAccountIdValid: false,
             submitting: false,
             isRegisterError: false,
-            isRegisterSuccess: false
+            isRegisterSuccess: false,
+            isManager: false
         }
     }
 
@@ -54,6 +53,7 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
             accountId,
             isAccountIdDefault,
             isAccountIdValid,
+            isManager
         } = this.state
         const member = this.props.member
 
@@ -61,7 +61,7 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
 
         this.props.register(member.name, {
             account_id: isAccountIdDefault ? undefined : accountId,
-            identity_type: UserIdentityType.member,
+            identity_type: isManager ? UserIdentityType.manager : UserIdentityType.member,
             identity_id: member.id
         }).then(() => {
             this.props.enqueueSnackbar('註冊使用者成功！', {
@@ -95,14 +95,15 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
             isAccountIdValid,
             submitting,
             isRegisterError,
-            isRegisterSuccess
+            isRegisterSuccess,
+            isManager
         } = this.state
 
         return (
             <Dialog
                 open={!!member}
                 onClose={this.handleClose}
-                TransitionComponent={Transition}
+                TransitionComponent={TransitionDownToUp}
                 fullWidth
                 keepMounted={false}
             >
@@ -118,19 +119,10 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
                     ) : (
                         <Box>
                             {member && (
-                                <Paper className="px-2 py-1 mb-2">
-                                    <Grid container alignItems="center">
-                                        <Avatar src={member.avatar} />
-                                        <Grid item className="ml-2">
-                                            <Grid container direction="column">
-                                                <Typography>{member.name}</Typography>
-                                                <Typography variant="body2" component="div" >
-                                                    <Box color="text.hint">成員</Box>
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
+                                <MemberLabel 
+                                    member={member}
+                                    hint="成員"
+                                />
                             )}
 
                             <IAMUserAccountSettingPanel
@@ -143,11 +135,28 @@ class MemberRegisterUserDialog extends Component<IProps, IState> {
                                     isRegisterError: false
                                 })}
                             />
+
+                            
                         </Box>
                     )}
 
                 </DialogContent>
                 <DialogActions>
+                    {isRegisterSuccess ? null : (
+                        <Box marginLeft="16px" marginRight="auto">
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={isManager}
+                                        onChange={(event, checked) => this.setState({ isManager: checked })}
+                                        color="primary"
+                                    />
+                                }
+                                label="註冊為管理者"
+                            />
+                        </Box>
+                    )}
+
                     <Button color="default" onClick={this.handleClose}>
                         {isRegisterSuccess ? '關閉' : '取消'}
                     </Button>

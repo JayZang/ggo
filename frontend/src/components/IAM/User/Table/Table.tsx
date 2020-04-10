@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Switch, Button, Dialog, Slide, Tabs, Tab, Avatar, Tooltip, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core'
-import { TransitionProps } from '@material-ui/core/transitions'
+import { withSnackbar, WithSnackbarProps } from 'notistack';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { Link } from 'react-router-dom'
 
-import { IUser, UserIdentityType } from 'contracts/user'
+import TransitionDownToUp from 'components/Transition/DownToUpSlideTransition'
+import UserEditDrawer from 'components/IAM/User/EditPanel/EditDrawer'
 import GroupTable from 'components/IAM/Group/Table'
 import PolicyTable from 'components/IAM/Policy/Table'
-import UserEditDrawer from 'components/IAM/User/EditPanel/EditDrawer'
+import { IUser, UserIdentityType } from 'contracts/user'
 import { IPolicy } from 'contracts/policy'
-import { Link } from 'react-router-dom'
-import { withSnackbar, WithSnackbarProps } from 'notistack';
-import { Alert, AlertTitle } from '@material-ui/lab';
 
 type ITableToolbarProps = {
     title: string
@@ -74,10 +74,6 @@ type IUserPoliciesDialogProps = {
 type IUserPoliciesDialogState = {
     tabIndex: number
 }
-
-const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
     
 class UserPoliciesDialog extends Component<IUserPoliciesDialogProps, IUserPoliciesDialogState> {
     constructor(props: IUserPoliciesDialogProps) {
@@ -122,7 +118,7 @@ class UserPoliciesDialog extends Component<IUserPoliciesDialogProps, IUserPolici
             <Dialog
                 open={user !== null}
                 onClose={onClose}
-                TransitionComponent={Transition}
+                TransitionComponent={TransitionDownToUp}
                 fullWidth
             >
                 <Typography  variant="h6" className="p-3 px-4">
@@ -196,7 +192,7 @@ class UserDeleteWarningDialog extends Component<{
             <Dialog
                 open={open}
                 onClose={onClose}
-                TransitionComponent={Transition}
+                TransitionComponent={TransitionDownToUp}
                 fullWidth
             >
                 <DialogTitle>
@@ -274,7 +270,7 @@ class ResetUserPasswordDialog extends Component<{
             <Dialog
                 open={open}
                 onClose={this.handleClose}
-                TransitionComponent={Transition}
+                TransitionComponent={TransitionDownToUp}
                 fullWidth
             >
                 <DialogTitle>
@@ -316,6 +312,7 @@ type IUserTableProps = WithSnackbarProps & {
     title: string
     users: IUser[]
     selectable: boolean
+    editableOnManager: boolean
     onChange?: (users: IUser[]) => void
     onUserLoginableChange: (id: string | number, loginable: boolean) => Promise<void>
     resetUserPassword: (id: string | number, name: string) => Promise<void>
@@ -343,11 +340,22 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         }
     }
 
+    isUserSelectable(user: IUser) {
+        if (user.identity_type === UserIdentityType.manager && !this.props.editableOnManager)
+            return false
+        return true 
+    }
+
+    get selectableUsers() {
+        return this.props.users.filter(user =>this.isUserSelectable(user))
+    }
+
     handleSelectAllClick() {
         let selectedUsers = this.state.selectedUsers
-        if (this.state.selectedUsers.length !== this.props.users.length)
+        const selectableUser = this.selectableUsers
+        if (selectedUsers.length !== selectableUser.length)
             selectedUsers = [
-                ...this.props.users
+                ...selectableUser
             ]
         else
             selectedUsers = []
@@ -358,7 +366,7 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
 
     handleSelectOne(user: IUser) {
         // manager users are not selectable to delete
-        if (user.identity_type === UserIdentityType.manager)
+        if (!this.isUserSelectable(user))
             return
 
         const selectedUsers = this.state.selectedUsers
@@ -428,7 +436,8 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
         const {
             title,
             users,
-            selectable
+            selectable,
+            editableOnManager
         } = this.props
         const {
             selectedUsers,
@@ -455,8 +464,8 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                     <TableCell padding="checkbox">
                                         <Checkbox
                                             color="primary"
-                                            indeterminate={selectedUsers.length > 0 && selectedUsers.length < users.length}
-                                            checked={users.length > 0 && selectedUsers.length === users.length}
+                                            indeterminate={selectedUsers.length > 0 && selectedUsers.length < this.selectableUsers.length}
+                                            checked={this.selectableUsers.length > 0 && selectedUsers.length === this.selectableUsers.length}
                                             onClick={this.handleSelectAllClick.bind(this)}
                                         />
                                     </TableCell>
@@ -481,12 +490,11 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                     >
                                         {selectable ? (
                                             <TableCell padding="checkbox">
-                                                {user.identity_type === UserIdentityType.manager ? null : (
-                                                    <Checkbox
-                                                        color="primary"
-                                                        checked={selected}
-                                                    />
-                                                )}
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={selected}
+                                                    disabled={user.identity_type === UserIdentityType.manager && !editableOnManager}
+                                                />
                                             </TableCell>
                                         ) : null}
 
@@ -531,7 +539,7 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
 
                                         <TableCell align="center">
                                             <Switch
-                                                disabled={user.identity_type === UserIdentityType.manager}
+                                                disabled={user.identity_type === UserIdentityType.manager && !editableOnManager}
                                                 checked={user.loginable}
                                                 color="primary"
                                                 edge='start'
@@ -541,26 +549,34 @@ class UserTable extends Component<IUserTableProps, IUserTableState> {
                                         </TableCell>
 
                                         <TableCell align="right" size="small">
-                                            {user.identity_type === UserIdentityType.manager ? null : (
+                                            {user.identity_type === UserIdentityType.manager && !editableOnManager ? null : (
                                                 <Box>
-                                                    <Button
-                                                        color="primary"
-                                                        onClick={event => this.handleDisplayUserPoliciesBtnClick(event, user)}
-                                                    >
-                                                        查看權限
-                                                    </Button>
+                                                    {/* manager has all permission, don't display */}
+                                                    {user.identity_type === UserIdentityType.manager ? null : (
+                                                        <Button
+                                                            color="primary"
+                                                            onClick={event => this.handleDisplayUserPoliciesBtnClick(event, user)}
+                                                        >
+                                                            查看權限
+                                                        </Button>
+                                                    )}
+
                                                     <Button
                                                         color="primary"
                                                         onClick={event => this.handleResetPwdBtnClick(event, user)}
                                                     >
                                                         密碼重設
                                                     </Button>
-                                                    <Button
-                                                        color="primary"
-                                                        onClick={event => this.handleEditUserBtnClick(event, user)}
-                                                    >
-                                                        權限編輯
-                                                    </Button>
+
+                                                    {/* manager has all permission, don't edit */}
+                                                    {user.identity_type === UserIdentityType.manager ? null : (
+                                                        <Button
+                                                            color="primary"
+                                                            onClick={event => this.handleEditUserBtnClick(event, user)}
+                                                        >
+                                                            權限編輯
+                                                        </Button>
+                                                    )}
                                                 </Box>
                                             )}
                                         </TableCell>

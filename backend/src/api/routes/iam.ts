@@ -75,7 +75,7 @@ export default (app: Router) => {
     })
 
     router.post('/users/:id/password', async (req: Request, res: Response) => {
-        const userProfileXlsx = await iamService.resetUserPassword(req.params.id)
+        const userProfileXlsx = await iamService.resetUserPassword(req.params.id, req.user!)
 
         if (!userProfileXlsx)
             return res.status(400).end()
@@ -85,7 +85,7 @@ export default (app: Router) => {
     })
 
     router.post('/users/:id/loginable', async (req: Request, res: Response) => {
-        const user = await iamService.setUserLoginable(req.params.id, true)
+        const user = await iamService.setUserLoginable(req.params.id, true, req.user!)
 
         return user ?
             res.json(user) :
@@ -93,7 +93,7 @@ export default (app: Router) => {
     })
 
     router.delete('/users/:id/loginable', async (req: Request, res: Response) => {
-        const user = await iamService.setUserLoginable(req.params.id, false)
+        const user = await iamService.setUserLoginable(req.params.id, false, req.user!)
 
         return user ?
             res.json(user) :
@@ -112,7 +112,7 @@ export default (app: Router) => {
     })
 
     router.delete('/users', DeleteUsers(), async (req: Request, res: Response) => {
-        const users = await iamService.deleteUsers(req.body.ids)
+        const users = await iamService.deleteUsers(req.body.ids, req.user!)
 
         return users ?
             res.json(users) :

@@ -83,7 +83,10 @@ export default class AuthService {
     private async attachPermissions(user: User) {
         let policies: Policy[] = []
 
-        if (user.identity_type === UserIdentityType.admin) {
+        if ([
+            UserIdentityType.admin, 
+            UserIdentityType.manager
+        ].includes(user.identity_type)) {
             const policyRepo = getCustomRepository(PolicyRepo)
             policies = await policyRepo.find()
         } else {
