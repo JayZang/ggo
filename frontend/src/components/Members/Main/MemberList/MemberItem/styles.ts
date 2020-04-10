@@ -35,7 +35,7 @@ export default (theme: Theme) => createStyles({
         flexGrow: 1,
     },
     email: {
-        maxWidth: 160,
+        maxWidth: 200,
         flexGrow: 1,
         overflow: 'hidden',
         textOverflow: 'ellipsis'

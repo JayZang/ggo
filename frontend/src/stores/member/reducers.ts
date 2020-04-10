@@ -9,7 +9,8 @@ import {
     REMOVE_EMERGENCY_CONTACT,
     GET_MEMBER_COUNT_STATISTIC,
     GET_MEMBER_LIST,
-    ADD_MEMBER_TO_LIST
+    ADD_MEMBER_TO_LIST,
+    UPDATE_MEMBER_STATUS
 } from './types'
 import { REGISTER_MEMBER_USER, IAMActionTypes } from 'stores/iam/types'
 
@@ -82,7 +83,6 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                     list: state.listPage.list && state.listPage.list.map(member => {
                         if (action.payload.member.id !== member.id)
                             return member
-    
                         return action.payload.member
                     })
                 },
@@ -90,6 +90,26 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                     ...(state.infoPage),
                     member: action.payload.member.id === (state.infoPage.member && state.infoPage.member.id) ? 
                         action.payload.member : null
+                }
+            }
+
+        case UPDATE_MEMBER_STATUS:
+            return {
+                ...state,
+                listPage: {
+                    ...(state.listPage),
+                    list: state.listPage.list && state.listPage.list.map(member => {
+                        if (action.payload.id === member.id)
+                            member.status = action.payload.status
+                        return member
+                    })
+                },
+                infoPage: {
+                    ...(state.infoPage),
+                    member: state.infoPage.member && state.infoPage.member.id === action.payload.id ? {
+                        ...state.infoPage.member,
+                        status: action.payload.status
+                    } : state.infoPage.member
                 }
             }
 

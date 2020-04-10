@@ -89,6 +89,22 @@ export default class MemberService {
     }
 
     /**
+     * Update Member Status 
+     */
+    public async updateStatus(id: number | string, status: MemberStatus) {
+        try {
+            const memberRepo = getCustomRepository(MemberRepo)
+            const member = await memberRepo.findOneOrFail(id)
+            member.status = status
+            return await memberRepo.save(member)
+        } catch (err) {
+            console.log('Update member status fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
      * Delete One Member
      * 
      * @param id    Member id

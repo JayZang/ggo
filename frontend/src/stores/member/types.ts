@@ -1,4 +1,4 @@
-import { IMember, IEmergencyContact } from 'contracts/member'
+import { IMember, IEmergencyContact, MemberStatus } from 'contracts/member'
 import { ITeam } from 'contracts/team'
 
 export const GET_MEMBER_COUNT_STATISTIC = 'GET_MEMBER_COUNT_STATISTIC'
@@ -6,6 +6,7 @@ export const GET_MEMBER_LIST = 'GET_MEMBER_LIST'
 export const ADD_MEMBER_TO_LIST = 'ADD_MEMBER_TO_LIST'
 export const CLEAR_MEMBERS = 'CLEAR_MEMBERS'
 export const UPDATE_MEMBER = 'UPDATE_MEMBER'
+export const UPDATE_MEMBER_STATUS = 'UPDATE_MEMBER_STATUS'
 export const REMOVE_MEMBER = 'REMOVE_MEMBER'
 export const GET_MEMBER_DETAIL_INFO = 'GET_MEMBER_DETAIL_INFO'
 export const ADD_EMERGENCY_CONTACT = 'ADD_EMERGENCY_CONTACT'
@@ -68,6 +69,14 @@ type UpdateMember = {
     }
 }
 
+type UpdateMemberStatus = {
+    type: typeof UPDATE_MEMBER_STATUS,
+    payload: {
+        id: number | string
+        status: MemberStatus
+    }
+}
+
 type RemoveMember = {
     type: typeof REMOVE_MEMBER,
     payload: {
@@ -104,6 +113,7 @@ export type MemberActionTypes =
     AddMemberToList | 
     ClearMembers | 
     UpdateMember | 
+    UpdateMemberStatus |
     RemoveMember |
     GetMemberDetailInfo |
     AddEmergencyContact |

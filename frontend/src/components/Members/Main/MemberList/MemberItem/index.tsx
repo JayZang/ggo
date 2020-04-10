@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
 import  MemberItem from './MemberItem'
 
-import { removeMember } from 'stores/member/action'
+import { removeMember, updateMemberStatus } from 'stores/member/action'
 
 export default connect(null, {
-    handleDeleteMember: removeMember
+    handleDeleteMember: removeMember,
+    onStatusChangeBtnClick: updateMemberStatus
 })(MemberItem)

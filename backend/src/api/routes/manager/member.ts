@@ -5,7 +5,11 @@ import _ from 'lodash'
 import TeamService from '@/services/TeamService'
 import MemberService from '@/services/MemberService'
 import validatePermission from '@/api/middleware/validatePermission'
-import { CreateAndEditMember, CreateEmergencyContact } from '@/api/validators/member'
+import { 
+    CreateAndEditMember, 
+    CreateEmergencyContact, 
+    UpdateMemberStatus
+ } from '@/api/validators/member'
 
 const router = Router()
 const memberService = Container.get(MemberService)
@@ -36,11 +40,19 @@ export default (app: Router) => {
         return res.json(countStatistic)
     })
 
-    router.patch('/:id', CreateAndEditMember(), async (req: Request, res: Response) => {
+    router.put('/:id', CreateAndEditMember(), async (req: Request, res: Response) => {
         const member = await memberService.update(
             req.params.id,
             req.body
         )
+
+        return member ?
+            res.json(member) :
+            res.status(400).end()
+    })
+
+    router.patch('/:id/status', UpdateMemberStatus(), async (req: Request, res: Response) => {
+        const member = await memberService.updateStatus(req.params.id, req.body.status)
 
         return member ?
             res.json(member) :

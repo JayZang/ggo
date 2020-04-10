@@ -1,7 +1,6 @@
 import { Dispatch } from 'redux'
 
 import * as memberAPI from 'api/member'
-import * as teamAPI from 'api/team'
 import { regularizeMemberData } from 'stores/utils/regularizeMemberData'
 import {
     CLEAR_MEMBERS,
@@ -14,8 +13,9 @@ import {
     GET_MEMBER_COUNT_STATISTIC,
     GET_MEMBER_LIST,
     ADD_MEMBER_TO_LIST,
+    UPDATE_MEMBER_STATUS,
 } from './types'
-import { IEmergencyContactEditDTO } from 'contracts/member'
+import { IEmergencyContactEditDTO, MemberStatus } from 'contracts/member'
 import { RootState } from 'stores'
 
 export const fetchMemberCountStatistic = () => async (dispatch: Dispatch) => {
@@ -84,6 +84,20 @@ export const updateMember = (id: number | string, data: any) => async (dispatch:
         type: UPDATE_MEMBER,
         payload: {
             member: regularizeMemberData(res.data)
+        }
+    }
+
+    dispatch(action)
+}
+
+export const updateMemberStatus = (id: number | string, status: MemberStatus) => async (dispatch: Dispatch) => {
+    await memberAPI.updateStatus(id, status)
+
+    const action: MemberActionTypes = {
+        type: UPDATE_MEMBER_STATUS,
+        payload: {
+            id,
+            status
         }
     }
 

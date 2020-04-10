@@ -3,7 +3,7 @@ import { body } from 'express-validator'
 
 import validate from './validate'
 import datetimeValidator from './datetimeValidator'
-import { MemberGender } from '@/entity/Member'
+import { MemberGender, MemberStatus } from '@/entity/Member'
 
 export function CreateAndEditMember(): RequestHandler[] {
     return [
@@ -14,6 +14,13 @@ export function CreateAndEditMember(): RequestHandler[] {
         body('birthday').exists().custom(datetimeValidator()),
         body('take_office_date').exists().custom(datetimeValidator()),
         body('leave_office_date').optional().exists().custom(datetimeValidator()),
+        validate()
+    ]
+}
+
+export function UpdateMemberStatus(): RequestHandler[] {
+    return [
+        body('status').exists().isIn(Object.values(MemberStatus)).toInt(),
         validate()
     ]
 }

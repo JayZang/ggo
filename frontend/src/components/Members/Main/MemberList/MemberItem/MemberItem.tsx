@@ -14,6 +14,8 @@ import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects'
 import EditIcon from '@material-ui/icons/Edit'
 import { WithSnackbarProps, withSnackbar } from 'notistack'
 import clsx from 'clsx'
@@ -21,10 +23,13 @@ import clsx from 'clsx'
 import { IMember, MemberStatus, MemberGender } from 'contracts/member'
 import MemberEditDrawer from 'components/Members/MemberEditPanel/MemberEditDrawer'
 import styles from './styles'
+import { green } from '@material-ui/core/colors'
+import { Tooltip } from '@material-ui/core'
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     member: IMember,
     handleDeleteMember: (id: number | string) => Promise<void>
+    onStatusChangeBtnClick: (id: number | string, status: MemberStatus) => Promise<void>
     onRegisterUserBtnClick?: () => void
 }
 
@@ -46,18 +51,17 @@ class MemberItem extends Component<IProps, IState> {
 
         this.handleOpenMenu = this.handleOpenMenu.bind(this)
         this.handleCloseMenu = this.handleCloseMenu.bind(this)
+        this.handleEditClicked = this.handleEditClicked.bind(this)
+        this.handleDeleteClicked = this.handleDeleteClicked.bind(this)
+        this.handleStatusChangeBtnClick = this.handleStatusChangeBtnClick.bind(this)
     }
 
     handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
-        this.setState({
-            menuAnchorEl: event.currentTarget
-        })
+        this.setState({ menuAnchorEl: event.currentTarget })
     }
 
     handleCloseMenu() {
-        this.setState({
-            menuAnchorEl: null
-        })
+        this.setState({ menuAnchorEl: null })
     }
 
     handleDeleteClicked() {
@@ -80,6 +84,17 @@ class MemberItem extends Component<IProps, IState> {
 
     handleEditClicked() {
         this.setState({ isEditing: true })
+        this.handleCloseMenu()
+    }
+
+    handleStatusChangeBtnClick() {
+        const member = this.props.member
+        this.props.onStatusChangeBtnClick(
+            member.id, 
+            member.status === MemberStatus.active ? 
+                MemberStatus.inactive : 
+                MemberStatus.active
+        )
         this.handleCloseMenu()
     }
 
@@ -142,41 +157,49 @@ class MemberItem extends Component<IProps, IState> {
                         </Box>
                     </Typography>
 
-                    <Typography className={clsx(classes.birthday, classes.field)} component="div">
-                        {member.isUser ? '是' : '否'}
-                        <Box className={classes.fieldHint}>
-                            使用者
+                    <Tooltip title={member.isUser ? '已註冊' : '未註冊'}>
+                        <Box color={member.isUser ? green[400] : 'text.disabled'} textAlign="center">
+                            <AccountCircleIcon />
+                            <Box className={classes.fieldHint}>
+                                使用者
+                            </Box>
                         </Box>
-                    </Typography>
+                    </Tooltip>
 
-                    <Typography className={clsx(classes.birthday, classes.field)} component="div">
-                        {(() => {
-                            switch (member.status) {
-                                case MemberStatus.active:
-                                    return <span className="text-success">Active</span>
-                                case MemberStatus.inactive:
-                                    return <span className="text-warning">Inactive</span>
-                                default:
-                                    return 'Unknow'
-                            }
-                        })()}
-                        <Box className={classes.fieldHint}>
-                            狀態
-                        </Box>
-                    </Typography>
+                    {(() => {
+                        let color = undefined
+                        let hint = ''
+                        switch (member.status) {
+                            case MemberStatus.active:
+                                color = green[400]
+                                hint = '啟用'
+                                break 
+                            case MemberStatus.inactive:
+                                color = 'warning.main'
+                                hint = '停用'
+                                break
+                        }
 
-                    <div>
+                        return (
+                            <Tooltip title={hint}>
+                                <Box textAlign="center" color={color}>
+                                    <EmojiObjectsIcon />
+                                    <Box className={classes.fieldHint}>
+                                        狀態
+                                    </Box>
+                                </Box>
+                            </Tooltip>
+                        )
+                    })()}
+
+                    <Box>
                         <Link to={ `/members/${member.id}` }>
-                            <Button
-                                color="primary"
-                                variant="outlined"
-                                size="small"
-                            >
+                            <Button color="primary" size="small">
                                 查看
                             </Button>
                         </Link>
 
-                        <IconButton className="ml-3" onClick={this.handleOpenMenu}>
+                        <IconButton className="ml-1" onClick={this.handleOpenMenu}>
                             <MoreVertIcon />
                         </IconButton>
                         <Menu
@@ -191,18 +214,27 @@ class MemberItem extends Component<IProps, IState> {
                             }}
                             open={!!this.state.menuAnchorEl}
                             onClose={this.handleCloseMenu}
+                            MenuListProps={{
+                                style: { minWidth: 115 }
+                            }}
                         >
-                            <MenuItem onClick={this.handleDeleteClicked.bind(this)}>
+                            <MenuItem onClick={this.handleDeleteClicked}>
                                 <ListItemIcon className={classes.menuIcon}>
                                     <DeleteIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="刪除" />
                             </MenuItem>
-                            <MenuItem onClick={this.handleEditClicked.bind(this)}>
+                            <MenuItem onClick={this.handleEditClicked}>
                                 <ListItemIcon className={classes.menuIcon}>
                                     <EditIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="編輯" />
+                            </MenuItem>
+                            <MenuItem onClick={this.handleStatusChangeBtnClick}>
+                                <ListItemIcon className={classes.menuIcon}>
+                                    <EmojiObjectsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={member.status === MemberStatus.active ? '停用' : '啟用'} />
                             </MenuItem>
                             {member.isUser ? null : (
                                 <MenuItem onClick={() => {
@@ -216,7 +248,7 @@ class MemberItem extends Component<IProps, IState> {
                                 </MenuItem>
                             )}
                         </Menu>
-                    </div>
+                    </Box>
                 </Paper>
 
                 {this.renderEditMemberDrawer()}

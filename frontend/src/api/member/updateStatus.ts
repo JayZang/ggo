@@ -1,18 +1,9 @@
 import axios from 'axios'
 
-const URL = '/api/members/:id'
+const URL = '/api/members/:id/status'
 
-export function update(id: number | string, data: {
-    name?: string
-    gender?: number
-    phone?: string
-    email?: string
-    birthday?: string
-    avatar?: string
-    take_office_date?: string
-    leave_office_date?: string
-}) {
-    return axios.put<{
+export function updateStatus(id: number | string, status: number) {
+    return axios.patch<{
         id: number
         name: string
         gender: number
@@ -25,5 +16,5 @@ export function update(id: number | string, data: {
         leave_office_date: string | null
         create_at: string
         update_at: string
-    }>(URL.replace(':id', id.toString()), data)
+    }>(URL.replace(':id', id.toString()), { status })
 }

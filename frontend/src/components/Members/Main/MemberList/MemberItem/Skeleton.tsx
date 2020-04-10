@@ -23,8 +23,8 @@ class MemberItemSkeleton extends Component<IProps> {
                 >
                     <Skeleton width={40} height={40} variant="circle" />
                     <div style={{ width: '100%', marginLeft: '16px' }}>
-                        <Skeleton height={8} width={300} />
-                        <Skeleton height={8} width={200} />
+                        <Skeleton height={20} width="50%" />
+                        <Skeleton height={20} width="30%" />
                     </div>
                 </Paper>
             </div>
