@@ -1,15 +1,16 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
+import { isNull } from 'util'
 
 import TaskService from '@/services/TaskService'
-import { CreateAndEditTask, UpdateTaskStatus } from '../validators/task'
-import { isNull } from 'util'
+import validatePermission from '@/api/middleware/validatePermission'
+import { CreateAndEditTask, UpdateTaskStatus } from '@/api/validators/task'
 
 const router = Router()
 const taskService = Container.get(TaskService)
 
 export default (app: Router) => {
-    app.use('/tasks', router)
+    app.use('/tasks', validatePermission('task_management'), router)
 
     router.get('', async (req, res) => {
         const tasks = await taskService.get({

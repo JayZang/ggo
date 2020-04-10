@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dialog, DialogTitle, DialogContent, Paper, Grid, Avatar, Typography, Box, DialogActions, Button, Slide, FormControlLabel, Checkbox } from '@material-ui/core'
+import { Dialog, DialogTitle, DialogContent, Box, DialogActions, Button, FormControlLabel, Checkbox } from '@material-ui/core'
 import { WithSnackbarProps, withSnackbar } from 'notistack';
 import { Alert, AlertTitle } from '@material-ui/lab';
 

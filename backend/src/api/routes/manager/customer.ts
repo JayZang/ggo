@@ -2,8 +2,9 @@ import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 import multer from 'multer'
 
-import CustomerService from '@/services/CustomerService'
 import { CreateCustomer } from '@/api/validators/customer'
+import CustomerService from '@/services/CustomerService'
+import validatePermission from '@/api/middleware/validatePermission'
 
 const router = Router()
 const customerService = Container.get(CustomerService)
@@ -17,7 +18,7 @@ const customerLogoUpload = multer({
 })
 
 export default (app: Router) => {
-    app.use('/customers', router)
+    app.use('/customers', validatePermission('customer_management'), router)
 
     router.post('', customerLogoUpload.single('logo'), CreateCustomer(), async (req: Request, res: Response) => {
         const customer = await customerService.create(req.body, req.file)

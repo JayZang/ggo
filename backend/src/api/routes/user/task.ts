@@ -1,11 +1,11 @@
 import { Router, Response, Request } from 'express'
 import { Container } from 'typedi'
 
-import validateIdentity from '@/api/middleware/validateIdentity'
-import TaskWorkReportService from '@/services/UserArea/MemberTask/TaskWorkReportService'
-import MemberTaskService from '@/services/UserArea/MemberTask/MemberTaskService'
 import { UserIdentityType } from '@/entity/User'
+import validateIdentity from '@/api/middleware/validateIdentity'
 import { CreateWorkReportValidator } from '@/api/validators/workReport'
+import MemberTaskService from '@/services/UserArea/MemberTask/MemberTaskService'
+import TaskWorkReportService from '@/services/UserArea/MemberTask/TaskWorkReportService'
 
 const router = Router()
 const memberTaskService = Container.get(MemberTaskService)

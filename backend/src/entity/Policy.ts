@@ -24,7 +24,7 @@ export default class Policy {
 
 export type Permissions = Record<PermissionsList, undefined | boolean>
 
-type PermissionsList =
+export type PermissionsList =
     'member_management' |
     'team_management' |
     'customer_management' |

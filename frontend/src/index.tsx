@@ -5,12 +5,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
-import { SnackbarProvider } from 'notistack'
 import MomentUtils from '@date-io/moment'
+import { SnackbarProvider } from 'notistack'
 import "moment/locale/zh-tw"
+import axios from 'axios';
 
-import store from 'stores';
 import './index.css';
+import store from 'stores';
 import App from './pages/App';
 import * as serviceWorker from './serviceWorker';
 

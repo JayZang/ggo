@@ -2,12 +2,13 @@ import { Router } from 'express'
 import { Container } from 'typedi'
 
 import WorkReportService from '@/services/WorkReportService'
+import validatePermission from '@/api/middleware/validatePermission'
 
 const router = Router()
 const workReportService = Container.get(WorkReportService)
 
 export default (app: Router) => {
-    app.use('/work-reports', router)
+    app.use('/work-reports', validatePermission('task_management'), router)
 
     router.get('', async (req, res) => {
         const workReports = await workReportService.get({

@@ -22,7 +22,7 @@ export default (app: Router) => {
 
         return user ?
             res.header(jwtConfig.authHeaderName, token).json(user) :
-            res.status(401).end()
+            res.status(403).end()
     })
 
     router.post('/logout', async (req: Request, res: Response) => {
@@ -40,6 +40,6 @@ export default (app: Router) => {
 
         return user ?
             res.header(jwtConfig.authHeaderName, token).json(user) :
-            res.status(403).end()
+            res.status(401).end()
     })
 }

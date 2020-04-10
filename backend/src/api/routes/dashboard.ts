@@ -8,7 +8,7 @@ const router = Router()
 const dashboardService = Container.get(DashboardService)
 
 export default (app: Router) => {
-    app.use('/dashboard', validateIsAuth, router)
+    app.use('/dashboard', validateIsAuth(), router)
 
     router.get('/tasks', async (req: Request, res: Response) => {
         const tasks = await dashboardService.getInProgressTasks(req.user)

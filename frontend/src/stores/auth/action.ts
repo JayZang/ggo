@@ -1,14 +1,16 @@
 import { Dispatch } from "redux";
+import axios from "axios";
 
 import * as authApi from 'api/auth'
-import { AuthActionTypes, LOGIN, LOGOUT } from "./types";
+import { regularizeUserData } from "stores/iam/utils"
 import { authTokenName } from 'config/httpHeader'
 import { authTokenKeyName } from 'config/localStorage'
-import axios from "axios";
-import { regularizeUserData } from "stores/iam/utils";
+import { AuthActionTypes, LOGIN, LOGOUT } from "./types"
 
 // axios request interceptor
 let interceptorOfInsertTokenToHeader:number | null = null
+// axios response interceptor
+let interceptorOfAuthExpired:number | null = null
 
 export const login = (account_id: string, password: string) => async (dispatch: Dispatch) => {
     const res = await authApi.login(account_id, password)
@@ -24,6 +26,7 @@ export const login = (account_id: string, password: string) => async (dispatch: 
 
     localStorage.setItem(authTokenKeyName, token)
     insertTokenToRequestHeader(token)
+    handleAuthExpired(dispatch)
     dispatch(action)
 }
 
@@ -58,6 +61,7 @@ export const checkAuthToken = () => async (dispatch: Dispatch) => {
         }
     
         insertTokenToRequestHeader(token)
+        handleAuthExpired(dispatch)
         dispatch(action)
     }).catch(() => {
         localStorage.removeItem(authTokenKeyName)
@@ -68,5 +72,22 @@ function insertTokenToRequestHeader(token: string) {
     interceptorOfInsertTokenToHeader = axios.interceptors.request.use(config => {
         config.headers[authTokenName] = token
         return config
+    })
+}
+
+function handleAuthExpired(dispatch: Dispatch) {
+    interceptorOfAuthExpired = axios.interceptors.response.use(undefined, error => {
+        if (error.response.status === 401) {
+            localStorage.removeItem(authTokenKeyName)
+            interceptorOfInsertTokenToHeader !== null && axios.interceptors.request.eject(interceptorOfInsertTokenToHeader)
+            interceptorOfAuthExpired !== null && axios.interceptors.response.eject(interceptorOfAuthExpired)
+
+            const action: AuthActionTypes = {
+                type: LOGOUT,
+            }
+        
+            dispatch(action)
+        }
+        return Promise.reject(error)
     })
 }

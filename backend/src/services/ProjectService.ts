@@ -1,14 +1,13 @@
 import { Service } from 'typedi'
 import { getCustomRepository } from 'typeorm'
+import moment from 'moment'
 
+import { TaskStatus } from '@/entity/Task'
+import Customer from '@/entity/Customer'
+import { ProjectSrcType } from '@/entity/Project'
 import ProjectRepo from '@/repository/ProjectRepository'
 import CustomerRepo from '@/repository/CustomerRepository'
-import { ProjectSrcType } from '@/entity/Project'
-import Customer from '@/entity/Customer'
 import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
-import moment = require('moment')
-import task from '@/api/routes/task'
-import { TaskStatus } from '@/entity/Task'
 
 @Service()
 export default class ProjectService {

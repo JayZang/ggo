@@ -2,16 +2,17 @@ import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 import _ from 'lodash'
 
-import MemberService from '@/services/MemberService'
 import TeamService from '@/services/TeamService'
-import { CreateAndEditMember, CreateEmergenctContact } from '@/api/validators/member'
+import MemberService from '@/services/MemberService'
+import validatePermission from '@/api/middleware/validatePermission'
+import { CreateAndEditMember, CreateEmergencyContact } from '@/api/validators/member'
 
 const router = Router()
 const memberService = Container.get(MemberService)
 const teamService = Container.get(TeamService)
 
 export default (app: Router) => {
-    app.use('/members', router)
+    app.use('/members', validatePermission('member_management'), router)
 
     router.post('', CreateAndEditMember(), async (req: Request, res: Response) => {
         const member = await memberService.create(req.body)
@@ -64,7 +65,7 @@ export default (app: Router) => {
             res.status(400).end()
     })
 
-    router.post('/:id/emergency-contacts', CreateEmergenctContact(), async (req: Request, res: Response) => {
+    router.post('/:id/emergency-contacts', CreateEmergencyContact(), async (req: Request, res: Response) => {
         const emergencyContact = await memberService.createEmergencyContact(req.params.id, req.body)
 
         return emergencyContact ?
@@ -73,7 +74,7 @@ export default (app: Router) => {
     })
 
     router.get('/:id/emergency-contacts', async (req, res) => {
-        const emergenctContacts = await memberService.getEmergenctContactsById(req.params.id)
+        const emergenctContacts = await memberService.getEmergencyContactsById(req.params.id)
 
         return emergenctContacts ? 
             res.json(emergenctContacts) :

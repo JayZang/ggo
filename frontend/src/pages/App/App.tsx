@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 import RequestLoadingBar from 'components/RequestLoadingBar'
 import Header from 'components/Header'
@@ -11,7 +12,7 @@ import { Switch, Route, Redirect } from 'react-router'
 import { Box } from '@material-ui/core'
 import { IUser } from 'contracts/user'
 
-type IProps = {
+type IProps = WithSnackbarProps & {
     init: () => Promise<void>
     user: IUser | null
 }
@@ -33,6 +34,15 @@ class App extends Component<IProps, IState> {
         this.props.init().then(() => {
             this.setState({ initialed: true })
         })
+    }
+
+    componentWillReceiveProps(nextProps: IProps) {
+        const currentProps = this.props
+
+        if (currentProps.user && !nextProps.user)
+            this.props.enqueueSnackbar('已登出系統', {
+                variant: 'info'
+            })
     }
 
     render() {
@@ -67,4 +77,4 @@ class App extends Component<IProps, IState> {
     }
 }
 
-export default App
+export default withSnackbar(App)

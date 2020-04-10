@@ -4,8 +4,8 @@ import { promises as fs } from 'fs'
 import moment from 'moment'
 import crypto from 'crypto'
 
-import CustomerRepo from '@/repository/CustomerRepository'
 import { resource } from '@/config'
+import CustomerRepo from '@/repository/CustomerRepository'
 import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
 
 @Service()

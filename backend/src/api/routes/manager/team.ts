@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 
-import TeamService from '@/services/TeamService'
-import { CreateTeamValidator } from '@/api/validators/team'
-import MemberService from '@/services/MemberService'
 import TaskService from '@/services/TaskService'
+import TeamService from '@/services/TeamService'
+import MemberService from '@/services/MemberService'
+import { CreateTeamValidator } from '@/api/validators/team'
+import validatePermission from '@/api/middleware/validatePermission'
 
 const router = Router()
 const teamService = Container.get(TeamService)
@@ -12,7 +13,7 @@ const taskService = Container.get(TaskService)
 const memberService = Container.get(MemberService)
 
 export default (app: Router) => {
-    app.use('/teams', router)
+    app.use('/teams', validatePermission('team_management'), router)
 
     router.post('/', CreateTeamValidator(), async (req: Request, res: Response) => {
         const team = await teamService.create(req.body)

@@ -18,7 +18,7 @@ export function CreateAndEditMember(): RequestHandler[] {
     ]
 }
 
-export function CreateEmergenctContact(): RequestHandler[] {
+export function CreateEmergencyContact(): RequestHandler[] {
     return [
         body('name').exists({ checkFalsy: true }).isString(),
         body('phone').exists({ checkFalsy: true }).isString(),

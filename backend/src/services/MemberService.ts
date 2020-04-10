@@ -167,7 +167,7 @@ export default class MemberService {
      * 
      * @param id    Member id
      */
-    public async getEmergenctContactsById(id: number | string) {
+    public async getEmergencyContactsById(id: number | string) {
         try {
             const emergencyContactRepo = getCustomRepository(EmergencyContactRepo)
             return await emergencyContactRepo.find({

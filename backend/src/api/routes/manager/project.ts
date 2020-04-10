@@ -1,17 +1,18 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 
-import ProjectService from '@/services/ProjectService'
-import TaskService from '@/services/TaskService'
-import { CreateAndEditProject, FinishProject } from '../validators/project'
 import { ProjectSrcType } from '@/entity/Project'
+import TaskService from '@/services/TaskService'
+import ProjectService from '@/services/ProjectService'
+import validatePermission from '@/api/middleware/validatePermission'
+import { CreateAndEditProject, FinishProject } from '@/api/validators/project'
 
 const router = Router()
 const projectService = Container.get(ProjectService)
 const taskService = Container.get(TaskService)
 
 export default (app: Router) => {
-    app.use('/projects', router)
+    app.use('/projects', validatePermission('project_management'), router)
 
     router.post('', CreateAndEditProject(), async (req: Request, res: Response) => {
         const project = await projectService.create(req.body)
