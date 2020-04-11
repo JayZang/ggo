@@ -1,6 +1,6 @@
 import moment from "moment";
 import { IWorkReport } from "contracts/workReport";
-import { regularizeTaskData } from "stores/task/utils";
+import { regularizeTaskData } from "stores/utils/regularizeTaskData";
 import { regularizeMemberData } from "stores/utils/regularizeMemberData";
 
 export function regularizeWorkReportData(data: any): IWorkReport {

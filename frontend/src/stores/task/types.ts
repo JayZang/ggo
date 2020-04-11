@@ -1,36 +1,31 @@
-import { IMember } from 'contracts/member'
 import { ITeam } from 'contracts/team'
+import { IMember } from 'contracts/member'
 import { TaskStatus, ITask } from 'contracts/task'
 
 export const GET_TASK_COUNT_STATISTIC = 'GET_TASK_COUNT_STATISTIC'
-export const ADD_TASKS_TO_LIST = 'ADD_TASKS_TO_LIST'
-export const CLEAR_TASKS_LIST = 'CLEAR_TASKS_LIST'
-
-export const GET_PROJECT_TASKS = 'GET_PROJECT_TASKS'
-export const ADD_PROJECT_TASK = 'ADD_PROJECT_TASK'
-export const CLEAR_PROJECT_TASK = 'CLEAR_PROJECT_TASK'
+export const GET_TASKS = 'GET_TASKS'
+export const ADD_TASK = 'ADD_TASK'
+export const CLEAR_TASK_LIST_STATE = 'CLEAR_TASK_LIST_STATE'
 
 export const UPDATE_TASK_STATUS = 'UPDATE_TASK_STATUS'
-
-export const ADD_MEMBER_SELECTION_LIST = 'ADD_MEMBER_SELECTION_LIST'
-export const CLEAR_MEMBER_SELECTION_LIST = 'CLEAR_MEMBER_SELECTION_LIST'
-export const ADD_TEAM_SELECTION_LIST = 'ADD_TEAM_SELECTION_LIST'
-export const CLEAR_TEAM_SELECTION_LIST = 'CLEAR_TEAM_SELECTION_LIST'
-
 export const GET_TASK_DETAIL_INFO = 'GET_TASK_DETAIL_INFO'
 
+export const GET_TASK_EDIT_PANEL_MEMBER_SELECTION = 'GET_TASK_EDIT_PANEL_MEMBER_SELECTION'
+export const GET_TASK_EDIT_PANEL_TEAM_SELECTION = 'GET_TASK_EDIT_PANEL_TEAM_SELECTION'
+
 export type TaskState = {
-    taskList: ITask[] | null
-    tasksOfProject: ITask[] | null
-    editPanel: {
-        members: IMember[] | null
-        teams: ITeam[] | null
-    },
-    statistic: {
+    listPage: {
+        tasks: ITask[] | null
         totalCount: number
-    },
-    detailPage: {
+    }
+
+    infoPage: {
         task: ITask | null
+    }
+
+    editPanel: {
+        memberSelection: IMember[] | null
+        teamSelection: ITeam[] | null
     }
 }
 
@@ -41,33 +36,22 @@ type GetCountStatistic = {
     }
 }
 
-type AddTasksToList = {
-    type: typeof ADD_TASKS_TO_LIST,
+type GetTasks = {
+    type: typeof GET_TASKS,
     payload: {
         tasks: ITask[]
     }
 }
 
-type ClearTaskList = {
-    type: typeof CLEAR_TASKS_LIST
-}
-
-type GetProjectTasks = {
-    type: typeof GET_PROJECT_TASKS,
-    payload: {
-        tasks: ITask[]
-    }
-}
-
-type AddProjectTasks = {
-    type: typeof ADD_PROJECT_TASK,
+type AddTask = {
+    type: typeof ADD_TASK,
     payload: {
         task: ITask
     }
 }
 
-type ClearProjectTasks = {
-    type: typeof CLEAR_PROJECT_TASK,
+type ClearTaskListState = {
+    type: typeof CLEAR_TASK_LIST_STATE
 }
 
 type UpdateTaskStatus = {
@@ -78,26 +62,18 @@ type UpdateTaskStatus = {
     }
 }
 
-type AddMemberSelectionList = {
-    type: typeof ADD_MEMBER_SELECTION_LIST
+type GetMemberSelectionList = {
+    type: typeof GET_TASK_EDIT_PANEL_MEMBER_SELECTION
     payload: {
         members: IMember[]
     }
 }
 
-type ClearMemberSelectionList = {
-    type: typeof CLEAR_MEMBER_SELECTION_LIST
-}
-
-type AddTeamSelectionList = {
-    type: typeof ADD_TEAM_SELECTION_LIST
+type GetTeamSelectionList = {
+    type: typeof GET_TASK_EDIT_PANEL_TEAM_SELECTION
     payload: {
         teams: ITeam[]
     }
-}
-
-type ClearTeamSelectionList = {
-    type: typeof CLEAR_TEAM_SELECTION_LIST
 }
 
 type GetTaskDetailInfo = {
@@ -109,14 +85,10 @@ type GetTaskDetailInfo = {
 
 export type TaskActionType = 
     GetCountStatistic |
-    AddTasksToList |
-    ClearTaskList |
-    GetProjectTasks |
-    AddProjectTasks |
-    ClearProjectTasks |
+    GetTasks |
+    AddTask |
+    ClearTaskListState |
     UpdateTaskStatus |
-    AddMemberSelectionList | 
-    ClearMemberSelectionList |
-    AddTeamSelectionList |
-    ClearTeamSelectionList |
+    GetMemberSelectionList | 
+    GetTeamSelectionList |
     GetTaskDetailInfo

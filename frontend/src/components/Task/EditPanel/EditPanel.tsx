@@ -89,7 +89,7 @@ type IProps = WithSnackbarProps & {
     project?: IProject
     createTask: (id: number | string, data: any) => Promise<void>
     onSubmitSuccess?: () => void
-    onComponentUnMount?: () => void
+    onDidMount?: () => Promise<void>
 }
 
 type IState = {
@@ -125,8 +125,8 @@ class TaskEditPanel extends Component<IProps, IState> {
         }
     }
 
-    componentWillUnmount() {
-        this.props.onComponentUnMount && this.props.onComponentUnMount()
+    componentDidMount() {
+        this.props.onDidMount && this.props.onDidMount()
     }
 
     handleTextFieldChange(

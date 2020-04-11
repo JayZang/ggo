@@ -1,18 +1,27 @@
-import { TaskState, ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, UPDATE_TASK_STATUS, GET_PROJECT_TASKS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TASK_DETAIL_INFO } from "./types";
+import { 
+    TaskState, 
+    TaskActionType, 
+    UPDATE_TASK_STATUS, 
+    GET_TASK_COUNT_STATISTIC, 
+    GET_TASK_DETAIL_INFO, 
+    GET_TASKS, ADD_TASK, 
+    CLEAR_TASK_LIST_STATE, 
+    GET_TASK_EDIT_PANEL_MEMBER_SELECTION, 
+    GET_TASK_EDIT_PANEL_TEAM_SELECTION 
+} from "./types";
 import _ from 'lodash'
 
 const initState: TaskState = {
-    taskList: null,
-    tasksOfProject: null,
-    editPanel: {
-        members: null,
-        teams: null
-    },
-    statistic: {
+    listPage: {
+        tasks: null,
         totalCount: 0
     },
-    detailPage: {
+    infoPage: {
         task: null
+    },
+    editPanel: {
+        memberSelection: null,
+        teamSelection: null
     }
 }
 
@@ -21,109 +30,82 @@ export default function taskReducer(state: TaskState = initState, action: TaskAc
         case GET_TASK_COUNT_STATISTIC:
             return {
                 ...state,
-                statistic: {
+                listPage: {
+                    ...state.listPage,
                     totalCount: action.payload.totalCount
                 }
             }
 
-        case ADD_TASKS_TO_LIST:
+        case GET_TASKS:
             return {
                 ...state,
-                taskList: [
-                    ...(state.taskList || []),
-                    ...action.payload.tasks
-                ]
+                listPage: {
+                    ...state.listPage,
+                    tasks: [
+                        ...(state.listPage.tasks || []),
+                        ...action.payload.tasks
+                    ]
+                }
             }
 
-        case CLEAR_TASKS_LIST:
+        case ADD_TASK:
             return {
                 ...state,
-                taskList: null
+                listPage: {
+                    ...state.listPage,
+                    tasks: state.listPage.tasks && [
+                        action.payload.task,
+                        ...state.listPage.tasks
+                    ]
+                }
             }
 
-        case GET_PROJECT_TASKS:
+        case CLEAR_TASK_LIST_STATE:
             return {
                 ...state,
-                tasksOfProject: action.payload.tasks
-            }
-
-        case ADD_PROJECT_TASK:
-            return {
-                ...state,
-                tasksOfProject: [
-                    action.payload.task,
-                    ...(state.tasksOfProject || [])
-                ]
+                listPage: {
+                    ...initState.listPage
+                }
             }
 
         case UPDATE_TASK_STATUS:
             return {
                 ...state,
-                taskList: state.taskList && state.taskList.map(task => {
-                    if (task.id == action.payload.taskId) {
-                        const clonedTask = _.cloneDeep(task)
-                        clonedTask.status = action.payload.status
-                        return clonedTask
-                    }
-                    return task
-                }),
-                tasksOfProject: state.tasksOfProject && state.tasksOfProject.map(task => {
-                    if (task.id == action.payload.taskId) {
-                        const clonedTask = _.cloneDeep(task)
-                        clonedTask.status = action.payload.status
-                        return clonedTask
-                    }
-                    return task
-                })
-            }
-
-        case CLEAR_PROJECT_TASK:
-            return {
-                ...state,
-                tasksOfProject: null
-            }
-
-        case ADD_MEMBER_SELECTION_LIST:
-            return {
-                ...state,
-                editPanel: {
-                    ...state.editPanel,
-                    members: action.payload.members
+                listPage:{
+                    ...state.listPage,
+                    tasks: state.listPage.tasks && state.listPage.tasks.map(task => {
+                        if (task.id == action.payload.taskId) return {
+                            ...task,
+                            status: action.payload.status
+                        }
+                        return task
+                    })
                 }
             }
 
-        case CLEAR_MEMBER_SELECTION_LIST:
+        case GET_TASK_EDIT_PANEL_MEMBER_SELECTION:
             return {
                 ...state,
                 editPanel: {
                     ...state.editPanel,
-                    members: null
+                    memberSelection: action.payload.members
                 }
             }
 
-        case ADD_TEAM_SELECTION_LIST:
+        case GET_TASK_EDIT_PANEL_TEAM_SELECTION:
             return {
                 ...state,
                 editPanel: {
                     ...state.editPanel,
-                    teams: action.payload.teams
-                }
-            }
-
-        case CLEAR_TEAM_SELECTION_LIST:
-            return {
-                ...state,
-                editPanel: {
-                    ...state.editPanel,
-                    teams: null
+                    teamSelection: action.payload.teams
                 }
             }
 
         case GET_TASK_DETAIL_INFO:
             return {
                 ...state,
-                detailPage: {
-                    ...state.detailPage,
+                infoPage: {
+                    ...state.infoPage,
                     task: action.payload.task
                 }
             }

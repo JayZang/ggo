@@ -5,6 +5,7 @@ import TaskRepo from '@/repository/TaskRepository'
 import { TaskStatus } from '@/entity/Task'
 import TeamRepository from '@/repository/TeamRepository'
 import { TaskAssignmentType } from '@/entity/TaskAssignment'
+import TaskHelper from '@/helper/TaskHelper'
 
 @Service()
 export default class TaskService {
@@ -40,7 +41,7 @@ export default class TaskService {
                 order: {  create_at: 'DESC' },
                 ...option
             })
-            return await taskRepo.attachTasksAssignment(tasks)
+            return await TaskHelper.attachTasksAssignment(tasks)
         } catch (err) {
             console.log('Get tasks fail')
             console.log(err.toString())
@@ -145,7 +146,7 @@ export default class TaskService {
 
             if (!task) return null
 
-            return (await taskRepo.attachTasksAssignment([task]))[0]
+            return (await TaskHelper.attachTasksAssignment([task]))[0]
         } catch (err) {
             console.log('Get one task by id fail')
             console.log(err.toString())

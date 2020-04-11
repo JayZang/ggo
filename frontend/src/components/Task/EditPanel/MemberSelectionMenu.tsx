@@ -1,13 +1,11 @@
 import { connect } from "react-redux";
 
-import MemberSelectionMenu from 'components/Members/SelectionMenu/SelectionMenu'
 import { RootState } from "stores";
 import { fetchMemberSelection } from "stores/task/action";
+import MemberSelectionMenu from 'components/Members/SelectionMenu'
 
 const mapStateToProps = (state: RootState) => ({
-    members: state.task.editPanel.members || []
+    members: state.task.editPanel.memberSelection || []
 })
 
-export default connect(mapStateToProps, {
-    fetchMember: fetchMemberSelection
-})(MemberSelectionMenu)
+export default connect(mapStateToProps)(MemberSelectionMenu)

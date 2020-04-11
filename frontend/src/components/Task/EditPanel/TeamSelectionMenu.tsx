@@ -5,9 +5,7 @@ import { RootState } from 'stores'
 import { fetchTeamSelection } from 'stores/task/action'
 
 const mapStateToProps = (state: RootState) => ({
-    teams: state.task.editPanel.teams || []
+    teams: state.task.editPanel.teamSelection || []
 })
 
-export default connect(mapStateToProps, {
-    fetchTeam: fetchTeamSelection
-})(TeamSelectionMenu)
+export default connect(mapStateToProps)(TeamSelectionMenu)

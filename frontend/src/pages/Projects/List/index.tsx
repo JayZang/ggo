@@ -2,40 +2,19 @@ import { connect } from "react-redux";
 
 import ProjectListPage from './List'
 import { RootState } from "stores";
-import { ThunkDispatch } from "redux-thunk";
-import { getProject, reloadProject, getCountStatistic } from "stores/project/action";
+import { loadListPage, reloadListPage, fetchProjects } from "stores/project/action";
 
 const mapStateToProps = (state: RootState) => {
-    const {
-        projectMenu,
-        statistics
-    } = state.project
+    const { projects, totalCount } = state.project.listPage
 
     return {
-        projects: projectMenu,
-        isProjectAllLoaded: !!projectMenu && projectMenu.length >= statistics.totalCount
+        projects,
+        isProjectAllLoaded: !!projects && projects.length >= totalCount
     }
 }
 
-const mapActionToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
-    load: async () => {
-        await Promise.all([
-            dispatch(getProject()),
-            dispatch(getCountStatistic())
-        ])
-    },
-    reload: async () => {
-        await Promise.all([
-            dispatch(reloadProject()),
-            dispatch(getCountStatistic())
-        ])
-    },
-    getProject: async () => {
-        await dispatch(getProject())
-    }
-})
-
-export default connect(
-    mapStateToProps,
-    mapActionToProps
-)(ProjectListPage)
+export default connect(mapStateToProps, {
+    load: loadListPage,
+    reload: reloadListPage,
+    getProject: fetchProjects
+})(ProjectListPage)

@@ -22,7 +22,7 @@ import clsx from 'clsx'
 import styles from './styles'
 import { ITeam } from 'contracts/team'
 import { IMember } from 'contracts/member'
-import MemberSelectionMenu from 'components/Members/SelectionMenu/SelectionMenu'
+import MemberSelectionMenu from 'components/Members/SelectionMenu'
 
 type IProps = WithStyles<typeof styles> &  WithSnackbarProps & {
     team?: ITeam | null

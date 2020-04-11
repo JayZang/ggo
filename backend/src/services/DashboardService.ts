@@ -2,7 +2,7 @@ import { getCustomRepository, In } from 'typeorm'
 import { Service } from 'typedi'
 import _ from 'lodash'
 
-import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
+import CustomerDataRegularizer from '@/regularizer/CustomerDataRegularizer'
 import ProjectRepo from '@/repository/ProjectRepository'
 import TaskRepo from '@/repository/TaskRepository'
 import { TaskAssignmentType } from '@/entity/TaskAssignment'
@@ -10,6 +10,7 @@ import User, { UserIdentityType } from '@/entity/User'
 import { TaskStatus } from '@/entity/Task'
 import TeamRepo from '@/repository/TeamRepository'
 import WorkReportRepo from '@/repository/WorkReportRepository'
+import TaskHelper from '@/helper/TaskHelper'
 
 @Service()
 export default class DashboardService {
@@ -45,7 +46,7 @@ export default class DashboardService {
                 .withStatusCondition([TaskStatus.Normal, TaskStatus.Pause])
                 .withCreateAtOrder('DESC')
                 .getMany()
-                .then(tasks => taskRepo.attachTasksAssignment(tasks))
+                .then(tasks => TaskHelper.attachTasksAssignment(tasks))
         } catch (err) {
             console.log('Get dashboard tasks fail')
             console.log(err.toString())
@@ -72,7 +73,7 @@ export default class DashboardService {
                 .withCreateAtOrder('DESC')
                 .getMany()
                 .then(projects => projects.map(project => {
-                    project.customer = project.customer && regularizeCustomerData(project.customer)
+                    project.customer && CustomerDataRegularizer.regularize(project.customer)
                     return project
                 }))
         } catch (err) {

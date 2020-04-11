@@ -1,107 +1,163 @@
-import { ProjectState, ProjectActionType, ADD_PROJECTS, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, UPDATE_PROJECT_FINISH_DATE, GET_PROJECT_COUNT_STATISTIC } from "./types"
+import { 
+    ProjectState, 
+    ProjectActionType, 
+    ADD_PROJECT, 
+    GET_CUSTOMER_SELECTION_MENU, 
+    CLEAR_LIST_PAGE_STATE, 
+    GET_PROJECT_DETAIL_INFO, 
+    UPDATE_PROJECT, 
+    UPDATE_PROJECT_FINISH_DATE, 
+    GET_PROJECT_COUNT_STATISTIC, 
+    GET_PROJECTS
+} from "./types"
 import _ from 'lodash'
+import { UPDATE_TASK_STATUS, TaskActionType, ADD_TASK } from "stores/task/types"
 
 const initState: ProjectState = {
-    projectMenu: null,
-    customerSelectionMenu: null,
-    statistics: {
+    listPage: {
+        projects: null,
         totalCount: 0,
         srcTypeInternalCount: 0,
-        srcTypeCustomerCount: 0,
+        srcTypeCustomerCount: 0
     },
-    projectDetail: {
-        baseInfo: null
+    infoPage: {
+        project: null,
+        tasks: null
+    },
+    editPanel: {
+        customerSelectionMenu: null
     }
 }
 
-export default function customerReducer(state: ProjectState = initState, action: ProjectActionType): ProjectState {
+export default function customerReducer(state: ProjectState = initState, action: ProjectActionType | TaskActionType): ProjectState {
     switch (action.type) {
-        case ADD_PROJECTS:
+        case GET_PROJECTS:
             return {
                 ...state,
-                projectMenu: action.payload.prepend ? [
-                    ...action.payload.projects,
-                    ...(state.projectMenu || [])
-                ] : [
-                    ...(state.projectMenu || []),
-                    ...action.payload.projects
-                ]
+                listPage: {
+                    ...state.listPage,
+                    projects: [
+                        ...(state.listPage.projects || []),
+                        ...action.payload.projects
+                    ]
+                }
+            }
+
+        case ADD_PROJECT:
+            return {
+                ...state,
+                listPage: {
+                    ...state.listPage,
+                    projects: [
+                        action.payload.project,
+                        ...(state.listPage.projects || []),
+                    ]
+                }
             }
         
         case UPDATE_PROJECT:
             return {
                 ...state,
-                projectMenu: state.projectMenu && state.projectMenu.map(project => {
-                    if (project.id === action.payload.project.id)
-                        return action.payload.project
-                    return project
-                }),
-                projectDetail: {
-                    ...state.projectDetail,
-                    baseInfo: state.projectDetail.baseInfo && state.projectDetail.baseInfo.id === action.payload.project.id ? 
+                listPage: {
+                    ...state.listPage,
+                    projects: (state.listPage.projects || []).map(project => {
+                        if (project.id === action.payload.project.id)
+                            return action.payload.project
+                        return project
+                    })
+                },
+                infoPage: {
+                    ...state.infoPage,
+                    project: state.infoPage.project && (state.infoPage.project.id === action.payload.project.id) ?
                         action.payload.project :
-                        state.projectDetail.baseInfo
+                        state.infoPage.project
                 }
             }
 
         case UPDATE_PROJECT_FINISH_DATE:
             return {
                 ...state,
-                projectMenu: state.projectMenu && state.projectMenu.map(project => {
-                    if (project.id === action.payload.projectId)
-                        project.finish_datetime = action.payload.date
-                    return project
-                }),
-                projectDetail: {
-                    ...state.projectDetail,
-                    baseInfo: (() => {
-                        let baseInfo = state.projectDetail.baseInfo
-                        if (baseInfo && baseInfo.id === action.payload.projectId) {
-                            baseInfo = _.cloneDeep(baseInfo)
-                            baseInfo.finish_datetime = action.payload.date
+                listPage: {
+                    ...state.listPage,
+                    projects: (state.listPage.projects || []).map(project => {
+                        if (project.id === action.payload.projectId) return {
+                            ...project,
+                            finish_datetime: action.payload.date
                         }
-                        return baseInfo
-                    })()
+                        return project
+                    })
+                },
+                infoPage: {
+                    ...state.infoPage,
+                    project: state.infoPage.project && (state.infoPage.project.id === action.payload.projectId) ? {
+                        ...state.infoPage.project,
+                        finish_datetime: action.payload.date
+                    } : state.infoPage.project
                 }
             }
 
-        case CLEAR_PROJECT:
+        case CLEAR_LIST_PAGE_STATE:
             return {
                 ...state,
-                projectMenu: null
+                listPage: {
+                    ...initState.listPage
+                }
             }
 
         case GET_CUSTOMER_SELECTION_MENU:
             return {
                 ...state,
-                customerSelectionMenu: action.payload.customers
+                editPanel: {
+                    ...state.editPanel,
+                    customerSelectionMenu: action.payload.customers
+                }
             }
 
         case GET_PROJECT_COUNT_STATISTIC:
             return {
                 ...state,
-                statistics: {
-                    ...state.statistics,
+                listPage: {
+                    ...state.listPage,
                     totalCount: action.payload.totalCount,
                     srcTypeInternalCount: action.payload.srcTypeInternalCount,
                     srcTypeCustomerCount: action.payload.srcTypeCustomerCount
                 }
             }
 
-        case GET_PROJECT_BASE_INFO:
+        case GET_PROJECT_DETAIL_INFO:
             return {
                 ...state,
-                projectDetail: {
-                    ...state.projectDetail,
-                    baseInfo: action.payload.project
+                infoPage: {
+                    ...state.infoPage,
+                    project: action.payload.project,
+                    tasks: action.payload.tasks
                 }
             }
-            
-        case CLEAR_PROJECT_DETAIL:
+
+        case ADD_TASK:
             return {
                 ...state,
-                projectDetail: {
-                    baseInfo: null
+                infoPage: {
+                    ...state.infoPage,
+                    tasks: state.infoPage.project && state.infoPage.tasks && state.infoPage.project.id === action.payload.task.project_id ? [
+                        ...state.infoPage.tasks,
+                        action.payload.task
+                    ] : state.infoPage.tasks
+                }
+            }
+
+        case UPDATE_TASK_STATUS:
+            return {
+                ...state,
+                infoPage: {
+                    ...state.infoPage,
+                    tasks: (state.infoPage.tasks || []).map(task => {
+                        if (task.id === action.payload.taskId) return {
+                            ...task,
+                            status: action.payload.status       
+                        }
+                        return task
+                    })
                 }
             }
 

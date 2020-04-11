@@ -7,7 +7,7 @@ import Customer from '@/entity/Customer'
 import { ProjectSrcType } from '@/entity/Project'
 import ProjectRepo from '@/repository/ProjectRepository'
 import CustomerRepo from '@/repository/CustomerRepository'
-import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
+import TaskHelper from '@/helper/TaskHelper'
 
 @Service()
 export default class ProjectService {
@@ -25,7 +25,6 @@ export default class ProjectService {
                 customer = await customerRepo.findOne(data.customer_id)
                 if (!customer)
                     throw new Error(`None customer with id ${data.customer_id}`)
-                customer = regularizeCustomerData(customer)
             }
 
             return await projectRepo.createAndSave({
@@ -52,7 +51,6 @@ export default class ProjectService {
                 customer = await customerRepo.findOne(data.customer_id)
                 if (!customer)
                     throw new Error(`None customer with id ${data.customer_id}`)
-                customer = regularizeCustomerData(customer)
             }
 
             return await projectRepo.updateById(id, {
@@ -79,11 +77,6 @@ export default class ProjectService {
                 relations: ['customer'],
                 order: {  id: 'DESC' },
                 ...option
-            }).then(projects => {
-                return projects.map(project => {
-                    project.customer = project.customer && regularizeCustomerData(project.customer)
-                    return project
-                })
             })
         } catch (err) {
             console.log('Get Projects fail')
@@ -100,10 +93,10 @@ export default class ProjectService {
     public async getById(id: string) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
-            return await projectRepo.findOne(id, {
-                relations: ['customer']
-            }).then(project => {
-                project.customer = project.customer && regularizeCustomerData(project.customer)
+            return await projectRepo.findOneOrFail(id, {
+                relations: ['customer', 'tasks', 'tasks.assignment']
+            }).then(async (project) => {
+                await TaskHelper.attachTasksAssignment(project.tasks)
                 return project
             })
         } catch (err) {
@@ -152,14 +145,16 @@ export default class ProjectService {
     public async finish(id: string | number, date: string) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
-            const project = await projectRepo.findOneOrFail(id)
+            const project = await projectRepo.findOneOrFail(id, {
+                relations: ['tasks']
+            })
 
             if (project.finish_datetime)
                 throw new Error('The project has been set finish date !')
             else if (moment(date).isBefore(project.start_datetime))
                 throw new Error('Finish date can not before project start date !')
 
-            const tasks = await project.tasks
+            const tasks = project.tasks
             const isAllCompletedOrTerminated = !!tasks.length && tasks.reduce((status, task) => {
                 return status && (task.status === TaskStatus.Completed || task.status === TaskStatus.Terminated)
             }, true)

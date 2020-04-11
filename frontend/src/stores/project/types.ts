@@ -1,34 +1,46 @@
+import { Moment } from 'moment'
+import { ITask } from 'contracts/task'
 import { IProject } from 'contracts/project'
 import { ICustomer } from 'contracts/customer'
-import { Moment } from 'moment'
 
-export const ADD_PROJECTS = 'ADD_PROJECTS'
+export const GET_PROJECTS = 'GET_PROJECTS'
+export const ADD_PROJECT = 'ADD_PROJECT'
 export const UPDATE_PROJECT = 'UPDATE_PROJECT'
 export const UPDATE_PROJECT_FINISH_DATE = 'UPDATE_PROJECT_FINISH_DATE'
-export const CLEAR_PROJECT = 'CLEAR_PROJECT'
-export const GET_CUSTOMER_SELECTION_MENU = 'GET_CUSTOMER_SELECTION_MENU'
+export const CLEAR_LIST_PAGE_STATE = 'CLEAR_LIST_PAGE_STATE'
 export const GET_PROJECT_COUNT_STATISTIC = 'GET_PROJECT_COUNT_STATISTIC'
-export const GET_PROJECT_BASE_INFO = 'GET_PROJECT_BASE_INFO'
-export const CLEAR_PROJECT_DETAIL = 'CLEAR_PROJECT_DETAIL'
+export const GET_PROJECT_DETAIL_INFO = 'GET_PROJECT_DETAIL_INFO'
+export const GET_CUSTOMER_SELECTION_MENU = 'GET_CUSTOMER_SELECTION_MENU'
 
 export type ProjectState = {
-    projectMenu: IProject[] | null
-    customerSelectionMenu: ICustomer[] | null
-    statistics: {
+    listPage: {
+        projects: IProject[] | null
         totalCount: number
         srcTypeInternalCount: number
         srcTypeCustomerCount: number
-    },
-    projectDetail: {
-        baseInfo: IProject | null
+    }
+
+    infoPage: {
+        project: IProject | null
+        tasks: ITask[] | null
+    }
+
+    editPanel: {
+        customerSelectionMenu: ICustomer[] | null
     }
 }
 
-type AddProjects = {
-    type: typeof ADD_PROJECTS,
+type GetProjects = {
+    type: typeof GET_PROJECTS,
     payload: {
         projects: IProject[]
-        prepend?: boolean
+    }
+}
+
+type AddProject = {
+    type: typeof ADD_PROJECT,
+    payload: {
+        project: IProject
     }
 }
 
@@ -47,8 +59,8 @@ type UpdateProjectFinishDate = {
     }
 }
 
-type ClearProject = {
-    type: typeof CLEAR_PROJECT,
+type ClearListPageState = {
+    type: typeof CLEAR_LIST_PAGE_STATE,
 }
 
 type GetCustomerSelectionMenu = {
@@ -67,23 +79,20 @@ type GetCountStatistic = {
     }
 }
 
-type GetProjectBaseInfo = {
-    type: typeof GET_PROJECT_BASE_INFO,
+type GetProjectDetailInfo = {
+    type: typeof GET_PROJECT_DETAIL_INFO,
     payload: {
         project: IProject
+        tasks: ITask[]
     }
 }
 
-type ClearProjectDetail = {
-    type: typeof CLEAR_PROJECT_DETAIL
-}
-
 export type ProjectActionType = 
-    AddProjects |
+    GetProjects |
+    AddProject |
     UpdateProject |
     UpdateProjectFinishDate |
-    ClearProject |
-    GetCustomerSelectionMenu |
+    ClearListPageState |
     GetCountStatistic |
-    GetProjectBaseInfo |
-    ClearProjectDetail
+    GetProjectDetailInfo |
+    GetCustomerSelectionMenu

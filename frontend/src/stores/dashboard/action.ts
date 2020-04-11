@@ -1,16 +1,16 @@
 import { Dispatch } from "redux";
 
 import * as dashboardApi from 'api/dashboard'
-import { DashboardActionType, GET_TASKS, GET_PROJECTS, GET_DASHBOARD_WORK_REPORTS } from "./types";
-import { regularizeTaskData } from "stores/task/utils";
-import { regularizeProjectData } from "stores/project/utils";
+import { DashboardActionType, GET_DASHBOARD_TASKS, GET_DASHBOARD_PROJECTS, GET_DASHBOARD_WORK_REPORTS } from "./types";
+import { regularizeTaskData } from "stores/utils/regularizeTaskData";
+import { regularizeProjectData } from "stores/utils/regularizeProjectData";
 import { regularizeWorkReportData } from "stores/utils/regularizeWorkReportData";
 
 export const fetTasks = () => async (dispatch : Dispatch) => {
    const res = await dashboardApi.getTasks()
 
    const action: DashboardActionType = {
-       type: GET_TASKS,
+       type: GET_DASHBOARD_TASKS,
        payload: {
            tasks: res.data.map(task => regularizeTaskData(task))
        }
@@ -23,7 +23,7 @@ export const fetchProjects = () => async (dispatch : Dispatch) => {
    const res = await dashboardApi.getProjects()
 
    const action: DashboardActionType = {
-       type: GET_PROJECTS,
+       type: GET_DASHBOARD_PROJECTS,
        payload: {
            projects: res.data.map(project => regularizeProjectData(project))
        }

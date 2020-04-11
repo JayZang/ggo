@@ -3,24 +3,21 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import TaskList from './List'
 import { RootState } from 'stores';
-import { fetchTasks, clearTaskList, getTaskCountStatistic } from 'stores/task/action';
+import { fetchTasks, fetchTaskCountStatistic, clearTaskListState } from 'stores/task/action';
 
 const mapStateToProps = (state: RootState) => {
-    const {
-        taskList: tasks,
-        statistic
-    } = state.task
+    const { tasks, totalCount } = state.task.listPage
 
     return {
         tasks,
-        isAllTasksLoaded: !!tasks && tasks.length >= statistic.totalCount
+        isAllTasksLoaded: !!tasks && tasks.length >= totalCount
     }
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     load: async () => {
         await Promise.all([
-            dispatch(getTaskCountStatistic()),
+            dispatch(fetchTaskCountStatistic()),
             dispatch(fetchTasks())
         ])
     },
@@ -29,8 +26,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     } ,
     reload: async () => {
         await Promise.all([
-            dispatch(getTaskCountStatistic()),
-            dispatch(clearTaskList()),
+            dispatch(clearTaskListState()),
+            dispatch(fetchTaskCountStatistic()),
             dispatch(fetchTasks())
         ])
     },

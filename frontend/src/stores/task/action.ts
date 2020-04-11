@@ -1,18 +1,18 @@
 import { Dispatch } from "redux"
 
-import { ADD_MEMBER_SELECTION_LIST, TaskActionType, CLEAR_MEMBER_SELECTION_LIST, ADD_TEAM_SELECTION_LIST, CLEAR_TEAM_SELECTION_LIST, GET_PROJECT_TASKS, UPDATE_TASK_STATUS, ADD_PROJECT_TASK, CLEAR_PROJECT_TASK, ADD_TASKS_TO_LIST, CLEAR_TASKS_LIST, GET_TASK_COUNT_STATISTIC, GET_TASK_DETAIL_INFO } from "./types"
+import { TaskActionType, UPDATE_TASK_STATUS, GET_TASK_COUNT_STATISTIC, GET_TASK_DETAIL_INFO, GET_TASKS, CLEAR_TASK_LIST_STATE, GET_TASK_EDIT_PANEL_TEAM_SELECTION, GET_TASK_EDIT_PANEL_MEMBER_SELECTION, ADD_TASK } from "./types"
 
 import * as taskApi from 'api/task'
 import * as teamApi from 'api/team'
-import * as projectApi from 'api/project'
 import * as memberApi from 'api/member'
 import { regularizeMemberData } from "stores/utils/regularizeMemberData"
 import { regularizeTeamData } from "stores/utils/regularizeTeamData"
-import { regularizeTaskData } from "./utils"
+import { regularizeTaskData } from "stores/utils/regularizeTaskData"
 import { TaskStatus } from "contracts/task"
 import { RootState } from "stores"
+import { MemberStatus } from "contracts/member"
 
-export const getTaskCountStatistic = () => async (dispatch: Dispatch) => {
+export const fetchTaskCountStatistic = () => async (dispatch: Dispatch) => {
     const res = await taskApi.getCountStatistic()
 
     const action: TaskActionType = {
@@ -26,21 +26,18 @@ export const getTaskCountStatistic = () => async (dispatch: Dispatch) => {
 }
 
 export const fetchTasks = () => async (dispatch: Dispatch, getState: () => RootState) => {
-    const {
-        statistic,
-        taskList
-    } = getState().task
+    const { totalCount, tasks } = getState().task.listPage
 
-    if (taskList && taskList.length >= statistic.totalCount)
+    if (tasks && tasks.length >= totalCount)
         return
 
     const res = await taskApi.get({
-        offset: taskList ? taskList.length : 0,
+        offset: tasks ? tasks.length : 0,
         count: 10
     })
 
     const action: TaskActionType = {
-        type: ADD_TASKS_TO_LIST,
+        type: GET_TASKS,
         payload: {
             tasks: res.data.map(task => regularizeTaskData(task))
         }
@@ -49,44 +46,9 @@ export const fetchTasks = () => async (dispatch: Dispatch, getState: () => RootS
    dispatch(action)
 }
 
-export const clearTaskList = () => {
+export const clearTaskListState = () => {
     return {
-        type: CLEAR_TASKS_LIST
-    }
-}
-
-export const fetchProjectTasks = (id: string) => async (dispatch: Dispatch) => {
-    const res = await projectApi.getTasksByProjectId(id)
-
-    const action: TaskActionType = {
-        type: GET_PROJECT_TASKS,
-        payload: {
-            tasks: res.data.map(task => regularizeTaskData(task))
-        }
-   }
-
-   dispatch(action)
-}
-
-export const createProjectTask = (id: number | string, data: any) => async (dispatch: Dispatch) => {
-    const res = await taskApi.create({
-        project_id: id,
-        ...data
-    })
-
-    const action: TaskActionType = {
-        type: ADD_PROJECT_TASK,
-        payload: {
-            task: regularizeTaskData(res.data)
-        }
-   }
-
-   dispatch(action)
-}
-
-export const clearProjectTask = () => {
-    return {
-        type: CLEAR_PROJECT_TASK
+        type: CLEAR_TASK_LIST_STATE
     }
 }
 
@@ -104,14 +66,31 @@ export const updateTaskStatus = (id: string | number, status: TaskStatus) => asy
    dispatch(action)
 }
 
+export const createTask = (projectId: number | string, data: any) => async (dispatch: Dispatch) => {
+    const res = await taskApi.create({
+        project_id: projectId,
+        ...data
+    })
+
+    const action: TaskActionType = {
+        type: ADD_TASK,
+        payload: {
+            task: regularizeTaskData(res.data)
+        }
+    }
+
+    dispatch(action)
+}
+
 export const fetchMemberSelection = () => async (dispatch : Dispatch) => {
     const res = await memberApi.get({
         offset: 0,
-        count: 10
+        count: 999,
+        status: MemberStatus.active
     })
  
     const action: TaskActionType = {
-        type: ADD_MEMBER_SELECTION_LIST,
+        type: GET_TASK_EDIT_PANEL_MEMBER_SELECTION,
         payload: {
             members: res.data.members.map(member => regularizeMemberData(member))
         }
@@ -120,33 +99,18 @@ export const fetchMemberSelection = () => async (dispatch : Dispatch) => {
     dispatch(action)
 }
 
-export const clearMemberSelection = () => {
-    const action: TaskActionType = {
-        type: CLEAR_MEMBER_SELECTION_LIST
-    }
- 
-   return action
-}
 
 export const fetchTeamSelection = () => async (dispatch : Dispatch) => {
     const res = await teamApi.getPermanentTeams()
  
     const action: TaskActionType = {
-        type: ADD_TEAM_SELECTION_LIST,
+        type: GET_TASK_EDIT_PANEL_TEAM_SELECTION,
         payload: {
             teams: res.data.map(team => regularizeTeamData(team))
         }
     }
  
     dispatch(action)
-}
-
-export const clearTeamSelection = () => {
-    const action: TaskActionType = {
-        type: CLEAR_TEAM_SELECTION_LIST
-    }
- 
-   return action
 }
 
 export const fetchTaskDetailInfo = (id: number | string) => async (dispatch: Dispatch) => {

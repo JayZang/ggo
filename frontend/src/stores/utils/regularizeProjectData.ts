@@ -2,7 +2,7 @@ import moment from "moment";
 
 import { IProject } from 'contracts/project'
 import { regularizeCustomerData } from "stores/customer/utils";
-import { regularizeTaskData } from "stores/task/utils";
+import { regularizeTaskData } from "stores/utils/regularizeTaskData";
 import { ITask } from "contracts/task";
 
 export function regularizeProjectData(data: any): IProject {

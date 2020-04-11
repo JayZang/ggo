@@ -14,7 +14,7 @@ import {
     UPDATE_TEAM
 } from "./types";
 import { RootState } from "stores";
-import { regularizeTaskData } from "stores/task/utils";
+import { regularizeTaskData } from "stores/utils/regularizeTaskData";
 import { regularizeMemberData } from "stores/utils/regularizeMemberData";
 import { MemberStatus } from "contracts/member";
 

@@ -5,7 +5,7 @@ import { createProject, updateProject, getCustomerSelectionMenu } from "stores/p
 import { RootState } from "stores";
 
 const mapStateToProps = (state: RootState) => ({
-    customers: state.project.customerSelectionMenu
+    customers: state.project.editPanel.customerSelectionMenu
 })
 
 export default connect(mapStateToProps, {

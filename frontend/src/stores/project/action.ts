@@ -2,8 +2,18 @@ import { Dispatch } from "redux";
 
 import * as projectApi from 'api/project'
 import * as customerApi from 'api/customer'
-import { ADD_PROJECTS, ProjectActionType, GET_CUSTOMER_SELECTION_MENU, CLEAR_PROJECT, GET_PROJECT_COUNT_STATISTIC, GET_PROJECT_BASE_INFO, UPDATE_PROJECT, CLEAR_PROJECT_DETAIL, UPDATE_PROJECT_FINISH_DATE } from "./types";
-import { regularizeProjectData } from "./utils";
+import { 
+    ADD_PROJECT, 
+    ProjectActionType, 
+    GET_CUSTOMER_SELECTION_MENU, 
+    GET_PROJECT_COUNT_STATISTIC, 
+    GET_PROJECT_DETAIL_INFO, 
+    UPDATE_PROJECT, 
+    UPDATE_PROJECT_FINISH_DATE, 
+    GET_PROJECTS, 
+    CLEAR_LIST_PAGE_STATE 
+} from "./types";
+import { regularizeProjectData } from "stores/utils/regularizeProjectData";
 import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
 import { Moment } from "moment";
@@ -12,10 +22,9 @@ export const createProject = (data: any) => async (dispatch : Dispatch) => {
    const res = await projectApi.create(data)
 
    const action: ProjectActionType = {
-        type: ADD_PROJECTS,
+        type: ADD_PROJECT,
         payload: {
-            projects: [regularizeProjectData(res.data)],
-            prepend: true
+            project: regularizeProjectData(res.data)
         }
    }
 
@@ -49,22 +58,22 @@ export const finishProject = (id: number | string, date: Moment) => async (dispa
     dispatch(action)
 }
 
-export const getProject = () => async (dispatch: Dispatch, getState: () => RootState) => {
+export const fetchProjects = () => async (dispatch: Dispatch, getState: () => RootState) => {
     const {
-        statistics,
-        projectMenu
-    } = getState().project
+        totalCount,
+        projects
+    } = getState().project.listPage
 
-    if (projectMenu && projectMenu.length >= statistics.totalCount)
+    if (projects && projects.length >= totalCount)
         return
 
    const res = await projectApi.get({
-       offset: projectMenu? projectMenu.length : 0,
+       offset: projects ? projects.length : 0,
        count: 10
    })
 
    const action: ProjectActionType = {
-        type: ADD_PROJECTS,
+        type: GET_PROJECTS,
         payload: {
             projects: res.data.map(project => regularizeProjectData(project))
         }
@@ -73,22 +82,15 @@ export const getProject = () => async (dispatch: Dispatch, getState: () => RootS
    dispatch(action)
 }
 
-export const reloadProject = () => async (dispatch : Dispatch, getState: () => RootState) => {
-   dispatch({ type: CLEAR_PROJECT })
-   getProject()(dispatch, getState)
+export const loadListPage = () => async (dispatch : Dispatch, getState: () => RootState) => {
+    getCountStatistic()(dispatch)
+    fetchProjects()(dispatch, getState)
 }
 
-export const getCustomerSelectionMenu = () => async (dispatch : Dispatch) => {
-   const res = await customerApi.get()
-
-   const action: ProjectActionType = {
-        type: GET_CUSTOMER_SELECTION_MENU,
-        payload: {
-            customers: res.data.map(customer => regularizeCustomerData(customer))
-        }
-   }
-
-   dispatch(action)
+export const reloadListPage = () => async (dispatch : Dispatch, getState: () => RootState) => {
+    dispatch({ type: CLEAR_LIST_PAGE_STATE })
+    getCountStatistic()(dispatch)
+    fetchProjects()(dispatch, getState)
 }
 
 export const getCountStatistic = () => async (dispatch: Dispatch) => {
@@ -106,21 +108,30 @@ export const getCountStatistic = () => async (dispatch: Dispatch) => {
    dispatch(action)
 }
 
-export const fetchProjectBaseInfo = (id: string) => async (dispatch: Dispatch) => {
-    const res = await projectApi.getBaseInfo(id)
-
+export const fetchProjectDetailInfo = (id: string) => async (dispatch: Dispatch) => {
+    const res = await projectApi.geDetailInfo(id)
+    
+    const project = regularizeProjectData(res.data)
     const action: ProjectActionType = {
-        type: GET_PROJECT_BASE_INFO,
+        type: GET_PROJECT_DETAIL_INFO,
         payload: {
-            project: regularizeProjectData(res.data)
+            project,
+            tasks: project.tasks || []
         }
    }
 
    dispatch(action)
 }
 
-export const clearProjectDetail = () => {
-    return {
-        type: CLEAR_PROJECT_DETAIL
-   }
+export const getCustomerSelectionMenu = () => async (dispatch : Dispatch) => {
+    const res = await customerApi.get()
+
+    const action: ProjectActionType = {
+        type: GET_CUSTOMER_SELECTION_MENU,
+        payload: {
+            customers: res.data.map(customer => regularizeCustomerData(customer))
+        }
+    }
+
+    dispatch(action)
 }

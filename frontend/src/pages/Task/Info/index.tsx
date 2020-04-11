@@ -6,7 +6,7 @@ import { RootState } from 'stores';
 import { fetchTaskDetailInfo } from 'stores/task/action';
 
 const mapStateToProps = (state: RootState) => ({
-    task: state.task.detailPage.task
+    task: state.task.infoPage.task
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({

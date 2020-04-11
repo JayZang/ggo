@@ -2,30 +2,20 @@ import { Theme, createStyles } from "@material-ui/core";
 
 export default (theme: Theme) => createStyles({
     root: {
-        padding: theme.spacing(2, 3),
+        padding: theme.spacing(1.5, 3),
         marginBottom: theme.spacing(2),
         display: 'flex',
-        justifyContent: 'space-between'
+        alignItems: 'center',
+        height: 75
     },
     fieldGrid: {
         display: 'flex',
-        flexGrow: 1,
+        flexBasis: 0,
         justifyContent: 'center',
-        flexDirection: 'column',
-        alignItems: 'start'
+        flexDirection: 'column'
     },
     fieldHint: {
         color: theme.palette.text.hint,
         fontSize: 14
-    },
-    fieldProjectName: {
-        maxWidth: 230
-    },
-    fieldDate: {
-        maxWidth: 100
-    },
-    fieldSrcType: {
-        maxWidth: 230,
-        display: 'flex'
     }
 })

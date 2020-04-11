@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, AfterLoad, AfterInsert, AfterUpdate } from 'typeorm'
 import Project from './Project'
+import CustomerDataRegularizer from '@/regularizer/CustomerDataRegularizer'
 
 @Entity()
 export default class Customer {
@@ -62,4 +63,11 @@ export default class Customer {
         cascade: true
     })
     projects: Project[]
+
+    @AfterLoad()
+    @AfterInsert()
+    @AfterUpdate()
+    regularize() {
+        CustomerDataRegularizer.regularize(this)
+    }    
 }

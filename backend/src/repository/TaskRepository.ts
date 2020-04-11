@@ -8,6 +8,7 @@ import TeamRepo from './TeamRepository'
 import Project from '@/entity/Project'
 import { BaseRepository } from './BaseRepocitory'
 import WorkReport from '@/entity/WorkReport'
+import TaskHelper from '@/helper/TaskHelper'
 
 @EntityRepository(Task)
 class TaskRepository extends BaseRepository<Task> {
@@ -32,7 +33,7 @@ class TaskRepository extends BaseRepository<Task> {
         task.assignment.distributor = await memberRepo.findOne(1)
 
         return this.save(task)
-            .then(task => this.attachTasksAssignment([task]))
+            .then(task => TaskHelper.attachTasksAssignment([task]))
             .then(tasks => tasks[0])
     }
 
@@ -45,7 +46,7 @@ class TaskRepository extends BaseRepository<Task> {
             order: {
                 create_at: 'DESC'
             }
-        }).then(this.attachTasksAssignment)
+        }).then(TaskHelper.attachTasksAssignment)
     }
 
     public assignValue(task: Task, data: any) {
@@ -74,63 +75,6 @@ class TaskRepository extends BaseRepository<Task> {
             .limit(option.take)
             .offset(option.skip)
             .getManyAndCount() 
-    }
-
-    public async attachTasksAssignment(tasks: Task[]) {
-        const memberRepo = getCustomRepository(MemberRepo)
-        const teamRepo = getCustomRepository(TeamRepo)
-        const memberIds: number[][] = []
-        const teamIds: number[][] = []
-        const outsourcingIds: number[][] = []
-
-        tasks.forEach((task, index) => {
-            if (!task.assignment) return
-
-            let targetIds = undefined
-            const targetId = task.assignment.target_id
-
-            switch (task.assignment.type) {
-                case TaskAssignmentType.Member:
-                    targetIds = memberIds
-                    break
-                
-                case TaskAssignmentType.Team:
-                    targetIds = teamIds
-                    break
-                
-                case TaskAssignmentType.Outsourcing:
-                    targetIds = outsourcingIds
-                    break
-
-                default:
-                    return
-            }
-
-            targetIds[targetId] || (targetIds[targetId] = [])
-            targetIds[targetId].push(index)
-        })
-
-        const [
-            members,
-            teams
-        ] = await Promise.all([
-            memberRepo.findByIds(Object.keys(memberIds)),
-            teamRepo.findByIds(Object.keys(teamIds))
-        ])
-
-        members.forEach(member => {
-            memberIds[member.id].forEach(index => {
-                tasks[index].assignment.target = member
-            })
-        })
-
-        teams.forEach(team => {
-            teamIds[team.id].forEach(index => {
-                tasks[index].assignment.target = team
-            })
-        })
-
-        return tasks
     }
 
     public withAssignmentRelation() {

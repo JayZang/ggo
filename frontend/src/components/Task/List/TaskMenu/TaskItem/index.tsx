@@ -77,7 +77,7 @@ class TaskItem extends Component<IProps> {
                         <StatusLabel  task={task} editable={!!task.project && !task.project.finish_datetime} />
                     </Grid>
                     <Grid item className={clsx(classes.field, 'action')}>
-                        <Button variant="outlined" color="primary" onClick={this.handleViewBtnClick.bind(this)}>查看</Button>
+                        <Button color="primary" onClick={this.handleViewBtnClick.bind(this)}>查看</Button>
                     </Grid>
                 </Grid>
             </Paper>

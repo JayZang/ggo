@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import * as userAreaTaskApi from 'api/userArea/task'
-import { regularizeTaskData } from "stores/task/utils";
+import { regularizeTaskData } from "stores/utils/regularizeTaskData";
 import { UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT } from "./types";
 import { RootState } from "stores";
 import { regularizeWorkReportData } from "stores/utils/regularizeWorkReportData";

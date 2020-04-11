@@ -32,7 +32,7 @@ export default class MemberTaskService {
                 .limit(option.take)
                 .getManyAndCount()
                 .then(async ([tasks, count]) => ({
-                    tasks: await taskRepo.attachTasksAssignment(tasks),
+                    tasks: await TaskHelper.attachTasksAssignment(tasks),
                     count
                 }))
         } catch (err) {
@@ -108,7 +108,7 @@ export default class MemberTaskService {
 
             if (!isAvailable) return null
 
-            return (await taskRepo.attachTasksAssignment([task]))[0]
+            return (await TaskHelper.attachTasksAssignment([task]))[0]
         } catch (err) {
             console.log("Get one member's task fail")
             console.log(err)

@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const URL = '/api/projects/:id'
 
-export function getBaseInfo(id: string) {
+export function geDetailInfo(id: string) {
     return axios.get<{
         id: string
         name: string

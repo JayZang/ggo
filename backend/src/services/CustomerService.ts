@@ -6,7 +6,6 @@ import crypto from 'crypto'
 
 import { resource } from '@/config'
 import CustomerRepo from '@/repository/CustomerRepository'
-import { regularizeCustomerData } from '@/utils/data-regularizer/customer'
 
 @Service()
 export default class CustomerService {
@@ -27,7 +26,6 @@ export default class CustomerService {
             })
 
             return await customerRepo.createAndSave(data, filename)
-                .then(customer => regularizeCustomerData(customer))
         } catch (err) {
             console.log('Create Customer fail')
             console.log(err.toString())
@@ -42,7 +40,6 @@ export default class CustomerService {
         try {
             const customerRepo = getCustomRepository(CustomerRepo)
             return await customerRepo.find()
-                .then(customers => customers.map(customer => regularizeCustomerData(customer)))
         } catch (err) {
             console.log('Get Customer fail')
             console.log(err.toString())
