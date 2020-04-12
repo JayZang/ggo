@@ -26,10 +26,13 @@ class TaskInfo extends Component<IProps, IStatus> {
         }
     }
 
-    componentDidMount() {
-        this.props.load(this.props.id).then(() => {
-            this.setState({ loaded: true })
-        })
+    async componentDidMount() {
+        const { id, task } = this.props
+
+        if (!task || task.id != id)
+            await this.props.load(this.props.id)
+
+        this.setState({ loaded: true })
     }
 
     render() {

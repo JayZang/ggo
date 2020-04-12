@@ -52,7 +52,9 @@ class ProjectTaskList extends Component<IProps, IState> {
                             <Grid container alignItems="center">
                                 <Typography variant="h5" component="div">
                                     <TaskIcon className="mr-1" />
-                                    <Box component="span">工作任務</Box>
+                                    <Box component="span">
+                                        工作任務 {tasks && tasks.length ? `(${tasks.length})` : null}
+                                    </Box>
                                 </Typography>
                                 <Box
                                     border="1px solid rgba(0, 0, 0, .1)"
@@ -170,16 +172,16 @@ class ProjectTaskList extends Component<IProps, IState> {
                             <Box className="p-4">
                                 <Grid container spacing={5}>
                                     <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={1}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
                                             <Typography variant="h6">工作任務總數</Typography>
-                                            <Typography>{totalCount} 筆</Typography>
+                                            <Typography variant="body2">{totalCount} 筆</Typography>
                                         </Box>
                                         <LinearProgress variant="determinate" value={100} color="primary" />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={1}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
                                             <Typography variant="h6">執行中</Typography>
-                                            <Typography>{progressingCount} 筆 ({progressingRate}％)</Typography>
+                                            <Typography variant="body2">{progressingCount} 筆 ({progressingRate}％)</Typography>
                                         </Box>
                                         <LinearProgress variant="determinate" value={progressingRate} classes={{
                                             root: classes.progressingBarContainer,
@@ -187,9 +189,9 @@ class ProjectTaskList extends Component<IProps, IState> {
                                         }} />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={1}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
                                             <Typography variant="h6">暫停中</Typography>
-                                            <Typography>{pauseCount} 筆 ({pauseRate}％)</Typography>
+                                            <Typography variant="body2">{pauseCount} 筆 ({pauseRate}％)</Typography>
                                         </Box>
                                         <LinearProgress variant="determinate" value={pauseRate} classes={{
                                             root: classes.pauseBarContainer,
@@ -197,9 +199,9 @@ class ProjectTaskList extends Component<IProps, IState> {
                                         }} />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={1}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
                                             <Typography variant="h6">已終止</Typography>
-                                            <Typography>{terminatedCount} 筆 ({terminatedRate}％)</Typography>
+                                            <Typography variant="body2">{terminatedCount} 筆 ({terminatedRate}％)</Typography>
                                         </Box>
                                         <LinearProgress variant="determinate" value={terminatedRate} classes={{
                                             root: classes.terminatedBarContainer,
@@ -207,9 +209,9 @@ class ProjectTaskList extends Component<IProps, IState> {
                                         }} />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={1}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
                                             <Typography variant="h6">已完成</Typography>
-                                            <Typography>{completedCount} 筆 ({completedRate}％)</Typography>
+                                            <Typography variant="body2">{completedCount} 筆 ({completedRate}％)</Typography>
                                         </Box>
                                         <LinearProgress variant="determinate" value={completedRate} classes={{
                                             root: classes.successBarContainer,
@@ -217,9 +219,9 @@ class ProjectTaskList extends Component<IProps, IState> {
                                         }} />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={1}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
                                             <Typography variant="h6">逾期未完成</Typography>
-                                            <Typography>{expiredCount} 筆 ({expiredRate}％)</Typography>
+                                            <Typography variant="body2">{expiredCount} 筆 ({expiredRate}％)</Typography>
                                         </Box>
                                         <LinearProgress variant="determinate" value={expiredRate} classes={{
                                             root: classes.expiredBarContainer,

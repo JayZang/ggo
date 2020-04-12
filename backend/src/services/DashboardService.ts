@@ -2,7 +2,6 @@ import { getCustomRepository, In } from 'typeorm'
 import { Service } from 'typedi'
 import _ from 'lodash'
 
-import CustomerDataRegularizer from '@/regularizer/CustomerDataRegularizer'
 import ProjectRepo from '@/repository/ProjectRepository'
 import TaskRepo from '@/repository/TaskRepository'
 import { TaskAssignmentType } from '@/entity/TaskAssignment'
@@ -72,10 +71,6 @@ export default class DashboardService {
                 .withTaskRelation()
                 .withCreateAtOrder('DESC')
                 .getMany()
-                .then(projects => projects.map(project => {
-                    project.customer && CustomerDataRegularizer.regularize(project.customer)
-                    return project
-                }))
         } catch (err) {
             console.log('Get dashboard projects fail')
             console.log(err.toString())
