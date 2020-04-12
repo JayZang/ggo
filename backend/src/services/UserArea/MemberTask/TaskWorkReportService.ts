@@ -34,7 +34,8 @@ export default class TaskWorkReportService {
             Object.assign(workReport, _.pick(data, [
                 'title',
                 'content',
-                'spend_time'
+                'start_time',
+                'end_time'
             ]))
 
             return await workReportRepo.save(workReport)
@@ -75,7 +76,8 @@ export default class TaskWorkReportService {
             Object.assign(workReport, _.pick(data, [
                 'title',
                 'content',
-                'spend_time'
+                'start_time',
+                'end_time'
             ]))
 
             return await workReportRepo.save(workReport)

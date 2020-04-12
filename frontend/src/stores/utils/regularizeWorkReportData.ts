@@ -7,6 +7,9 @@ export function regularizeWorkReportData(data: any): IWorkReport {
     return {
         ...data,
         create_at: moment(data.create_at),
+        start_time: moment(data.start_time),
+        end_time: moment(data.end_time),
+        spend_time: moment.duration(moment(data.end_time).diff(data.start_time)).humanize(),
         task: data.task && regularizeTaskData(data.task),
         submitter: data.submitter && regularizeMemberData(data.submitter)
     }

@@ -38,10 +38,14 @@ export default class WorkReport {
     task_id: number
 
     @Column({
-        type: 'varchar',
-        length: 100
+        type: 'datetime'
     })
-    spend_time: string
+    start_time: Date
+
+    @Column({
+        type: 'datetime'
+    })
+    end_time: Date
 
     @Column({
         type: 'tinyint'

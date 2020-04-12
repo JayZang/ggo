@@ -7,6 +7,8 @@ export type IWorkReport = {
     title: string
     content: string
     spend_time: string
+    start_time: Moment
+    end_time: Moment
     submit_from: WorkReportSubmitFrom
     submitter_id: number
     task_id: number
