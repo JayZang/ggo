@@ -8,7 +8,7 @@ const router = Router()
 const workReportService = Container.get(WorkReportService)
 
 export default (app: Router) => {
-    app.use('/work-reports', validatePermission('task_management'), router)
+    app.use('/work-reports', validatePermission('project_management'), router)
 
     router.get('', async (req, res) => {
         const workReports = await workReportService.get({

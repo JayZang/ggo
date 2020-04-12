@@ -28,5 +28,4 @@ export type PermissionsList =
     'member_management' |
     'team_management' |
     'customer_management' |
-    'project_management' |
-    'task_management'
+    'project_management'

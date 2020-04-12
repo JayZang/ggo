@@ -83,14 +83,14 @@ export default class DashboardMain extends Component<IProps, IState> {
                             </Box>
                         ) : null}
 
-                        {user && ((user.permissions && user.permissions.task_management) || user.identity_type === UserIdentityType.member) ? (
+                        {user && ((user.permissions && user.permissions.project_management) || user.identity_type === UserIdentityType.member) ? (
                             <Box marginBottom={3}>
                                 <TaskList
                                     tasks={tasks}
                                     moreLink={(() => {
                                         if (user.identity_type === UserIdentityType.member)
                                             return '/m/tasks'
-                                        else if (user.permissions && user.permissions.task_management)
+                                        else if (user.permissions && user.permissions.project_management)
                                             return '/tasks'
                                         return null
                                     })()}

@@ -10,7 +10,7 @@ const router = Router()
 const taskService = Container.get(TaskService)
 
 export default (app: Router) => {
-    app.use('/tasks', validatePermission('task_management'), router)
+    app.use('/tasks', validatePermission('project_management'), router)
 
     router.get('', async (req, res) => {
         const tasks = await taskService.get({

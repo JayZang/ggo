@@ -22,9 +22,9 @@ export default class DashboardService {
         try {
             const taskRepo = getCustomRepository(TaskRepo).initQueryBuilder()
 
-            if (!user.permissions.task_management && user.identity_type !== UserIdentityType.member)
+            if (!user.permissions.project_management && user.identity_type !== UserIdentityType.member)
                 return null
-            else if (user.permissions.task_management)
+            else if (user.permissions.project_management)
                 taskRepo.withAssignmentRelation()
             else if (user.identity_type === UserIdentityType.member) {
                 const memberId = user.identity!.id
@@ -86,7 +86,7 @@ export default class DashboardService {
         try {
             const workReportRepo = getCustomRepository(WorkReportRepo).initQueryBuilder()
 
-            if (!user.permissions.task_management && user.identity_type !== UserIdentityType.member)
+            if (!user.permissions.project_management && user.identity_type !== UserIdentityType.member)
                 return null
             else if (user.identity_type === UserIdentityType.member)
                 workReportRepo.withSubmitterIdCondition(user.identity_id)

@@ -129,7 +129,7 @@ function MenuDrawer(props: IProps) {
                     </Link>
                 )}
 
-                {permissions.project_management || permissions.task_management ? (
+                {permissions.project_management ? (
                     <Divider />
                 ) : null}
 
@@ -153,7 +153,7 @@ function MenuDrawer(props: IProps) {
                     </Link>
                 ) : null}
 
-                {permissions.task_management ? (
+                {permissions.project_management ? (
                     <TaskManagementListItem />
                 ) : null}
 

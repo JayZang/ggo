@@ -16,8 +16,8 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     init: async (user: IUser) => {
         await Promise.all([
-            (user.permissions && user.permissions.task_management) || user.identity_type === UserIdentityType.member ? dispatch(fetTasks()) : null,
-            (user.permissions && user.permissions.task_management) || user.identity_type === UserIdentityType.member ? dispatch(fetchWorkReports()) : null,
+            (user.permissions && user.permissions.project_management) || user.identity_type === UserIdentityType.member ? dispatch(fetTasks()) : null,
+            (user.permissions && user.permissions.project_management) || user.identity_type === UserIdentityType.member ? dispatch(fetchWorkReports()) : null,
             user.permissions && user.permissions.project_management ? dispatch(fetchProjects()) : null,
         ])
     }
