@@ -24,4 +24,11 @@ export default (theme: Theme) => createStyles({
         color: theme.palette.text.hint,
         fontSize: 14
     },
+    labelIcon: {
+        position: 'absolute',
+        left: -5,
+        top: -3,
+        transform: 'rotate(90deg)',
+        color: theme.palette.text.hint
+    }
 })

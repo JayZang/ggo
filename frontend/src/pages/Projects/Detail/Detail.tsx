@@ -47,8 +47,8 @@ class ProjectDetail extends Component<IProps, IState> {
                     />
                 }
             >
-                <Grid container className="mb-3" direction="column" wrap="nowrap">
-                    <Grid item className="mb-4">
+                <Grid container wrap="nowrap">
+                    <Box className="mr-4" width={500} flexShrink={0}>
                         <ProjectBaseInfoPanel 
                             project={project}
                             isCanBeFinished={!!tasks && !!tasks.length && tasks.reduce<boolean>((preStatus, task) => {
@@ -58,20 +58,16 @@ class ProjectDetail extends Component<IProps, IState> {
                                 ].includes(task.status)
                             }, true)}
                         />
-                    </Grid>
-                    <Grid item>
-                        <Grid container spacing={3}>
-                            <Grid item xs={8}>
-                                <ProjectTaskList 
-                                    project={project}
-                                    tasks={tasks}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <ProjectEventStream />
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    </Box>
+                    <Box flexGrow={1}>
+                        <ProjectTaskList 
+                            project={project}
+                            tasks={tasks}
+                        />
+                    </Box>
+                    {/* <Grid item xs={4}>
+                        <ProjectEventStream />
+                    </Grid> */}
                 </Grid>
             </AppContent>
         )

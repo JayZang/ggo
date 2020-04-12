@@ -94,7 +94,6 @@ class ProjectTaskList extends Component<IProps, IState> {
                 </Box>
 
                 <Divider />
-                <Divider />
 
                 {(() => {
                     if (tabIndex === 0) return (

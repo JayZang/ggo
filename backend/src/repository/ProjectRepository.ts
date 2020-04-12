@@ -42,16 +42,14 @@ class ProjectRepository extends BaseRepository<Project> {
      * @param data 
      */
     public assignValue(project: Project, data: any) {
-        Object.assign(project, _.pick(data, [
-            'name',
-            'description',
-            'start_datetime',
-            'deadline_datetime',
-            'quote',
-            'source_type',
-            'customer',
-            'remark'
-        ]))
+        project.name = data.name
+        project.description = data.description || null
+        project.start_datetime = data.start_datetime
+        project.deadline_datetime = data.deadline_datetime
+        project.quote = data.quote || null
+        project.source_type = data.source_type
+        project.customer = data.customer
+        project.remark = data.remark || null
     }
 
     public withFinishedCondition(isFinish: boolean) {
