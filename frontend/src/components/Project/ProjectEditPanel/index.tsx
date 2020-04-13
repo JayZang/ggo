@@ -1,15 +1,33 @@
 import { connect } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
 
+import { createProject, updateProject, getCustomerSelectionMenu, getMemberSelectionMenu, getTeamSelectionMenu } from "stores/project/action";
 import ProjectEditPanel from './ProjectEditPanel'
-import { createProject, updateProject, getCustomerSelectionMenu } from "stores/project/action";
 import { RootState } from "stores";
 
 const mapStateToProps = (state: RootState) => ({
-    customers: state.project.editPanel.customerSelectionMenu
+    customerSelections: state.project.editPanel.customerSelectionMenu,
+    memberSelections: state.project.editPanel.memberSelectionMenu,
+    teamSelections: state.project.editPanel.teamSelectionMenu
 })
 
-export default connect(mapStateToProps, {
-    createProject,
-    updateProject,
-    load: getCustomerSelectionMenu
-})(ProjectEditPanel)
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
+    createProject: async (data: any) => {
+        await dispatch(createProject(data))
+    },
+    updateProject: async (id: number | string, data: any) => {
+        await dispatch(updateProject(id, data))
+    },
+    load: async () => {
+        await Promise.all([
+            dispatch(getCustomerSelectionMenu()),
+            dispatch(getMemberSelectionMenu()),
+            dispatch(getTeamSelectionMenu())
+        ])
+    }
+})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProjectEditPanel)

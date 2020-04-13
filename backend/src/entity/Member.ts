@@ -2,8 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 
 import EmergencyContact from './EmergencyContact'
 import Team from './Team'
-import User from './User'
 import WorkReport from './WorkReport'
+import Project from './Project'
 
 @Entity()
 export default class Member {
@@ -73,6 +73,12 @@ export default class Member {
         cascade: true
     })
     workReports: WorkReport[]
+
+    @ManyToMany(type => Project, project => project.managers)
+    projects_as_manager: Project[]
+
+    @ManyToMany(type => Project, project => project.member_participants)
+    projects_as_member_participant: Project[]
 
     isUser?: boolean
 }

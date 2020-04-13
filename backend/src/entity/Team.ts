@@ -2,6 +2,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTab
 
 import Member from './Member'
 import TaskAssignment from './TaskAssignment'
+import Project from './Project'
 
 @Entity()
 export default class Team {
@@ -52,6 +53,9 @@ export default class Team {
 
     @RelationCount((team: Team) => team.members)
     members_count: number
+
+    @ManyToMany(type => Project, project => project.team_participants)
+    projects: Project[]
 
     task_assignments: TaskAssignment[]
 }

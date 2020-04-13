@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm'
 import Customer from './Customer'
 import Task from './Task'
-import { Moment } from 'moment'
+import Member from './Member'
+import Team from './Team'
 
 @Entity()
 export default class Project {
@@ -63,6 +64,24 @@ export default class Project {
 
     @OneToMany(type => Task, task => task.project)
     tasks: Task[]
+
+    @ManyToMany(type => Member, member => member.projects_as_manager)
+    @JoinTable({
+        name: 'project_manager'
+    })
+    managers: Member[]
+
+    @ManyToMany(type => Team, team => team.projects)
+    @JoinTable({
+        name: 'project_team_participant'
+    })
+    team_participants: Team[]
+
+    @ManyToMany(type => Member, member => member.projects_as_member_participant)
+    @JoinTable({
+        name: 'project_member_participant'
+    })
+    member_participants: Member[]
 }
 
 export enum ProjectSrcType {

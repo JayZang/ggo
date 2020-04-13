@@ -1,22 +1,29 @@
 import { Dispatch } from "redux";
 
+import * as teamApi from 'api/team'
 import * as projectApi from 'api/project'
+import * as memberApi from 'api/member'
 import * as customerApi from 'api/customer'
 import { 
     ADD_PROJECT, 
     ProjectActionType, 
-    GET_CUSTOMER_SELECTION_MENU, 
+    GET_PROJECT_EDIT_PANEL_CUSTOMER_SELECTION, 
     GET_PROJECT_COUNT_STATISTIC, 
     GET_PROJECT_DETAIL_INFO, 
     UPDATE_PROJECT, 
     UPDATE_PROJECT_FINISH_DATE, 
     GET_PROJECTS, 
-    CLEAR_LIST_PAGE_STATE 
+    CLEAR_LIST_PAGE_STATE, 
+    GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
+    GET_PROJECT_EDIT_PANEL_TEAM_SELECTION
 } from "./types";
 import { regularizeProjectData } from "stores/utils/regularizeProjectData";
 import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
 import { Moment } from "moment";
+import { MemberStatus } from "contracts/member";
+import { regularizeMemberData } from "stores/utils/regularizeMemberData";
+import { regularizeTeamData } from "stores/utils/regularizeTeamData";
 
 export const createProject = (data: any) => async (dispatch : Dispatch) => {
    const res = await projectApi.create(data)
@@ -127,9 +134,39 @@ export const getCustomerSelectionMenu = () => async (dispatch : Dispatch) => {
     const res = await customerApi.get()
 
     const action: ProjectActionType = {
-        type: GET_CUSTOMER_SELECTION_MENU,
+        type: GET_PROJECT_EDIT_PANEL_CUSTOMER_SELECTION,
         payload: {
             customers: res.data.map(customer => regularizeCustomerData(customer))
+        }
+    }
+
+    dispatch(action)
+}
+
+export const getMemberSelectionMenu = () => async (dispatch : Dispatch) => {
+    const res = await memberApi.get({
+        offset: 0,
+        count: 999,
+        status: MemberStatus.active
+    })
+
+    const action: ProjectActionType = {
+        type: GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
+        payload: {
+            members: res.data.members.map(member => regularizeMemberData(member))
+        }
+    }
+
+    dispatch(action)
+}
+
+export const getTeamSelectionMenu = () => async (dispatch : Dispatch) => {
+    const res = await teamApi.getPermanentTeams()
+
+    const action: ProjectActionType = {
+        type: GET_PROJECT_EDIT_PANEL_TEAM_SELECTION,
+        payload: {
+            teams: res.data.map(team => regularizeTeamData(team))
         }
     }
 

@@ -1,12 +1,15 @@
 import React, { Component, ChangeEvent, FormEvent } from 'react'
-import { Grid, FormControl, TextField, FormHelperText, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Paper, Typography, Box } from '@material-ui/core'
+import { Grid, FormControl, TextField, FormHelperText, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Paper, Typography, Box, Stepper, Step, StepLabel } from '@material-ui/core'
 import { DatePicker, MaterialUiPickersDate } from '@material-ui/pickers'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
+import { Moment } from 'moment'
 
 import CustomerSelectionMenu from 'components/Customer/SelectionMenu/SelectionMenu'
-import { Moment } from 'moment'
-import { ICustomer } from 'contracts/customer'
+import MemberSelectionMenu from 'components/Members/SelectionMenu'
 import { ProjectSrcType, IProject } from 'contracts/project'
+import { ICustomer } from 'contracts/customer'
+import { IMember } from 'contracts/member'
+import { ITeam } from 'contracts/team'
 
 class FieldItem extends Component<{
     label: string,
@@ -84,6 +87,8 @@ type Fields = {
     quote?: number
     source_type?: ProjectSrcType
     customer?: ICustomer | null
+    managers?: IMember[] | null
+    member_participants?: IMember[] | null
     remark?: string
 }
 
@@ -92,23 +97,36 @@ type IProps = WithSnackbarProps & {
     createProject: (data: any) => Promise<void>
     updateProject: (id: string | number, data: any) => Promise<void>
     onSubmitSuccess?: () => void
-    customers: ICustomer[] | null,
+    customerSelections: ICustomer[] | null,
+    memberSelections: IMember[] | null,
+    teamSelections: ITeam[] | null,
     project?: IProject
 }
 
 type IState = {
+    step: number
     fields: Fields
     errors: Record<keyof Fields, string>,
     isSending: boolean
 }
 
 class ProjectEditPanel extends Component<IProps, IState> {
+    steps = [
+        '專案資訊',
+        '專案來源',
+        '專案管理者',
+        '專案成員'
+    ]
+
     constructor(props: IProps) {
         super(props)
 
         const project = props.project
 
+        this.nextStep = this.nextStep.bind(this)
+        this.backStep = this.backStep.bind(this)
         this.state = {
+            step: 0,
             fields: {
                 name: project ? project.name : undefined,
                 description: project && project.description ? project.description : undefined,
@@ -117,6 +135,8 @@ class ProjectEditPanel extends Component<IProps, IState> {
                 quote: project && project.quote ? project.quote : undefined,
                 source_type: project ? project.source_type : ProjectSrcType.Internal,
                 customer: project ? project.customer : null,
+                managers: null,
+                member_participants: null,
                 remark: project && project.remark ? project.remark : undefined,
             },
             errors: {
@@ -127,6 +147,8 @@ class ProjectEditPanel extends Component<IProps, IState> {
                 quote: '',
                 source_type: '',
                 customer: '',
+                managers: '',
+                member_participants: '',
                 remark: '',
             },
             isSending: false
@@ -256,135 +278,273 @@ class ProjectEditPanel extends Component<IProps, IState> {
         return !errMsg
     }
 
-    render() {
+    nextStep() {
+        this.setState({ step: this.state.step + 1 })
+    }
+
+    backStep() {
+        this.setState({ step: this.state.step - 1 })
+    }
+
+    renderStep0() {
         const {
             fields,
-            errors,
+            errors
+        } = this.state
+
+        return (
+            <Grid container direction="column">
+                    
+                <FieldItem
+                    required
+                    label="專案名稱"
+                    value={fields.name}
+                    hint={errors.name}
+                    onChange={this.handleFieldChange.bind(this, 'name')}
+                />
+
+                <FieldItem
+                    label="描述"
+                    value={fields.description}
+                    multiline={true}
+                    hint={errors.description}
+                    onChange={this.handleFieldChange.bind(this, 'description')}
+                />
+
+                <DatePickerFieldItem
+                    label="起始日期"
+                    required
+                    value={fields.start_datetime}
+                    hint={errors.start_datetime}
+                    onChange={this.handleDatetimeFieldChange.bind(this, 'start_datetime')}
+                    maxDate={fields.deadline_datetime && fields.deadline_datetime.clone().subtract(1, 'days')}
+                />
+
+                <DatePickerFieldItem
+                    label="最後期限日期"
+                    required
+                    value={fields.deadline_datetime}
+                    hint={errors.deadline_datetime}
+                    onChange={this.handleDatetimeFieldChange.bind(this, 'deadline_datetime')}
+                    minDate={fields.start_datetime && fields.start_datetime.clone().add(1, 'days')}
+                />
+
+                <FieldItem
+                    label="報價"
+                    value={fields.quote}
+                    hint={errors.quote}
+                    type="number"
+                    onChange={this.handleFieldChange.bind(this, 'quote')}
+                />
+
+                <FieldItem
+                    label="備註"
+                    multiline={true}
+                    value={fields.remark}
+                    hint={errors.remark}
+                    onChange={this.handleFieldChange.bind(this, 'remark')}
+                />
+
+            </Grid>
+        )
+    }
+
+    renderStep1() {
+        const {
+            fields,
+            errors
+        } = this.state
+
+        return (
+            <Paper className="p-3">
+                <FormControl fullWidth>
+                    <Grid container justify="space-between" alignItems="center">
+                        <Grid item>
+                            <FormLabel>專案來源 *</FormLabel>
+                            <RadioGroup 
+                                row 
+                                name="project_source" 
+                                value={fields.source_type} 
+                                onChange={this.handleFieldChange.bind(this, 'source_type')}
+                            >
+                                <FormControlLabel control={<Radio color="primary" />} label="內部" value={ProjectSrcType.Internal} />
+                                <FormControlLabel control={<Radio color="primary" />} label="客戶" value={ProjectSrcType.Customer} />
+                            </RadioGroup>
+                        </Grid>
+                        <Grid item>
+                            {(() => {
+                                if (fields.source_type === ProjectSrcType.Customer && fields.customer) return (
+                                    <Box
+                                        p={1}
+                                        marginBottom={2}
+                                        borderRadius={8}
+                                        border="1px solid rgba(0, 0, 0, .1)"
+                                    >
+                                        <Grid container direction="row" alignItems="center" wrap="nowrap">
+                                            <Grid item className="mr-3">
+                                                <img src={fields.customer!.logo} style={{ width: 48 }} alt="客戶 Logo" />
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography>{ fields.customer.company_name }</Typography>
+                                                <Box color="text.hint">
+                                                    { fields.customer.contact } / { fields.customer.phone }
+                                                </Box>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                )
+                            })()}
+                        </Grid>
+                    </Grid>
+                    
+                </FormControl>
+
+                {fields.source_type === ProjectSrcType.Customer ? 
+                    <CustomerSelectionMenu
+                        maxHeight={300}
+                        customers={this.props.customerSelections || []}
+                        onChange={this.handleCustomerSelect.bind(this)}
+                    /> : 
+                    null}
+
+                {errors.source_type ? (<FormHelperText>{errors.source_type}</FormHelperText>) : null}
+            </Paper>
+        )
+    }
+
+    renderStep2() {
+        const { fields } = this.state
+
+        return (
+            <Paper className="p-3">
+                <FormLabel className="mb-3">專案管理者 *</FormLabel>
+                <MemberSelectionMenu
+                    // defaultMembers={team? [team.leader!] : null}
+                    members={this.props.memberSelections || []}
+                    // onChange={this.handleLeaderSelectionChange.bind(this)!}
+                    listMaxHeight={350}
+                    multiple
+                />
+            </Paper>
+        )
+    }
+
+    renderStep3() {
+        const { fields } = this.state
+
+        return (
+            <Paper className="p-3">
+                <FormLabel className="mb-3">專案成員</FormLabel>
+                <MemberSelectionMenu
+                    // defaultMembers={team? [team.leader!] : null}
+                    members={this.props.memberSelections || []}
+                    // onChange={this.handleLeaderSelectionChange.bind(this)!}
+                    listMaxHeight={350}
+                    multiple
+                />
+            </Paper>
+        )
+    }
+
+    validateStep0() {
+        const { fields } = this.state
+
+        return  fields.name && 
+            fields.start_datetime && 
+            fields.start_datetime!.isValid() &&
+            fields.deadline_datetime && 
+            fields.deadline_datetime!.isValid()
+    }
+
+    validateStep1() {
+        const { fields } = this.state
+
+        if (fields.source_type === ProjectSrcType.Internal)
+            return true
+        else if (fields.source_type === ProjectSrcType.Customer)
+            return !!fields.customer
+        return false
+    }
+
+    isAvailableToNextStep() {
+        const { step } = this.state
+return true
+        if (step === 0)
+            return this.validateStep0()
+        else if (step === 1)
+            return this.validateStep1()
+        return false
+    }
+
+    render() {
+        const {
+            step,
             isSending
         } = this.state
 
         return (
             <form onSubmit={this.handleSubmit.bind(this)}>
-                <Grid container direction="column">
-        
-                    <FieldItem
-                        required
-                        label="專案名稱"
-                        value={fields.name}
-                        hint={errors.name}
-                        onChange={this.handleFieldChange.bind(this, 'name')}
-                    />
-        
-                    <FieldItem
-                        label="描述"
-                        value={fields.description}
-                        multiline={true}
-                        hint={errors.description}
-                        onChange={this.handleFieldChange.bind(this, 'description')}
-                    />
-        
-                    <DatePickerFieldItem
-                        label="起始日期"
-                        required
-                        value={fields.start_datetime}
-                        hint={errors.start_datetime}
-                        onChange={this.handleDatetimeFieldChange.bind(this, 'start_datetime')}
-                        maxDate={fields.deadline_datetime && fields.deadline_datetime.clone().subtract(1, 'days')}
-                    />
-        
-                    <DatePickerFieldItem
-                        label="最後期限日期"
-                        required
-                        value={fields.deadline_datetime}
-                        hint={errors.deadline_datetime}
-                        onChange={this.handleDatetimeFieldChange.bind(this, 'deadline_datetime')}
-                        minDate={fields.start_datetime && fields.start_datetime.clone().add(1, 'days')}
-                    />
-        
-                    <FieldItem
-                        label="報價"
-                        value={fields.quote}
-                        hint={errors.quote}
-                        type="number"
-                        onChange={this.handleFieldChange.bind(this, 'quote')}
-                    />
-        
-                    <Grid item className="mb-3">
-                        <Paper className="p-3">
-                            <FormControl fullWidth>
-                                <Grid container justify="space-between" alignItems="center">
-                                    <Grid item>
-                                        <FormLabel>專案來源 *</FormLabel>
-                                        <RadioGroup 
-                                            row 
-                                            name="project_source" 
-                                            value={fields.source_type} 
-                                            onChange={this.handleFieldChange.bind(this, 'source_type')}
-                                        >
-                                            <FormControlLabel control={<Radio color="primary" />} label="內部" value={ProjectSrcType.Internal} />
-                                            <FormControlLabel control={<Radio color="primary" />} label="客戶" value={ProjectSrcType.Customer} />
-                                        </RadioGroup>
-                                    </Grid>
-                                    <Grid item>
-                                        {(() => {
-                                            if (fields.source_type === ProjectSrcType.Customer && fields.customer) return (
-                                                <Box
-                                                    p={1}
-                                                    marginBottom={2}
-                                                    borderRadius={8}
-                                                    border="1px solid rgba(0, 0, 0, .1)"
-                                                >
-                                                    <Grid container direction="row" alignItems="center" wrap="nowrap">
-                                                        <Grid item className="mr-3">
-                                                            <img src={fields.customer!.logo} style={{ width: 48 }} alt="客戶 Logo" />
-                                                        </Grid>
-                                                        <Grid item>
-                                                            <Typography>{ fields.customer.company_name }</Typography>
-                                                            <Box color="text.hint">
-                                                                { fields.customer.contact } / { fields.customer.phone }
-                                                            </Box>
-                                                        </Grid>
-                                                    </Grid>
-                                                </Box>
-                                            )
-                                        })()}
-                                    </Grid>
-                                </Grid>
-                                
-                            </FormControl>
-        
-                            {fields.source_type === ProjectSrcType.Customer ? 
-                                <CustomerSelectionMenu
-                                    maxHeight={300}
-                                    customers={this.props.customers || []}
-                                    onChange={this.handleCustomerSelect.bind(this)}
-                                /> : 
-                                null}
-        
-                            {errors.source_type ? (<FormHelperText>{errors.source_type}</FormHelperText>) : null}
-                        </Paper>
+                <Box>
+                    <Paper>
+                        <Stepper activeStep={step} alternativeLabel>
+                            {this.steps.map(label => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>    
+                    </Paper>
+
+                    <Box marginY={3}>
+                        {step === 0 ? this.renderStep0() : (
+                            step === 1 ? this.renderStep1() : (
+                            step === 2 ? this.renderStep2() : (
+                            step === 3 ? this.renderStep3() : null
+                        )))}
+                    </Box>
+
+                    <Grid container spacing={2}>
+                        {step !== 0 ? (
+                            <Grid item className="flex-grow-1">
+                                <Button 
+                                    onClick={this.backStep} 
+                                    variant="contained" 
+                                    color="default" 
+                                    fullWidth
+                                >
+                                    上一步
+                                </Button>
+                            </Grid>
+                        ) : null}
+                        {step < this.steps.length - 1 ? (
+                            <Grid item className="flex-grow-1">
+                                <Button 
+                                    onClick={this.nextStep} 
+                                    variant="contained" 
+                                    color="default" 
+                                    fullWidth
+                                    disabled={!this.isAvailableToNextStep()}
+                                >
+                                    下一步
+                                </Button>
+                            </Grid>
+                        ) : null}
+                        {step >= this.steps.length - 1 ? (
+                            <Grid item className="flex-grow-1">
+                                <Button 
+                                    type="submit"
+                                    color="primary" 
+                                    variant="contained" 
+                                    fullWidth
+                                    disabled={isSending}
+                                >
+                                    儲存
+                                </Button>
+                            </Grid>
+                        ) : null}
                     </Grid>
-        
-                    <FieldItem
-                        label="備註"
-                        multiline={true}
-                        value={fields.remark}
-                        hint={errors.remark}
-                        onChange={this.handleFieldChange.bind(this, 'remark')}
-                    />
-        
-                    <Grid item className="mt-1">
-                        <Button 
-                            type="submit"
-                            color="primary" 
-                            variant="contained" 
-                            fullWidth
-                            disabled={isSending}
-                        >
-                            儲存
-                        </Button>
-                    </Grid>
-                </Grid>
+                </Box>
+
             </form>
         )
 

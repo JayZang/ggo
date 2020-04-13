@@ -2,13 +2,15 @@ import {
     ProjectState, 
     ProjectActionType, 
     ADD_PROJECT, 
-    GET_CUSTOMER_SELECTION_MENU, 
+    GET_PROJECT_EDIT_PANEL_CUSTOMER_SELECTION, 
     CLEAR_LIST_PAGE_STATE, 
     GET_PROJECT_DETAIL_INFO, 
     UPDATE_PROJECT, 
     UPDATE_PROJECT_FINISH_DATE, 
     GET_PROJECT_COUNT_STATISTIC, 
-    GET_PROJECTS
+    GET_PROJECTS,
+    GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
+    GET_PROJECT_EDIT_PANEL_TEAM_SELECTION
 } from "./types"
 import { UPDATE_TASK_STATUS, TaskActionType, ADD_TASK } from "stores/task/types"
 
@@ -24,7 +26,9 @@ const initState: ProjectState = {
         tasks: null
     },
     editPanel: {
-        customerSelectionMenu: null
+        customerSelectionMenu: null,
+        memberSelectionMenu: null,
+        teamSelectionMenu: null
     }
 }
 
@@ -103,12 +107,30 @@ export default function customerReducer(state: ProjectState = initState, action:
                 }
             }
 
-        case GET_CUSTOMER_SELECTION_MENU:
+        case GET_PROJECT_EDIT_PANEL_CUSTOMER_SELECTION:
             return {
                 ...state,
                 editPanel: {
                     ...state.editPanel,
                     customerSelectionMenu: action.payload.customers
+                }
+            }
+
+        case GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION:
+            return {
+                ...state,
+                editPanel: {
+                    ...state.editPanel,
+                    memberSelectionMenu: action.payload.members
+                }
+            }
+
+        case GET_PROJECT_EDIT_PANEL_TEAM_SELECTION:
+            return {
+                ...state,
+                editPanel: {
+                    ...state.editPanel,
+                    teamSelectionMenu: action.payload.teams
                 }
             }
 
