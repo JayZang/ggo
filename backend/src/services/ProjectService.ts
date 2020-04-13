@@ -45,18 +45,21 @@ export default class ProjectService {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
             const customerRepo = getCustomRepository(CustomerRepo)
+            
             let customer: Customer | null = null
+            const project = await projectRepo.findOneOrFail(id)
 
-            if (data.source_type == ProjectSrcType.Customer) {
-                customer = await customerRepo.findOne(data.customer_id)
-                if (!customer)
-                    throw new Error(`None customer with id ${data.customer_id}`)
-            }
+            if (project.finish_datetime)
+                return null
+            if (data.source_type == ProjectSrcType.Customer)
+                customer = await customerRepo.findOneOrFail(data.customer_id)
 
-            return await projectRepo.updateById(id, {
+            projectRepo.assignValue(project,  {
                 ...data,
                 customer
             })
+
+            return await projectRepo.save(project)
         } catch (err) {
             console.log('Create Project fail')
             console.log(err.toString())

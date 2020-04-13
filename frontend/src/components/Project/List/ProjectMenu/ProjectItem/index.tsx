@@ -59,12 +59,14 @@ class ProjectItem extends Component<IProps> {
                     <ProjectSourceLabel project={project} />
                 </Box>
 
-                <Grid item className="d-flex align-items-center">
-                    <Button color="primary" onClick={this.props.onEditBtnClick}>編輯</Button>
+                <Box width={140} display="flex" justifyContent="flex-end" alignItems="center">
+                    {project.finish_datetime ? null : (
+                        <Button color="primary" onClick={this.props.onEditBtnClick}>編輯</Button>
+                    )}
                     <Link to={`/projects/${project.id}`}>
                         <Button color="primary">查看</Button>
                     </Link>
-                </Grid>
+                </Box>
 
             </Paper>
         )

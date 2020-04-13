@@ -20,21 +20,6 @@ class ProjectRepository extends BaseRepository<Project> {
         return this.save(project)
     }
 
-        /**
-     * Insert one Project
-     *  
-     * @param data
-     */
-    public async updateById(id: string, data: any) {
-        const project = await this.findOne(id)
-
-        if (!project) return Promise.reject('Project not found')
-
-        this.assignValue(project, data)
-
-        return this.save(project)
-    }
-
     /**
      * Assign value to project
      * 

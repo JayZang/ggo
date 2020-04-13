@@ -114,7 +114,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                         </Typography>
                                     ) 
                                     else return (
-                                        <Box width={100} marginX="auto">
+                                        <Box width={70} marginX="auto">
                                             <Skeleton />
                                         </Box>
                                     )
@@ -130,7 +130,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                         </Typography>
                                     ) 
                                     else return (
-                                        <Box width={100} marginX="auto">
+                                        <Box width={70} marginX="auto">
                                             <Skeleton />
                                         </Box>
                                     )
@@ -147,7 +147,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                             </Typography>
                                         )
                                     } else return (
-                                        <Box width={100} marginX="auto">
+                                        <Box width={70} marginX="auto">
                                             <Skeleton />
                                         </Box>
                                     )
