@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { UserAreaState, UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT } from './types'
 
 const initState: UserAreaState = {

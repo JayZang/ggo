@@ -194,7 +194,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                                     return (
                                                         <Grid container direction="row" alignItems="center" wrap="nowrap">
                                                             <Grid item className="mr-3">
-                                                                <img src={project.customer!.logo} style={{ width: 48 }} />
+                                                                <img src={project.customer!.logo} style={{ width: 48 }} alt="客戶 Logo" />
                                                             </Grid>
                                                             <Grid item>
                                                                 <Typography>{ project.customer.company_name }</Typography>

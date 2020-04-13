@@ -8,7 +8,6 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import MomentUtils from '@date-io/moment'
 import { SnackbarProvider } from 'notistack'
 import "moment/locale/zh-tw"
-import axios from 'axios';
 
 import './index.css';
 import store from 'stores';

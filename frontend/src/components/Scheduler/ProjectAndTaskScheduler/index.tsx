@@ -1,21 +1,16 @@
 import React, { Component } from 'react'
-import { ViewState, EditingState, ChangeSet, Resource } from '@devexpress/dx-react-scheduler'
+import { ViewState, Resource } from '@devexpress/dx-react-scheduler'
 import { 
     Scheduler, 
     MonthView, 
-    WeekView, 
-    DayView,
     Appointments, 
     Toolbar, 
-    ViewSwitcher ,
     DateNavigator,
     TodayButton,
-    AppointmentTooltip,
     Resources,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { Paper } from '@material-ui/core';
 
-import CustomViewSwitcher from 'components/Scheduler/CustomComponent/CustomViewSwitcher'
 import AppointmentToolTip from 'components/Scheduler/CustomComponent/AppointmentToolTip'
 import { IProject } from 'contracts/project';
 import { ITask } from 'contracts/task';

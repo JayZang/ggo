@@ -3,7 +3,6 @@ import { Grid, Paper, WithStyles, withStyles, Typography, Button, Box, Tooltip }
 import TodayOutlinedIcon from '@material-ui/icons/TodayOutlined';
 import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
 import { Link } from 'react-router-dom'
-import clsx from 'clsx'
 
 import styles from './style'
 import { IProject } from 'contracts/project'

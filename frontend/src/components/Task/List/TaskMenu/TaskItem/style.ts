@@ -8,9 +8,6 @@ export default (theme: Theme) => createStyles ({
         '&.taskName, &.projectName, &.assignment': {
             maxWidth: 200
         },
-        '&.date': {
-            maxWidth: 100
-        },
         '&.status, &.action': {
             maxWidth: 65
         }

@@ -57,7 +57,7 @@ type ClearTaskListState = {
 type UpdateTaskStatus = {
     type: typeof UPDATE_TASK_STATUS
     payload: {
-        taskId: string | number
+        taskId: number
         status: TaskStatus
     }
 }

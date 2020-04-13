@@ -10,7 +10,6 @@ import {
     GET_PROJECT_COUNT_STATISTIC, 
     GET_PROJECTS
 } from "./types"
-import _ from 'lodash'
 import { UPDATE_TASK_STATUS, TaskActionType, ADD_TASK } from "stores/task/types"
 
 const initState: ProjectState = {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Box, Typography, Grid, Divider } from '@material-ui/core'
+import { Box, Typography, Grid } from '@material-ui/core'
 import styled from 'styled-components'
 import { ITeam } from 'contracts/team'
 

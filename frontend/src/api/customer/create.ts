@@ -12,9 +12,9 @@ export function create(data: {
     address?: string
     remark?: string
 }) {
-    const formData = new FormData
+    const formData = new FormData()
     Object.keys(data).forEach(key => {
-        const value = (<any>data)[key]
+        const value = (data as any)[key]
         value !== undefined && formData.append(key, value)
     })
 

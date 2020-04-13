@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Tooltip, IconButton } from '@material-ui/core'
 import { useTheme, WithStyles, withStyles } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'

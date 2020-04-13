@@ -4,14 +4,17 @@ import { Box,
     Grid, 
     WithStyles,
     withStyles,
-    Button
+    Button,
+    Tooltip
 } from '@material-ui/core'
+import TodayOutlinedIcon from '@material-ui/icons/TodayOutlined';
+import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
+import { Link } from 'react-router-dom'
 
 import styles from './styles'
 import { ITask, TaskStatus } from 'contracts/task'
 import TaskStatusLabel from 'components/Task/StatusLabel'
 import AssignmentLabel from 'components/Task/AssignmentLabel'
-import { Link } from 'react-router-dom'
 
 type IProps = WithStyles<typeof styles> & {
     task: ITask,
@@ -52,22 +55,19 @@ class ProjectTaskItem  extends Component<IProps> {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid item>
-                        <Typography>
-                            {task.start_datetime.format('YYYY-MM-DD')}
-                        </Typography>
-                        <Typography className={classes.fieldHint}>
-                            起始日期
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography>
-                            {task.deadline_datetime.format('YYYY-MM-DD')}
-                        </Typography>
-                        <Typography className={classes.fieldHint}>
-                            最後期限日期
-                        </Typography>
-                    </Grid>
+                    <Tooltip title="工作任務期限" placement="bottom-start">
+                        <Box className="d-flex align-items-center h-100 mx-2">
+                            <Typography>
+                                <TodayOutlinedIcon />
+                                {task.start_datetime.format('YYYY-MM-DD')}
+                            </Typography>
+                            <ArrowRightOutlinedIcon />
+                            <Typography>
+                                <TodayOutlinedIcon />
+                                {task.deadline_datetime.format('YYYY-MM-DD')}
+                            </Typography>
+                        </Box>
+                    </Tooltip>
                     <Grid item>
                         <AssignmentLabel task={task} />
                     </Grid>

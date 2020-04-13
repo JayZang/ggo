@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react' 
+import React, { Component } from 'react' 
 import { 
     List, 
     ListItem, 
@@ -29,6 +29,7 @@ type IProps =  WithStyles<typeof styles> & {
     filtered?: IMember[]
     onChange?: (members: IMember[] | IMember | null) => void
     onMount?: () => Promise<void>
+    listMaxHeight?: number
 }
 
 type IState = {
@@ -97,7 +98,8 @@ class MemberSelectionMenu extends Component<IProps, IState> {
     render() {
         const {
             classes,
-            multiple
+            multiple,
+            listMaxHeight
         } = this.props
         const {
             checked,
@@ -121,7 +123,7 @@ class MemberSelectionMenu extends Component<IProps, IState> {
                         </Grid>
                     </Grid>
                 </Paper>
-                <List>
+                <List style={{ maxHeight: listMaxHeight, overflowY: 'auto' }}>
                     {this.filterMembers().map(member => {
                         return (
                             <ListItem button onClick={this.handleToggle.bind(this, member)} key={member.id}>

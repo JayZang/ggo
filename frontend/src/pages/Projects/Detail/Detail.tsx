@@ -48,7 +48,7 @@ class ProjectDetail extends Component<IProps, IState> {
                 }
             >
                 <Grid container wrap="nowrap">
-                    <Box className="mr-4" width={500} flexShrink={0}>
+                    <Box className="mr-4" width={450} flexShrink={0}>
                         <ProjectBaseInfoPanel 
                             project={project}
                             isCanBeFinished={!!tasks && !!tasks.length && tasks.reduce<boolean>((preStatus, task) => {

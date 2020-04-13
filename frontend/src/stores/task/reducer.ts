@@ -9,7 +9,6 @@ import {
     GET_TASK_EDIT_PANEL_MEMBER_SELECTION, 
     GET_TASK_EDIT_PANEL_TEAM_SELECTION 
 } from "./types";
-import _ from 'lodash'
 
 const initState: TaskState = {
     listPage: {
@@ -74,7 +73,7 @@ export default function taskReducer(state: TaskState = initState, action: TaskAc
                 listPage:{
                     ...state.listPage,
                     tasks: state.listPage.tasks && state.listPage.tasks.map(task => {
-                        if (task.id == action.payload.taskId) return {
+                        if (task.id === action.payload.taskId) return {
                             ...task,
                             status: action.payload.status
                         }

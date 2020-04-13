@@ -4,7 +4,7 @@ const URL = '/api/tasks/:id/status'
 
 export function updateStatus(id: string | number, status: number) {
     return axios.post<{
-        id: string
+        id: number
         name: string
         description: string | null
         start_datetime: string

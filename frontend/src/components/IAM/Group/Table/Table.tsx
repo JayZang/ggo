@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Dialog, Button, Slide, IconButton, Tooltip } from '@material-ui/core'
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Dialog, Button, Slide, Tooltip } from '@material-ui/core'
 
 import { IGroup } from 'contracts/group'
 import PolicyTable from 'components/IAM/Policy/Table'

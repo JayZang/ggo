@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Box, Paper, Grid, WithStyles, withStyles, Typography, Avatar } from '@material-ui/core'
+import { Box, Paper, Grid, WithStyles, withStyles, Typography } from '@material-ui/core'
 import {
     BusinessCenter as ProjectIcon,
     Assessment as AssessmentIcon

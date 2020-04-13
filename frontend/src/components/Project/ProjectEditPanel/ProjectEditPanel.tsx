@@ -245,7 +245,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
                 break
             
             case 'source_type':
-                if (fields.source_type == ProjectSrcType.Customer && !fields.customer)
+                if (fields.source_type === ProjectSrcType.Customer && !fields.customer)
                     errMsg = '請選擇一位客戶'
                 break
         }
@@ -336,7 +336,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
                                                 >
                                                     <Grid container direction="row" alignItems="center" wrap="nowrap">
                                                         <Grid item className="mr-3">
-                                                            <img src={fields.customer!.logo} style={{ width: 48 }} />
+                                                            <img src={fields.customer!.logo} style={{ width: 48 }} alt="客戶 Logo" />
                                                         </Grid>
                                                         <Grid item>
                                                             <Typography>{ fields.customer.company_name }</Typography>
@@ -353,7 +353,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
                                 
                             </FormControl>
         
-                            {fields.source_type == ProjectSrcType.Customer ? 
+                            {fields.source_type === ProjectSrcType.Customer ? 
                                 <CustomerSelectionMenu
                                     maxHeight={300}
                                     customers={this.props.customers || []}

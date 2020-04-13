@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Paper, Grid, Typography, Box, Tooltip, Button } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { WithStyles, withStyles } from '@material-ui/styles'
+import { Paper, Grid, Typography, Box, Tooltip, Button } from '@material-ui/core'
+import TodayOutlinedIcon from '@material-ui/icons/TodayOutlined';
+import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
 import clsx from 'clsx'
 
 import { ITask } from 'contracts/task'
@@ -62,14 +64,19 @@ class TaskItem extends Component<IProps> {
                                 </Link>
                         })()}
                     </Grid>
-                    <Grid item className={clsx(classes.field, 'date')}>
-                        <Typography>{task.start_datetime.format('YYYY-MM-DD')}</Typography>
-                        <Box color="text.hint" fontSize={14}>起始日期</Box>
-                    </Grid>
-                    <Grid item className={clsx(classes.field, 'date')}>
-                        <Typography>{task.deadline_datetime.format('YYYY-MM-DD')}</Typography>
-                        <Box color="text.hint" fontSize={14}>最後期限日期</Box>
-                    </Grid>
+                    <Tooltip title="工作任務期限" placement="bottom-start">
+                        <Box className="d-flex align-items-center h-100">
+                            <Typography>
+                                <TodayOutlinedIcon />
+                                {task.start_datetime.format('YYYY-MM-DD')}
+                            </Typography>
+                            <ArrowRightOutlinedIcon />
+                            <Typography>
+                                <TodayOutlinedIcon />
+                                {task.deadline_datetime.format('YYYY-MM-DD')}
+                            </Typography>
+                        </Box>
+                    </Tooltip>
                     <Grid item className={clsx(classes.field, 'assignment')}>
                         <AssignmentLabel task={task} disableLink={disableAssignmentLink} />
                     </Grid>

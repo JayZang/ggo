@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react' 
+import React, { Component } from 'react' 
 import { 
     List, 
     ListItem, 
@@ -14,8 +14,7 @@ import {
     IconButton,
     Divider,
     InputBase,
-    Paper,
-    Typography
+    Paper
 } from '@material-ui/core'
 import { 
     Search as SearchIcon ,

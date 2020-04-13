@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Switch, Button, Dialog, Slide, Tabs, Tab, Avatar, Tooltip, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core'
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Switch, Button, Dialog, Tabs, Tab, Avatar, Tooltip, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core'
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Alert, AlertTitle } from '@material-ui/lab';

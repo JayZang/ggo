@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemIcon, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction, Menu, MenuItem, Select, Checkbox } from '@material-ui/core';
+import { Paper, Typography, Divider, Box, ListItem, List, ListItemText, ListItemAvatar, Avatar, IconButton, ListItemSecondaryAction } from '@material-ui/core';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import SearchIcon from '@material-ui/icons/Search'
 

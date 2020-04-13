@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Paper, IconButton, InputBase, Tooltip, Box, Dialog, Slide, DialogTitle } from '@material-ui/core'
+import { Grid, Paper, IconButton, InputBase, Tooltip, Box, Dialog } from '@material-ui/core'
 import {
     Search as SearchIcon,
     Cached as CachedIcon,
@@ -12,9 +12,9 @@ import { IWorkReport } from 'contracts/workReport'
 import WorkReportItem from 'components/WorkReport/WorkReportPanel/WorkReportList/WorkReportItem'
 import WorkReportDisplayPanel from 'components/WorkReport/WorkReportPanel/WorkReportDisplayPanel'
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
-import { TransitionProps } from '@material-ui/core/transitions'
+import { withRouter, RouteComponentProps } from 'react-router'
 
-type IProps = {
+type IProps = RouteComponentProps & {
     workReports: IWorkReport[] | null
     load: () => Promise<void>
     reload: () => Promise<void>
@@ -23,12 +23,8 @@ type IProps = {
 
 type IState = {
     isLoading: boolean
-    workReportToDispaly: IWorkReport | null
+    workReportToDisplay: IWorkReport | null
 }
-
-const transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
 
 class WorkReportListPage extends Component<IProps, IState> {
     constructor(props: IProps) {
@@ -37,7 +33,7 @@ class WorkReportListPage extends Component<IProps, IState> {
         this.trackScrolling = this.trackScrolling.bind(this)
         this.state = {
             isLoading: false,
-            workReportToDispaly: null
+            workReportToDisplay: null
         }
     }
 
@@ -82,7 +78,7 @@ class WorkReportListPage extends Component<IProps, IState> {
     render() {
         const loaded = !!this.props.workReports
         const workReports = this.props.workReports || []
-        const { workReportToDispaly } = this.state
+        const { workReportToDisplay } = this.state
 
         return (
             <AppContent
@@ -127,27 +123,29 @@ class WorkReportListPage extends Component<IProps, IState> {
                 <Box>
                     {workReports.map(workReport => (
                         <WorkReportItem 
+                            key={workReport.id}
                             editable={false}
                             workReport={workReport}
-                            onViewBtnClick={() => this.setState({ workReportToDispaly: workReport })}
+                            onViewBtnClick={() => this.setState({ workReportToDisplay: workReport })}
+                            onTaskLabelClick={() => this.props.history.push(`/tasks/${workReport.task!.id}`)}
                         />
                     ))}
                 </Box>
 
                 <Dialog
-                    open={!!workReportToDispaly}
-                    onClose={() => this.setState({ workReportToDispaly: null })}
-                    TransitionComponent={transition}
+                    open={!!workReportToDisplay}
+                    onClose={() => this.setState({ workReportToDisplay: null })}
+                    TransitionComponent={DownToUpSlideTransition}
                     maxWidth="sm"
                     fullWidth
                 >
-                    {workReportToDispaly ? (
-                        <WorkReportDisplayPanel workReport={workReportToDispaly} />
-                    ) : null}
+                    {workReportToDisplay ? (
+                        <WorkReportDisplayPanel workReport={workReportToDisplay} />
+                    ) : ''}
                 </Dialog>
             </AppContent>
         )
     }
 }
 
-export default WorkReportListPage
+export default withRouter(WorkReportListPage)

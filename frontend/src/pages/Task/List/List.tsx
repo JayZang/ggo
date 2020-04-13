@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Paper, IconButton, InputBase, Tooltip, Button, WithStyles } from '@material-ui/core'
+import { Grid, Paper, IconButton, InputBase, Tooltip, WithStyles } from '@material-ui/core'
 import {
     Search as SearchIcon,
     Cached as CachedIcon,

@@ -319,6 +319,7 @@ class TaskEditPanel extends Component<IProps, IState> {
                                         <Box>
                                             <MemberSelectionMenu 
                                                 onChange={this.handleMemberSelectionChange.bind(this)}
+                                                listMaxHeight={350}
                                             />
                                         </Box>
                                     )

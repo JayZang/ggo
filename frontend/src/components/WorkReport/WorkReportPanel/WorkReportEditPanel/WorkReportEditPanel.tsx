@@ -1,10 +1,9 @@
 import React, { Component, ChangeEvent, FormEvent } from 'react'
-import { Box, Button, TextField, InputAdornment, Paper } from '@material-ui/core'
+import { Box, Button, TextField, Paper } from '@material-ui/core'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
-import ScheduleIcon from '@material-ui/icons/Schedule';
 import BraftEditor, { EditorState } from 'braft-editor'
 import 'braft-editor/dist/index.css'
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 
 import { IWorkReport } from 'contracts/workReport';
 import { TimePicker, MaterialUiPickersDate } from '@material-ui/pickers';

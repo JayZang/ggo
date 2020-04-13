@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Paper, Box, Typography, Button } from '@material-ui/core'
+import { Paper, Box, Typography, Button, Tooltip } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
 
 import { IWorkReport } from 'contracts/workReport'
@@ -12,6 +12,7 @@ type IProps = {
     workReport: IWorkReport
     onEditBtnClick?: () => void
     onViewBtnClick?: () => void
+    onTaskLabelClick?: () => void
 }
 
 class WorkReportItem extends Component<IProps> {
@@ -19,8 +20,12 @@ class WorkReportItem extends Component<IProps> {
         this.props.onEditBtnClick && this.props.onEditBtnClick()
     }
 
-    hanldeViewBtnClick() {
+    handleViewBtnClick() {
         this.props.onViewBtnClick && this.props.onViewBtnClick()
+    }
+
+    handleTaskLabelClick() {
+        this.props.onTaskLabelClick && this.props.onTaskLabelClick()
     }
 
     render() {
@@ -50,15 +55,17 @@ class WorkReportItem extends Component<IProps> {
                     </Typography>
                 </Box>
                 {workReport.task ? (
-                    <Box flexGrow={1.5} flexBasis={0} marginX={1}>
-                        <Typography className="d-flex align-items-center">
-                            {workReport.task.name}
-                            <TaskStatusLabel task={workReport.task} editable={false} />
-                        </Typography>
-                        <Typography variant="body2" component="div">
-                            <Box color="text.hint">工作任務</Box>
-                        </Typography>
-                    </Box>
+                    <Tooltip title="檢視工作任務" placement="bottom-start">
+                        <Box flexGrow={1.5} flexBasis={0} marginX={1} style={{ cursor: 'pointer' }} onClick={this.handleTaskLabelClick.bind(this)}>
+                            <Typography className="d-flex align-items-center" component="div">
+                                {workReport.task.name}
+                                <TaskStatusLabel task={workReport.task} editable={false} />
+                            </Typography>
+                            <Typography variant="body2" component="div">
+                                <Box color="text.hint">工作任務</Box>
+                            </Typography>
+                        </Box>
+                    </Tooltip>
                 ) : null}
                 <Box width={200} marginRight={5} marginX={1}>
                     <MemberLabel
@@ -82,7 +89,7 @@ class WorkReportItem extends Component<IProps> {
                         className="ml-auto"
                         size="small"
                         color="primary"
-                        onClick={this.hanldeViewBtnClick.bind(this)}
+                        onClick={this.handleViewBtnClick.bind(this)}
                     >
                         查看
                     </Button>

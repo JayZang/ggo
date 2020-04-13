@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Paper, Grid, Avatar } from '@material-ui/core'
+import { Paper, Grid } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 
 class CustomerItemSkeleton extends Component {

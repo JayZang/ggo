@@ -1,11 +1,10 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { Component } from 'react'
 import {
     List,
     ListItem,
     Checkbox,
     Radio,
     ListItemAvatar,
-    Avatar,
     ListItemText,
     ListItemSecondaryAction,
     WithStyles,
@@ -120,6 +119,7 @@ class MemberSelectionMenu extends Component<IProps, IState> {
                             <ListItem button onClick={this.handleToggle.bind(this, customer)} key={customer.id}>
                                 <ListItemAvatar>
                                     <img
+                                        alt="客戶 Logo"
                                         src={customer.logo}
                                         style={{ width: 40 }}
                                     />

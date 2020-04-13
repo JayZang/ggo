@@ -152,9 +152,8 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                 ...state,
                 infoPage: {
                     ...(state.infoPage),
-                    emergencyContacts: state.infoPage.emergencyContacts && (state.infoPage.emergencyContacts || []).filter(emergencyContact => {
-                        if (emergencyContact.id !== action.payload.id)
-                            return emergencyContact
+                    emergencyContacts: state.infoPage.emergencyContacts && state.infoPage.emergencyContacts.filter(emergencyContact => {
+                        return emergencyContact.id !== action.payload.id
                     })
                 }
             }

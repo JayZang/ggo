@@ -1,5 +1,5 @@
 import React, { Component, ChangeEvent } from 'react'
-import { Box, FormControl, TextField, Grid, FormHelperText, Button } from '@material-ui/core'
+import { FormControl, TextField, Grid, FormHelperText, Button } from '@material-ui/core'
 
 import { IGroup } from 'contracts/group'
 import PolicyTable from 'components/IAM/Policy/Table'

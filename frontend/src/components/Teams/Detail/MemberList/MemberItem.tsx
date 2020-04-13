@@ -18,7 +18,7 @@ class TeamMemberListItem extends Component<IProps> {
         
         return (
             <Box className={className}>
-                <Box className="field-wrapper">
+                <Box className="field-wrapper" flexGrow={1.5} flexBasis={0}>
                     <Avatar className="mr-2" src={member.avatar} />
                     <Typography component="div">
                         {member.name}
@@ -28,19 +28,23 @@ class TeamMemberListItem extends Component<IProps> {
                     </Typography>
                 </Box>
 
-                <Typography component="div">
-                    {member.email}
-                    <Box color="text.hint" className="field-hint">
-                        電子郵件
-                        </Box>
-                </Typography>
+                <Box flexGrow={1} flexBasis={0} marginX={2}>
+                    <Typography component="div">
+                        {member.email}
+                        <Box color="text.hint" className="field-hint">
+                            電子郵件
+                            </Box>
+                    </Typography>
+                </Box>
 
-                <Typography component="div">
-                    {member.phone}
-                    <Box color="text.hint" className="field-hint">
-                        聯絡電話
-                        </Box>
-                </Typography>
+                <Box flexGrow={1} flexBasis={0}>
+                    <Typography component="div">
+                        {member.phone}
+                        <Box color="text.hint" className="field-hint">
+                            聯絡電話
+                            </Box>
+                    </Typography>
+                </Box>
 
                 <Link to={`/members/${member.id}`}>
                     <Button
