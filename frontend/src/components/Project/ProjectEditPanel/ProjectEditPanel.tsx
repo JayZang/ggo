@@ -1,5 +1,5 @@
 import React, { Component, ChangeEvent, FormEvent } from 'react'
-import { Grid, FormControl, TextField, FormHelperText, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Paper, Typography, Box, Stepper, Step, StepLabel, Tabs, Tab, Divider } from '@material-ui/core'
+import { Grid, FormControl, TextField, FormHelperText, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Paper, Typography, Box, Stepper, Step, StepLabel, Tabs, Tab, Divider, Avatar, Tooltip } from '@material-ui/core'
 import { DatePicker, MaterialUiPickersDate } from '@material-ui/pickers'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
 import { Moment } from 'moment'
@@ -7,6 +7,7 @@ import { Moment } from 'moment'
 import CustomerSelectionMenu from 'components/Customer/SelectionMenu/SelectionMenu'
 import MemberSelectionMenu from 'components/Members/SelectionMenu'
 import TeamSelectionMenu from 'components/Teams/SelectionMenu'
+import MemberAvatarList from 'components/Members/AvatarList'
 import { ProjectSrcType, IProject } from 'contracts/project'
 import { ICustomer } from 'contracts/customer'
 import { IMember } from 'contracts/member'
@@ -107,7 +108,7 @@ type IProps = WithSnackbarProps & {
 
 type IState = {
     step: number
-    paritcipantSelectionTabIndex: number
+    participantSelectionTabIndex: number
     fields: Fields
     errors: Record<keyof Fields, string>,
     isSending: boolean
@@ -130,7 +131,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
         this.backStep = this.backStep.bind(this)
         this.state = {
             step: 0,
-            paritcipantSelectionTabIndex: 0,
+            participantSelectionTabIndex: 0,
             fields: {
                 name: project ? project.name : undefined,
                 description: project && project.description ? project.description : undefined,
@@ -139,9 +140,9 @@ class ProjectEditPanel extends Component<IProps, IState> {
                 quote: project && project.quote ? project.quote : undefined,
                 source_type: project ? project.source_type : ProjectSrcType.Internal,
                 customer: project ? project.customer : null,
-                managers: null,
-                member_participants: null,
-                team_participants: null,
+                managers: project && project.managers ? project.managers : null,
+                member_participants: project && project.member_participants ? project.member_participants : null,
+                team_participants: project && project.team_participants ? project.team_participants : null,
                 remark: project && project.remark ? project.remark : undefined,
             },
             errors: {
@@ -300,7 +301,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
         this.setState({ step: this.state.step - 1 })
     }
 
-    renderStep0() {
+    renderProjectInfoStep() {
         const {
             fields,
             errors
@@ -363,7 +364,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
         )
     }
 
-    renderStep1() {
+    renderProjectSourceStep() {
         const {
             fields,
             errors
@@ -426,19 +427,29 @@ class ProjectEditPanel extends Component<IProps, IState> {
         )
     }
 
-    renderStep2() {
+    renderProjectManagerStep() {
         const { fields } = this.state
 
         return (
             <Paper className="p-3">
-                <FormLabel className="mb-3">專案管理者 *</FormLabel>
+                <Box marginBottom={1} display="flex" alignItems="center" justifyContent="space-between">
+                    <FormLabel className="mr-4">專案管理者 *</FormLabel>
+                    {fields.managers && (
+                        <MemberAvatarList members={fields.managers} max={7} />
+                    )}
+                </Box>
                 <MemberSelectionMenu
                     defaultMembers={fields.managers || null}
                     members={this.props.memberSelections || []}
-                    onChange={members => this.setState({
+                    onChange={managers => this.setState({
                         fields: {
                             ...fields,
-                            managers: members && (Array.isArray(members) ? members : [members])
+                            managers: managers && (Array.isArray(managers) ? managers : [managers]),
+                            member_participants: fields.member_participants && fields.member_participants.filter(member => {
+                                return managers ? 
+                                    (Array.isArray(managers) ? managers : [managers]).findIndex(manager => manager.id === member.id) === -1 : 
+                                    true
+                            })
                         }
                     })}
                     listMaxHeight={350}
@@ -448,41 +459,47 @@ class ProjectEditPanel extends Component<IProps, IState> {
         )
     }
 
-    renderStep3() {
-        const { fields, paritcipantSelectionTabIndex } = this.state
+    renderProjectParticipantStep() {
+        const { fields, participantSelectionTabIndex } = this.state
 
         return (
             <Paper className="pb-3">
                 <Tabs
-                    value={paritcipantSelectionTabIndex}
+                    value={participantSelectionTabIndex}
                     indicatorColor="primary"
                     textColor="primary"
-                    onChange={(event, index) => this.setState({ paritcipantSelectionTabIndex: index })}
+                    onChange={(event, index) => this.setState({ participantSelectionTabIndex: index })}
                 >
                     <Tab label="成員" className="flex-grow-1" />
                     <Tab label="團隊" className="flex-grow-1" />
                 </Tabs>
                 <Divider className="mb-3" />
 
-                <Box className="px-3 pt-2">
-                    {paritcipantSelectionTabIndex === 0 ? (
-                        <MemberSelectionMenu
-                            multiple
-                            // defaultMembers={team? [team.leader!] : null}
-                            members={this.props.memberSelections || []}
-                            filtered={fields.managers || undefined}
-                            onChange={members => this.setState({
-                                fields: {
-                                    ...fields,
-                                    member_participants: members && (Array.isArray(members) ? members : [members])
-                                }
-                            })}
-                            listMaxHeight={350}
-                        />
+                <Box className="px-3">
+                    {participantSelectionTabIndex === 0 ? (
+                        <Box>
+                            {fields.member_participants && (
+                                <MemberAvatarList className="mb-1" members={fields.member_participants} max={10} />
+                            )}
+                            <MemberSelectionMenu
+                                multiple
+                                defaultMembers={fields.member_participants || null}
+                                members={this.props.memberSelections || []}
+                                filtered={fields.managers || undefined}
+                                onChange={members => this.setState({
+                                    fields: {
+                                        ...fields,
+                                        member_participants: members && (Array.isArray(members) ? members : [members])
+                                    }
+                                })}
+                                listMaxHeight={350}
+                            />
+                        </Box>
                     ) : (
                         <TeamSelectionMenu 
                             multiple
                             teams={this.props.teamSelections || []}
+                            defaultTeams={fields.team_participants || undefined}
                             onChange={teams => this.setState({
                                 fields: {
                                     ...fields,
@@ -496,7 +513,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
         )
     }
 
-    validateStep0() {
+    validateProjectInfoStep() {
         const { fields } = this.state
 
         return  fields.name && 
@@ -506,7 +523,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
             fields.deadline_datetime!.isValid()
     }
 
-    validateStep1() {
+    validateProjectSourceStep() {
         const { fields } = this.state
 
         if (fields.source_type === ProjectSrcType.Internal)
@@ -516,7 +533,7 @@ class ProjectEditPanel extends Component<IProps, IState> {
         return false
     }
 
-    validateStep2() {
+    validateProjectManagerStep() {
         const { fields } = this.state
 
         return !!fields.managers && !!fields.managers.length
@@ -526,11 +543,11 @@ class ProjectEditPanel extends Component<IProps, IState> {
         const { step } = this.state
 
         if (step === 0)
-            return this.validateStep0()
+            return this.validateProjectInfoStep()
         else if (step === 1)
-            return this.validateStep1()
+            return this.validateProjectSourceStep()
         else if (step === 2)
-            return this.validateStep2()
+            return this.validateProjectManagerStep()
         return false
     }
 
@@ -554,10 +571,10 @@ class ProjectEditPanel extends Component<IProps, IState> {
                     </Paper>
 
                     <Box marginY={3}>
-                        {step === 0 ? this.renderStep0() : (
-                            step === 1 ? this.renderStep1() : (
-                            step === 2 ? this.renderStep2() : (
-                            step === 3 ? this.renderStep3() : null
+                        {step === 0 ? this.renderProjectInfoStep() : (
+                            step === 1 ? this.renderProjectSourceStep() : (
+                            step === 2 ? this.renderProjectManagerStep() : (
+                            step === 3 ? this.renderProjectParticipantStep() : null
                         )))}
                     </Box>
 

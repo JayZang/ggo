@@ -1,6 +1,8 @@
 import { Moment } from "moment";
 import { ICustomer } from "./customer";
 import { ITask } from "./task";
+import { IMember } from "./member";
+import { ITeam } from "./team";
 
 export enum ProjectSrcType {
     Internal = 0,
@@ -21,4 +23,7 @@ export  type IProject = {
     remark: string | null
     create_at: Moment
     tasks?: ITask[]
+    managers?: IMember[]
+    member_participants?: IMember[]
+    team_participants?: ITeam[]
 }

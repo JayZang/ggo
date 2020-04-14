@@ -18,7 +18,12 @@ export function CreateAndEditProject(): RequestHandler[] {
             }),
         body('quote').optional().isNumeric(),
         body('source_type').exists().isIn(Object.values(ProjectSrcType)).toInt(),
-        body('customer_id').if((value: any, meta: any) => meta.req.body.source_type === ProjectSrcType.Customer).exists({ checkFalsy: true }),
+        body('customer_id')
+            .if((value: any, meta: any) => meta.req.body.source_type === ProjectSrcType.Customer)
+            .exists({ checkFalsy: true }),
+        body('manager_ids').exists({ checkFalsy: true }).isArray({ min: 1 }),
+        body('member_participant_ids').optional().exists({ checkFalsy: true }).isArray(),
+        body('team_participant_ids').optional().exists({ checkFalsy: true }).isArray(),
         body('remark').optional().exists({ checkFalsy: true }).isString(),
         validate()
     ]

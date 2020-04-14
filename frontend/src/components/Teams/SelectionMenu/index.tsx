@@ -27,6 +27,7 @@ import styles from './styles'
 type IProps =  WithStyles<typeof styles> & {
     teams: ITeam[]
     multiple?: boolean
+    defaultTeams?: ITeam[]
     onChange?: (teams: ITeam[] | ITeam | null) => void
     fetchTeam?: () => Promise<void>
 }
@@ -41,8 +42,10 @@ class TeamSelectionMenu extends Component<IProps, IState> {
         super(props)
 
         this.state = {
-            checked: [],
-            searchInput: ''
+            searchInput: '',
+            checked: props.defaultTeams ? props.teams.filter(team =>{
+                return props.defaultTeams!.findIndex(defaultTeam => defaultTeam.id === team.id) !== -1
+            }) : []
         }
     }
 
@@ -136,13 +139,13 @@ class TeamSelectionMenu extends Component<IProps, IState> {
                                             edge="end"
                                             color="primary"
                                             onChange={this.handleToggle.bind(this, team)}
-                                            checked={checked.includes(team)}
+                                            checked={checked.findIndex(checkedTeam => checkedTeam.id === team.id) !== -1}
                                         /> :
                                         <Radio 
                                             edge="end"
                                             color="primary"
                                             onChange={this.handleToggle.bind(this, team)}
-                                            checked={checked.includes(team)}
+                                            checked={checked.findIndex(checkedTeam => checkedTeam.id === team.id) !== -1}
                                         />
                                     }
                                 </ListItemSecondaryAction>

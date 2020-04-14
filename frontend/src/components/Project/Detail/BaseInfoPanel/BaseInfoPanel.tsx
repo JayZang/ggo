@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Box, Typography, Paper, Grid, WithStyles, withStyles, Divider, Button, Dialog, DialogTitle, DialogContent, DialogActions, Slide } from '@material-ui/core'
 import { KeyboardDatePicker } from '@material-ui/pickers'
-import { TransitionProps } from '@material-ui/core/transitions'
 import { Skeleton } from '@material-ui/lab'
 import {
     Edit as EditIcon,
@@ -11,11 +10,12 @@ import {
 import moment, { Moment } from 'moment'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
 import LabelIcon from '@material-ui/icons/Label'
+import clsx from 'clsx'
 
 import { IProject, ProjectSrcType } from 'contracts/project'
 import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
+import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import styles from './style'
-import clsx from 'clsx'
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     project: IProject | null
@@ -28,10 +28,6 @@ type IState = {
     openFinishProjectConfigDialog: boolean
     finishProjectDate: Moment | null
 }
-
-const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
 
 class ProjectBaseInfoPanel extends Component<IProps, IState> {
     constructor(props: IProps) {
@@ -252,7 +248,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                     onClose={() => this.setState({ openFinishProjectConfigDialog: false })}
                     keepMounted
                     maxWidth="sm"
-                    TransitionComponent={Transition}
+                    TransitionComponent={DownToUpSlideTransition}
                 >
                     <DialogTitle>
                         <Box textAlign="center">結案設置</Box>

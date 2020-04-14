@@ -12,7 +12,7 @@ export function update(id: string | number, data: {
     customer_id?: number
     remark?: string
 }) {
-    return axios.patch<{
+    return axios.put<{
         id: string
         name: string
         description: string | null

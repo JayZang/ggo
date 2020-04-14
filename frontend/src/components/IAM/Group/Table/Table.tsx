@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Toolbar, Typography, Checkbox, Box, Dialog, Button, Slide, Tooltip } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 import { IGroup } from 'contracts/group'
 import PolicyTable from 'components/IAM/Policy/Table'
 import GroupEditDrawer from 'components/IAM/Group/EditPanel/EditDrawer'
-import { TransitionProps } from '@material-ui/core/transitions'
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
-import { withSnackbar, WithSnackbarProps } from 'notistack'
+import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 
 type ITableToolbarProps = {
     title: string
@@ -105,10 +105,6 @@ type IGroupTableState = {
     groupToUpdate: IGroup | null,
     openEditDrawer: boolean
 }
-
-const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
 
 class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
     constructor(props: IGroupTableProps) {
@@ -303,7 +299,7 @@ class GroupTable extends Component<IGroupTableProps, IGroupTableState> {
                 <Dialog
                     open={groupToDisplayPolicies !== null}
                     onClose={() => this.setState({ groupToDisplayPolicies: null })}
-                    TransitionComponent={Transition}
+                    TransitionComponent={DownToUpSlideTransition}
                     fullWidth
                 >
                     <PolicyTable 

@@ -55,6 +55,9 @@ export class BaseRepository<T> extends Repository<T> {
         return this
     }
 
+    /**
+     * Warning: system will be error if length of ids is 0
+     */
     public withIdsCondition(ids: number[] | string[]) {
         this.queryBuilder.andWhere(`${this.entityAlias}.${this.ID} IN (:ids)`, { ids })
         return this

@@ -57,7 +57,7 @@ export default (app: Router) => {
             res.status(400).end()
     })
     
-    router.patch('/:id', CreateAndEditProject(), async (req: Request, res: Response) => {
+    router.put('/:id', CreateAndEditProject(), async (req: Request, res: Response) => {
         const project = await projectService.update(req.params.id, req.body)
         
         return project ?

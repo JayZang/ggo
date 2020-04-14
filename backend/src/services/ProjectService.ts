@@ -4,10 +4,14 @@ import moment from 'moment'
 
 import { TaskStatus } from '@/entity/Task'
 import Customer from '@/entity/Customer'
-import { ProjectSrcType } from '@/entity/Project'
+import Project, { ProjectSrcType } from '@/entity/Project'
+import TeamRepo from '@/repository/TeamRepository'
 import ProjectRepo from '@/repository/ProjectRepository'
 import CustomerRepo from '@/repository/CustomerRepository'
+import MemberRepo from '@/repository/MemberRepository'
 import TaskHelper from '@/helper/TaskHelper'
+import Member, { MemberStatus } from '@/entity/Member'
+import Team from '@/entity/Team'
 
 @Service()
 export default class ProjectService {
@@ -18,19 +22,11 @@ export default class ProjectService {
     public  async create(data: any) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
-            const customerRepo = getCustomRepository(CustomerRepo)
-            let customer: Customer | null = null
+            const project = projectRepo.create()
 
-            if (data.source_type == ProjectSrcType.Customer) {
-                customer = await customerRepo.findOne(data.customer_id)
-                if (!customer)
-                    throw new Error(`None customer with id ${data.customer_id}`)
-            }
+            await this.assignProjectData(project, data)
 
-            return await projectRepo.createAndSave({
-                ...data, 
-                customer
-            })
+            return await projectRepo.save(project)
         } catch (err) {
             console.log('Create Project fail')
             console.log(err.toString())
@@ -44,20 +40,9 @@ export default class ProjectService {
     public  async update(id: string, data: any) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
-            const customerRepo = getCustomRepository(CustomerRepo)
-            
-            let customer: Customer | null = null
             const project = await projectRepo.findOneOrFail(id)
 
-            if (project.finish_datetime)
-                return null
-            if (data.source_type == ProjectSrcType.Customer)
-                customer = await customerRepo.findOneOrFail(data.customer_id)
-
-            projectRepo.assignValue(project,  {
-                ...data,
-                customer
-            })
+            await this.assignProjectData(project, data)
 
             return await projectRepo.save(project)
         } catch (err) {
@@ -77,7 +62,7 @@ export default class ProjectService {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
             return await projectRepo.find({
-                relations: ['customer'],
+                relations: ['customer', 'managers', 'team_participants', 'member_participants'],
                 order: {  id: 'DESC' },
                 ...option
             })
@@ -141,9 +126,6 @@ export default class ProjectService {
 
     /**
      * Finish the project
-     * 
-     * @param id 
-     * @param date 
      */
     public async finish(id: string | number, date: string) {
         try {
@@ -173,5 +155,59 @@ export default class ProjectService {
             console.log(err.toString())
             return 0
         }
+    }
+
+    /**
+     * Assign project data, prepare project entire data to store to db
+     */
+    private async assignProjectData(project: Project, data: any): Promise<void> {
+        const teamRepo = getCustomRepository(TeamRepo)
+        const memberRepo = getCustomRepository(MemberRepo)
+        const customerRepo = getCustomRepository(CustomerRepo)
+
+        let teamParticipantsPromise: Promise<Team[]>
+        let memberParticipantsPromise: Promise<Member[]>
+        let customer: Customer | null
+
+        const managers = await memberRepo.initQueryBuilder()
+            .withStatusCondition(MemberStatus.active)
+            .withIdsCondition(data.manager_ids)
+            .getMany()
+
+        if (managers.length === 0)
+            return Promise.reject('Project has to have at least one manager')
+
+        if (data.source_type == ProjectSrcType.Customer)
+            customer = await customerRepo.findOneOrFail(data.customer_id)
+
+        if (data.team_participant_ids)
+            teamParticipantsPromise = teamRepo.findByIds(data.team_participant_ids)
+        if (data.member_participant_ids && data.member_participant_ids.length)
+            memberParticipantsPromise = memberRepo.initQueryBuilder()
+                .withStatusCondition(MemberStatus.active)
+                .withIdsCondition(data.member_participant_ids.filter((id: string | number) => {
+                    return data.manager_ids.findIndex((manager_id: number | string) => manager_id == id) === -1
+                }))
+                .getMany()
+
+        const [ 
+            memberParticipants, 
+            teamParticipants 
+        ]= await Promise.all([
+            memberParticipantsPromise, 
+            teamParticipantsPromise
+        ])
+
+        project.name = data.name
+        project.description = data.description || null
+        project.start_datetime = data.start_datetime
+        project.deadline_datetime = data.deadline_datetime
+        project.quote = data.quote || null
+        project.remark = data.remark || null
+        project.source_type = data.source_type
+        project.customer = customer
+        project.managers = managers
+        project.member_participants = memberParticipants
+        project.team_participants = teamParticipants
     }
 }

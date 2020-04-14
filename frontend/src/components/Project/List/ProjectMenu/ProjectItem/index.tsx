@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Paper, WithStyles, withStyles, Typography, Button, Box, Tooltip } from '@material-ui/core'
+import { Paper, WithStyles, withStyles, Typography, Button, Box, Tooltip } from '@material-ui/core'
 import TodayOutlinedIcon from '@material-ui/icons/TodayOutlined';
 import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
 import { Link } from 'react-router-dom'
@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom'
 import styles from './style'
 import { IProject } from 'contracts/project'
 import ProjectSourceLabel from 'components/Project/ProjectSourceLabel'
-
 
 type IProps = WithStyles<typeof styles> & {
     project: IProject
