@@ -63,7 +63,7 @@ export default function customerReducer(state: ProjectState = initState, action:
                 ...state,
                 listPage: {
                     ...state.listPage,
-                    projects: (state.listPage.projects || []).map(project => {
+                    projects: state.listPage.projects && state.listPage.projects.map(project => {
                         if (project.id === action.payload.project.id)
                             return action.payload.project
                         return project

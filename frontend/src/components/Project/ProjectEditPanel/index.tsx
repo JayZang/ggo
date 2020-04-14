@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 
-import { createProject, updateProject, getCustomerSelectionMenu, getMemberSelectionMenu, getTeamSelectionMenu } from "stores/project/action";
+import { createProject, updateProject, fetchCustomerSelectionMenu, fetchMemberSelectionMenu, fetchTeamSelectionMenu } from "stores/project/action";
 import ProjectEditPanel from './ProjectEditPanel'
 import { RootState } from "stores";
 
@@ -20,9 +20,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     },
     load: async () => {
         await Promise.all([
-            dispatch(getCustomerSelectionMenu()),
-            dispatch(getMemberSelectionMenu()),
-            dispatch(getTeamSelectionMenu())
+            dispatch(fetchCustomerSelectionMenu()),
+            dispatch(fetchMemberSelectionMenu()),
+            dispatch(fetchTeamSelectionMenu())
         ])
     }
 })

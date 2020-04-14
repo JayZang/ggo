@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Box, Typography, Paper, Grid, WithStyles, withStyles, Divider, Button, Dialog, DialogTitle, DialogContent, DialogActions, Slide } from '@material-ui/core'
+import { Box, Typography, Paper, Grid, WithStyles, withStyles, Divider, Button, Dialog, DialogTitle, DialogContent, DialogActions, Slide, IconButton } from '@material-ui/core'
 import { KeyboardDatePicker } from '@material-ui/pickers'
 import { Skeleton } from '@material-ui/lab'
 import {
@@ -15,6 +15,8 @@ import clsx from 'clsx'
 import { IProject, ProjectSrcType } from 'contracts/project'
 import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
+import MemberAvatarList from 'components/Members/AvatarList'
+import ProjectManagerEditDialog from './ManagersEditDialog'
 import styles from './style'
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
@@ -27,16 +29,20 @@ type IState = {
     openEditDrawer: boolean
     openFinishProjectConfigDialog: boolean
     finishProjectDate: Moment | null
+    openManagerEditDialog: boolean
 }
 
 class ProjectBaseInfoPanel extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
+        this.handleOpenManagerEditDialog = this.handleOpenManagerEditDialog.bind(this)
+        this.handleCloseManagerEditDialog = this.handleCloseManagerEditDialog.bind(this)
         this.state= {
             openEditDrawer: false,
             openFinishProjectConfigDialog: false,
-            finishProjectDate: moment()
+            finishProjectDate: moment(),
+            openManagerEditDialog: false
         }
     }
 
@@ -60,11 +66,22 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
         })
     }
 
+    handleOpenManagerEditDialog() {
+        this.setState({ openManagerEditDialog: true })
+    }
+
+    handleCloseManagerEditDialog() {
+        this.setState({ openManagerEditDialog: false })
+    }
+
     render() {
         const {
             project,
             classes
         } = this.props
+        const {
+            openManagerEditDialog
+        } = this.state
 
         return (
             <Box>
@@ -153,17 +170,84 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                         </Grid>
                     </Box>
                     <Box className="px-4">
+
                         <Box className="mb-4">
-                            <Box className="mb-4">
-                                <Typography variant="h6">報價</Typography>
+                            <Typography variant="h6">專案管理者</Typography>
+                            {project ? (
+                                <Box display="flex" alignContent="center">
+                                    <MemberAvatarList 
+                                        max={15}
+                                        spacing="small"
+                                        className="ml-3"
+                                        members={project.managers || []} 
+                                    />
+                                    <IconButton 
+                                        size="small"
+                                        onClick={this.handleOpenManagerEditDialog}
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                </Box>
+                            ) : (
+                                <Box component="span" width="auto">
+                                    <Skeleton width={150} />
+                                </Box>
+                            )}
+                        </Box>
+
+                        <Box className="mb-4">
+                            <Typography variant="h6">專案參與者</Typography>
+                            {project ? (
+                                <Box display="flex" alignContent="center">
+                                    {project.member_participants && project.member_participants.length ? (
+                                        <MemberAvatarList 
+                                            max={15}
+                                            spacing="small" 
+                                            className="ml-3" 
+                                            members={project.member_participants} 
+                                        />
+                                    ) : null}
+                                    <IconButton size="small">
+                                        <EditIcon />
+                                    </IconButton>
+                                </Box>
+                            ) : (
+                                    <Box component="span" width="auto">
+                                        <Skeleton width={150} />
+                                    </Box>
+                                )}
+                        </Box>
+
+                        <Box className="mb-4">
+                            <Typography variant="h6">專案來源</Typography>
+                            <Box>
                                 {(() => {
                                     if (project) {
-                                        return (
-                                            <Typography>
-                                                <Box fontWeight={500} className="mr-1" component="span">$</Box>
-                                                {project.quote || '無報價'}
-                                            </Typography>
-                                        )
+                                        switch (project.source_type) {
+                                            case ProjectSrcType.Internal:
+                                                return (
+                                                    <Typography className="badge badge-primary shadow-sm" variant="body2">
+                                                        內部專案
+                                                    </Typography>
+                                                )
+                                            
+                                            case ProjectSrcType.Customer:
+                                                if (!project.customer)
+                                                    return <Typography className="badge badge-danger shadow">錯誤</Typography>
+                                                return (
+                                                    <Grid container direction="row" alignItems="center" wrap="nowrap">
+                                                        <Grid item className="mr-3">
+                                                            <img src={project.customer!.logo} style={{ width: 48 }} alt="客戶 Logo" />
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <Typography>{ project.customer.company_name }</Typography>
+                                                            <Typography className={classes.customerFieldHint}>
+                                                                { project.customer.contact } / { project.customer.phone }
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                )
+                                        }
                                     } else return (
                                         <Box component="span" width="auto">
                                             <Skeleton width={150} />
@@ -171,47 +255,28 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                     )
                                 })()}
                             </Box>
-                            <Box>
-                                <Typography variant="h6">專案來源</Typography>
-                                <Box>
-                                    {(() => {
-                                        if (project) {
-                                            switch (project.source_type) {
-                                                case ProjectSrcType.Internal:
-                                                    return (
-                                                        <Typography className="badge badge-primary shadow-sm" variant="body2">
-                                                            內部專案
-                                                        </Typography>
-                                                    )
-                                                
-                                                case ProjectSrcType.Customer:
-                                                    if (!project.customer)
-                                                        return <Typography className="badge badge-danger shadow">錯誤</Typography>
-                                                    return (
-                                                        <Grid container direction="row" alignItems="center" wrap="nowrap">
-                                                            <Grid item className="mr-3">
-                                                                <img src={project.customer!.logo} style={{ width: 48 }} alt="客戶 Logo" />
-                                                            </Grid>
-                                                            <Grid item>
-                                                                <Typography>{ project.customer.company_name }</Typography>
-                                                                <Typography className={classes.customerFieldHint}>
-                                                                    { project.customer.contact } / { project.customer.phone }
-                                                                </Typography>
-                                                            </Grid>
-                                                        </Grid>
-                                                    )
-                                            }
-                                        } else return (
-                                            <Box component="span" width="auto">
-                                                <Skeleton width={150} />
-                                            </Box>
-                                        )
-                                    })()}
-                                </Box>
-                            </Box>
                         </Box>
+
+                        <Box className="mb-4">
+                            <Typography variant="h6">報價</Typography>
+                            {(() => {
+                                if (project) {
+                                    return (
+                                        <Typography>
+                                            <Box fontWeight={500} className="mr-1" component="span">$</Box>
+                                            {project.quote || '無報價'}
+                                        </Typography>
+                                    )
+                                } else return (
+                                    <Box component="span" width="auto">
+                                        <Skeleton width={150} />
+                                    </Box>
+                                )
+                            })()}
+                        </Box>
+
                         {project && project.remark && (
-                            <Box>
+                            <Box className="mb-4">
                                 <Typography variant="h6">備註</Typography>
                                 <Typography className={classes.remarkWrapper} component="div">
                                     <Box minHeight={100} whiteSpace="pre">{project && project.remark}</Box>
@@ -219,7 +284,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                             </Box>
                         )}
                     </Box>
-                    <Divider className="mt-4" />
+                    <Divider />
                     {project && !project.finish_datetime ? (
                         <Box className="px-3 py-2 d-flex">
                             <Button
@@ -303,6 +368,14 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                     onOpen={() => this.setState({ openEditDrawer: true })}
                     onClose={() => this.setState({ openEditDrawer: false })}
                 />
+
+                {project && (
+                    <ProjectManagerEditDialog 
+                        project={project}
+                        open={openManagerEditDialog}
+                        onClose={this.handleCloseManagerEditDialog}
+                    />
+                )}
             </Box>
         )
     }

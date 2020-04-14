@@ -62,9 +62,14 @@ export default class ProjectService {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
             return await projectRepo.find({
-                relations: ['customer', 'managers', 'team_participants', 'member_participants'],
+                ...option,
                 order: {  id: 'DESC' },
-                ...option
+                relations: [
+                    'customer', 
+                    'managers', 
+                    'team_participants', 
+                    'member_participants'
+                ]
             })
         } catch (err) {
             console.log('Get Projects fail')
@@ -82,7 +87,14 @@ export default class ProjectService {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
             return await projectRepo.findOneOrFail(id, {
-                relations: ['customer', 'tasks', 'tasks.assignment']
+                relations: [
+                    'customer', 
+                    'tasks', 
+                    'tasks.assignment', 
+                    'managers', 
+                    'team_participants', 
+                    'member_participants'
+                ]
             }).then(async (project) => {
                 await TaskHelper.attachTasksAssignment(project.tasks)
                 return project
@@ -167,7 +179,7 @@ export default class ProjectService {
 
         let teamParticipantsPromise: Promise<Team[]>
         let memberParticipantsPromise: Promise<Member[]>
-        let customer: Customer | null
+        let customer: Customer | null = null
 
         const managers = await memberRepo.initQueryBuilder()
             .withStatusCondition(MemberStatus.active)
@@ -207,7 +219,7 @@ export default class ProjectService {
         project.source_type = data.source_type
         project.customer = customer
         project.managers = managers
-        project.member_participants = memberParticipants
-        project.team_participants = teamParticipants
+        project.member_participants = memberParticipants || []
+        project.team_participants = teamParticipants || []
     }
 }

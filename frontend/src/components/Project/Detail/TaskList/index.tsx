@@ -234,7 +234,7 @@ class ProjectTaskList extends Component<IProps, IState> {
                 })()}
 
                 <TaskEditDrawer 
-                    project={project || undefined}
+                    project={project}
                     open={this.state.openCreateDrawer}
                     onOpen={() => this.setState({ openCreateDrawer: true })}
                     onClose={() => this.setState({ openCreateDrawer: false })}

@@ -130,7 +130,7 @@ export const fetchProjectDetailInfo = (id: string) => async (dispatch: Dispatch)
    dispatch(action)
 }
 
-export const getCustomerSelectionMenu = () => async (dispatch : Dispatch) => {
+export const fetchCustomerSelectionMenu = () => async (dispatch : Dispatch) => {
     const res = await customerApi.get()
 
     const action: ProjectActionType = {
@@ -143,7 +143,7 @@ export const getCustomerSelectionMenu = () => async (dispatch : Dispatch) => {
     dispatch(action)
 }
 
-export const getMemberSelectionMenu = () => async (dispatch : Dispatch) => {
+export const fetchMemberSelectionMenu = () => async (dispatch : Dispatch) => {
     const res = await memberApi.get({
         offset: 0,
         count: 999,
@@ -160,7 +160,7 @@ export const getMemberSelectionMenu = () => async (dispatch : Dispatch) => {
     dispatch(action)
 }
 
-export const getTeamSelectionMenu = () => async (dispatch : Dispatch) => {
+export const fetchTeamSelectionMenu = () => async (dispatch : Dispatch) => {
     const res = await teamApi.getPermanentTeams()
 
     const action: ProjectActionType = {

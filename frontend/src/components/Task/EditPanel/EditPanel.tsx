@@ -6,8 +6,8 @@ import { IProject } from 'contracts/project'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 import { TaskAssignType } from 'contracts/task'
-import MemberSelectionMenu from './MemberSelectionMenu'
-import TeamSelectionMenu from './TeamSelectionMenu'
+import MemberSelectionMenu from 'components/Members/SelectionMenu'
+import TeamSelectionMenu from 'components/Teams/SelectionMenu'
 import { IMember } from 'contracts/member'
 import { ITeam } from 'contracts/team'
 
@@ -86,7 +86,7 @@ type Fields = {
 }
 
 type IProps = WithSnackbarProps & {
-    project?: IProject
+    project: IProject
     createTask: (id: number | string, data: any) => Promise<void>
     onSubmitSuccess?: () => void
     onDidMount?: () => Promise<void>
@@ -257,6 +257,9 @@ class TaskEditPanel extends Component<IProps, IState> {
             errors,
             isSending
         } = this.state
+        const {
+            project
+        } = this.props
 
         return (
             <Grid container direction="column">
@@ -318,6 +321,10 @@ class TaskEditPanel extends Component<IProps, IState> {
                                     return (
                                         <Box>
                                             <MemberSelectionMenu 
+                                                members={[
+                                                    ...(project.managers || []),
+                                                    ...(project.member_participants || [])
+                                                ]}
                                                 onChange={this.handleMemberSelectionChange.bind(this)}
                                                 listMaxHeight={350}
                                             />
@@ -328,6 +335,7 @@ class TaskEditPanel extends Component<IProps, IState> {
                                     return (
                                         <Box>
                                             <TeamSelectionMenu 
+                                                teams={project.team_participants || []}
                                                 onChange={this.handleTeamSelectionChange.bind(this)}
                                             />
                                         </Box>

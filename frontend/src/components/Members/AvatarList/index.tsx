@@ -17,7 +17,7 @@ class MemberAvatarList extends Component<IProps> {
         return (
             <AvatarGroup max={7} {...props}>
                 {members.map(member => (
-                    <Tooltip title={member.name} placement="bottom">
+                    <Tooltip title={member.name} placement="bottom" key={member.id}>
                         <Avatar className="bg-white" src={member.avatar} alt={member.name} />
                     </Tooltip>
                 ))}    

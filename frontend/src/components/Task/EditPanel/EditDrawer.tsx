@@ -9,7 +9,7 @@ import TaskEditPanel from './index'
 import { IProject } from 'contracts/project'
 
 type IProp = {
-    project?: IProject
+    project?: IProject | null
     open: boolean
     onOpen: () => void
     onClose: () => void
@@ -40,10 +40,12 @@ export default class TaskEditDrawer extends Component<IProp> {
                     />
                 }
             >
-                <TaskEditPanel
-                    project={project}
-                    onSubmitSuccess={onClose}
-                />
+                {project ? (
+                    <TaskEditPanel
+                        project={project}
+                        onSubmitSuccess={onClose}
+                    />
+                ) : null}
             </RightDrawerContainer>
         )
     }
