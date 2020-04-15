@@ -10,7 +10,11 @@ import {
     GET_PROJECT_COUNT_STATISTIC, 
     GET_PROJECTS,
     GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
-    GET_PROJECT_EDIT_PANEL_TEAM_SELECTION
+    GET_PROJECT_EDIT_PANEL_TEAM_SELECTION,
+    ADD_PROJECT_MANAGER,
+    REMOVE_PROJECT_MANAGER,
+    ADD_PROJECT_MEMBER_PARTICIPANT,
+    REMOVE_PROJECT_MEMBER_PARTICIPANT
 } from "./types"
 import { UPDATE_TASK_STATUS, TaskActionType, ADD_TASK } from "stores/task/types"
 
@@ -152,6 +156,27 @@ export default function customerReducer(state: ProjectState = initState, action:
                     ...state.infoPage,
                     project: action.payload.project,
                     tasks: action.payload.tasks
+                }
+            }
+
+        case ADD_PROJECT_MANAGER:
+        case REMOVE_PROJECT_MANAGER:
+        case ADD_PROJECT_MEMBER_PARTICIPANT:
+        case REMOVE_PROJECT_MEMBER_PARTICIPANT:
+            return {
+                ...state,
+                infoPage: {
+                    ...state.infoPage,
+                    project: state.infoPage.project && state.infoPage.project.id === action.payload.project.id ?
+                        action.payload.project : state.infoPage.project,
+                },
+                listPage: {
+                    ...state.listPage,
+                    projects: state.listPage.projects && state.listPage.projects.map(project => {
+                        if (project.id === action.payload.project.id)
+                            return action.payload.project
+                        return project
+                    })
                 }
             }
 

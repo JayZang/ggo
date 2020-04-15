@@ -12,6 +12,11 @@ export const UPDATE_PROJECT_FINISH_DATE = 'UPDATE_PROJECT_FINISH_DATE'
 export const CLEAR_LIST_PAGE_STATE = 'CLEAR_LIST_PAGE_STATE'
 export const GET_PROJECT_COUNT_STATISTIC = 'GET_PROJECT_COUNT_STATISTIC'
 export const GET_PROJECT_DETAIL_INFO = 'GET_PROJECT_DETAIL_INFO'
+export const ADD_PROJECT_MANAGER = 'ADD_PROJECT_MANAGER'
+export const REMOVE_PROJECT_MANAGER = 'REMOVE_PROJECT_MANAGER'
+export const ADD_PROJECT_MEMBER_PARTICIPANT = 'ADD_PROJECT_MEMBER_PARTICIPANT'
+export const REMOVE_PROJECT_MEMBER_PARTICIPANT = 'REMOVE_PROJECT_MEMBER_PARTICIPANT'
+
 export const GET_PROJECT_EDIT_PANEL_CUSTOMER_SELECTION = 'GET_PROJECT_EDIT_PANEL_CUSTOMER_SELECTION'
 export const GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION = 'GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION'
 export const GET_PROJECT_EDIT_PANEL_TEAM_SELECTION = 'GET_PROJECT_EDIT_PANEL_TEAM_SELECTION'
@@ -107,6 +112,34 @@ type GetProjectDetailInfo = {
     }
 }
 
+type AddProjectManager = {
+    type: typeof ADD_PROJECT_MANAGER,
+    payload: {
+        project: IProject
+    }
+}
+
+type RemoveProjectManager = {
+    type: typeof REMOVE_PROJECT_MANAGER,
+    payload: {
+        project: IProject
+    }
+}
+
+type AddProjectMemberParticipant = {
+    type: typeof ADD_PROJECT_MEMBER_PARTICIPANT,
+    payload: {
+        project: IProject
+    }
+}
+
+type RemoveProjectMemberParticipant = {
+    type: typeof REMOVE_PROJECT_MEMBER_PARTICIPANT,
+    payload: {
+        project: IProject
+    }
+}
+
 export type ProjectActionType = 
     GetProjects |
     AddProject |
@@ -117,4 +150,8 @@ export type ProjectActionType =
     GetProjectDetailInfo |
     GetCustomerSelectionMenu |
     GetMemberSelectionMenu |
-    GetTeamSelectionMenu
+    GetTeamSelectionMenu |
+    AddProjectManager |
+    RemoveProjectManager |
+    AddProjectMemberParticipant |
+    RemoveProjectMemberParticipant

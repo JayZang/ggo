@@ -42,11 +42,14 @@ export default class ProjectService {
             const projectRepo = getCustomRepository(ProjectRepo)
             const project = await projectRepo.findOneOrFail(id)
 
+            if (project.finish_datetime)
+                return null
+
             await this.assignProjectData(project, data)
 
             return await projectRepo.save(project)
         } catch (err) {
-            console.log('Create Project fail')
+            console.log('Update Project fail')
             console.log(err.toString())
             return null
         }
@@ -102,7 +105,152 @@ export default class ProjectService {
         } catch (err) {
             console.log('Get Projects by id fail')
             console.log(err.toString())
-            return 0
+            return null
+        }
+    }
+
+    /**
+     * Add Project Manager
+     */
+    public async addManager(projectId: number | string, memberId: number | string) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            const memberRepo = getCustomRepository(MemberRepo)
+
+            const project = await projectRepo.findOneOrFail(projectId, {
+                relations: [
+                    'customer',
+                    'managers', 
+                    'team_participants',
+                    'member_participants'
+                ]
+            })
+
+            if (project.finish_datetime) return null
+
+            const member = await memberRepo.initQueryBuilder()
+                .withIdCondition(memberId)
+                .withStatusCondition(MemberStatus.active)
+                .getOne()
+
+            if (!member) return null
+
+            if (project.managers.findIndex(manager => manager.id === member.id) === -1)
+                project.managers.push(member)
+            project.member_participants = project.member_participants.filter(participant => {
+                return participant.id !== member.id
+            })
+            
+            return await projectRepo.save(project)
+        } catch (err) {
+            console.log('Add project manager fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Remove Project Manager
+     */
+    public async removeManager(projectId: number | string, memberId: number | string) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            const memberRepo = getCustomRepository(MemberRepo)
+
+            const project = await projectRepo.findOneOrFail(projectId, {
+                relations: [
+                    'customer',
+                    'managers', 
+                    'team_participants',
+                    'member_participants'
+                ]
+            })
+
+            if (project.finish_datetime) return null
+
+            const member = await memberRepo.findOneOrFail(memberId)
+
+            // project needs at least one manager
+            if (project.managers.length <= 1)
+                return null
+
+            project.managers = project.managers.filter(manager => manager.id !== member.id)
+
+            return await projectRepo.save(project)
+        } catch (err) {
+            console.log('Remove project manager fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Add Project Member Participant
+     */
+    public async addMemberParticipant(projectId: number | string, memberId: number | string) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            const memberRepo = getCustomRepository(MemberRepo)
+
+            const project = await projectRepo.findOneOrFail(projectId, {
+                relations: [
+                    'customer',
+                    'managers', 
+                    'team_participants',
+                    'member_participants'
+                ]
+            })
+
+            if (project.finish_datetime) return null
+
+            const member = await memberRepo.initQueryBuilder()
+                .withIdCondition(memberId)
+                .withStatusCondition(MemberStatus.active)
+                .getOne()
+
+            if (!member) return null
+
+            if (project.managers.findIndex(manager => manager.id === member.id) !== -1)
+                return null
+            if (project.member_participants.findIndex(memberParticipant => memberParticipant.id === member.id) === -1)
+                project.member_participants.push(member)
+            
+            return await projectRepo.save(project)
+        } catch (err) {
+            console.log('Add project member participant fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Remove Project Member Participant
+     */
+    public async removeMemberParticipant(projectId: number | string, memberId: number | string) {
+        try {
+            const projectRepo = getCustomRepository(ProjectRepo)
+            const memberRepo = getCustomRepository(MemberRepo)
+
+            const project = await projectRepo.findOneOrFail(projectId, {
+                relations: [
+                    'customer',
+                    'managers', 
+                    'team_participants',
+                    'member_participants'
+                ]
+            })
+
+            if (project.finish_datetime) return null
+
+            const member = await memberRepo.findOneOrFail(memberId)
+
+            project.member_participants = project.member_participants.filter(memberParticipant => memberParticipant.id !== member.id)
+            
+            return await projectRepo.save(project)
+        } catch (err) {
+            console.log('Remove project member participant fail')
+            console.log(err.toString())
+            return null
         }
     }
 

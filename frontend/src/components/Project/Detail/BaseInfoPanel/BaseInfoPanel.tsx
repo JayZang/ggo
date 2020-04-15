@@ -16,6 +16,7 @@ import { IProject, ProjectSrcType } from 'contracts/project'
 import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import MemberAvatarList from 'components/Members/AvatarList'
+import MemberParticipantEditDialog from './MemberParticipantEditDialog'
 import ProjectManagerEditDialog from './ManagersEditDialog'
 import styles from './style'
 
@@ -30,6 +31,7 @@ type IState = {
     openFinishProjectConfigDialog: boolean
     finishProjectDate: Moment | null
     openManagerEditDialog: boolean
+    openMemberParticipantEditDialog: boolean
 }
 
 class ProjectBaseInfoPanel extends Component<IProps, IState> {
@@ -38,11 +40,14 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
 
         this.handleOpenManagerEditDialog = this.handleOpenManagerEditDialog.bind(this)
         this.handleCloseManagerEditDialog = this.handleCloseManagerEditDialog.bind(this)
+        this.handleOpenMemberParticipantEditDialog = this.handleOpenMemberParticipantEditDialog.bind(this)
+        this.handleCloseMemberParticipantEditDialog = this.handleCloseMemberParticipantEditDialog.bind(this)
         this.state= {
             openEditDrawer: false,
             openFinishProjectConfigDialog: false,
             finishProjectDate: moment(),
-            openManagerEditDialog: false
+            openManagerEditDialog: false,
+            openMemberParticipantEditDialog: false
         }
     }
 
@@ -74,13 +79,22 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
         this.setState({ openManagerEditDialog: false })
     }
 
+    handleOpenMemberParticipantEditDialog() {
+        this.setState({ openMemberParticipantEditDialog: true })
+    }
+
+    handleCloseMemberParticipantEditDialog() {
+        this.setState({ openMemberParticipantEditDialog: false })
+    }
+
     render() {
         const {
             project,
             classes
         } = this.props
         const {
-            openManagerEditDialog
+            openManagerEditDialog,
+            openMemberParticipantEditDialog
         } = this.state
 
         return (
@@ -207,7 +221,10 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                             members={project.member_participants} 
                                         />
                                     ) : null}
-                                    <IconButton size="small">
+                                    <IconButton 
+                                        size="small"
+                                        onClick={this.handleOpenMemberParticipantEditDialog}
+                                    >
                                         <EditIcon />
                                     </IconButton>
                                 </Box>
@@ -374,6 +391,14 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                         project={project}
                         open={openManagerEditDialog}
                         onClose={this.handleCloseManagerEditDialog}
+                    />
+                )}
+
+                {project && (
+                    <MemberParticipantEditDialog 
+                        project={project}
+                        open={openMemberParticipantEditDialog}
+                        onClose={this.handleCloseMemberParticipantEditDialog}
                     />
                 )}
             </Box>

@@ -15,7 +15,11 @@ import {
     GET_PROJECTS, 
     CLEAR_LIST_PAGE_STATE, 
     GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
-    GET_PROJECT_EDIT_PANEL_TEAM_SELECTION
+    GET_PROJECT_EDIT_PANEL_TEAM_SELECTION,
+    ADD_PROJECT_MANAGER,
+    REMOVE_PROJECT_MANAGER,
+    ADD_PROJECT_MEMBER_PARTICIPANT,
+    REMOVE_PROJECT_MEMBER_PARTICIPANT
 } from "./types";
 import { regularizeProjectData } from "stores/utils/regularizeProjectData";
 import { regularizeCustomerData } from "stores/customer/utils";
@@ -124,6 +128,58 @@ export const fetchProjectDetailInfo = (id: string) => async (dispatch: Dispatch)
         payload: {
             project,
             tasks: project.tasks || []
+        }
+   }
+
+   dispatch(action)
+}
+
+export const addProjectManager = (id: number | string, memberId: number | string) => async (dispatch: Dispatch) => {
+    const res = await projectApi.addManager(id, memberId)
+
+    const action: ProjectActionType = {
+        type: ADD_PROJECT_MANAGER,
+        payload: {
+            project: regularizeProjectData(res.data)
+        }
+   }
+
+   dispatch(action)
+}
+
+export const removeProjectManager = (id: number | string, memberId: number | string) => async (dispatch: Dispatch) => {
+    const res = await projectApi.removeManager(id, memberId)
+
+    const action: ProjectActionType = {
+        type: REMOVE_PROJECT_MANAGER,
+        payload: {
+            project: regularizeProjectData(res.data)
+        }
+   }
+
+   dispatch(action)
+}
+
+export const addProjectMemberParticipant = (id: number | string, memberId: number | string) => async (dispatch: Dispatch) => {
+    const res = await projectApi.addMemberParticipant(id, memberId)
+
+    const action: ProjectActionType = {
+        type: ADD_PROJECT_MEMBER_PARTICIPANT,
+        payload: {
+            project: regularizeProjectData(res.data)
+        }
+   }
+
+   dispatch(action)
+}
+
+export const removeProjectMemberParticipant = (id: number | string, memberId: number | string) => async (dispatch: Dispatch) => {
+    const res = await projectApi.removeMemberParticipant(id, memberId)
+
+    const action: ProjectActionType = {
+        type: REMOVE_PROJECT_MEMBER_PARTICIPANT,
+        payload: {
+            project: regularizeProjectData(res.data)
         }
    }
 

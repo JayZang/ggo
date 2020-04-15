@@ -7,8 +7,8 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import AddIcon from '@material-ui/icons/Add'
 
 import { IProject } from 'contracts/project'
-import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import { IMember } from 'contracts/member'
+import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 
 type IProps = DialogProps & {
     project: IProject
@@ -22,7 +22,7 @@ type IState = {
     tab: number
 }
 
-class ProjectManagerEditDialog extends Component<IProps, IState> {
+class MemberParticipantEditDialog extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
@@ -58,9 +58,13 @@ class ProjectManagerEditDialog extends Component<IProps, IState> {
     get selectableMembers() {
         const {memberSelection, project} = this.props
         return memberSelection.filter(member => {
-            return project.managers ? 
-                project.managers.findIndex(manager => manager.id === member.id) === -1 : 
-                true
+            // project manager is not selectable
+            if (project.managers && project.managers.findIndex(manager => manager.id === member.id) !== -1)
+                return false
+            // project existed member participants are not selectable
+            if (project.member_participants && project.member_participants.findIndex(memberParticipant => memberParticipant.id === member.id) !== -1)
+                return false
+            return true
         })
     }
 
@@ -85,9 +89,9 @@ class ProjectManagerEditDialog extends Component<IProps, IState> {
                 TransitionComponent={DownToUpSlideTransition}
             >
                 <DialogTitle className="position-sticky bg-white" style={{ top: 0, zIndex: 1 }}>
-                    {tab === 0 ? '專案管理者' : '新增管理者'}
+                    {tab === 0 ? '專案參與者' : '新增參與者'}
                     <Box position="absolute" right={0} top="50%" style={{ transform: 'translate(-50%, -50%)' }}>
-                        <Tooltip title={tab === 0 ? '前往新增列表' : '返回管理者列表'}>
+                        <Tooltip title={tab === 0 ? '前往新增列表' : '返回參與者列表'}>
                             <IconButton 
                                 edge="end" 
                                 onClick={tab === 0 ? this.handleNextPage : this.handlePreviousPage}
@@ -105,21 +109,24 @@ class ProjectManagerEditDialog extends Component<IProps, IState> {
                         onChangeIndex={index => this.setState({ tab: index })}
                     >
                         <List className={tab === 0 ? '' : 'd-none'}>
-                            {project.managers ? project.managers.map(manager => (
-                                <ListItem key={manager.id}>
+                            {project.member_participants ? project.member_participants.map(member => (
+                                <ListItem key={member.id}>
                                     <ListItemAvatar>
-                                        <Avatar src={manager.avatar} />
+                                        <Avatar src={member.avatar} />
                                     </ListItemAvatar>
-                                    <ListItemText primary={manager.name} secondary={manager.email} />
-                                    {project.managers!.length > 1 ? (
-                                        <ListItemSecondaryAction className="pr-2">
-                                            <IconButton edge="end" onClick={() => this.handleRemoveBtnClick(manager)}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
-                                    ) : null}
+                                    <ListItemText primary={member.name} secondary={member.email} />
+                                    <ListItemSecondaryAction className="pr-2">
+                                        <IconButton edge="end" onClick={() => this.handleRemoveBtnClick(member)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
                                 </ListItem>
                             )) : null}
+                            {project.member_participants && !project.member_participants.length ? (
+                                <ListItem>
+                                    <ListItemText primary="無專案參與者" />
+                                </ListItem>
+                            ) : null}
                         </List>
 
                         <List className={tab === 1 ? '' : 'd-none'}>
@@ -146,4 +153,4 @@ class ProjectManagerEditDialog extends Component<IProps, IState> {
     }
 }
 
-export default ProjectManagerEditDialog
+export default MemberParticipantEditDialog

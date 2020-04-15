@@ -64,7 +64,51 @@ export default (app: Router) => {
         res.json(project) :
         res.status(400).end()
     })
+
+    router.post('/:projectId/manager/:memberId', async (req: Request, res: Response) => {
+        const project = await projectService.addManager(
+            req.params.projectId, 
+            req.params.memberId
+        )
+        
+        return project ?
+            res.json(project) :
+            res.status(400).end()
+    })
     
+    router.delete('/:projectId/manager/:memberId', async (req: Request, res: Response) => {
+        const project = await projectService.removeManager(
+            req.params.projectId, 
+            req.params.memberId
+        )
+        
+        return project ?
+        res.json(project) :
+        res.status(400).end()
+    })
+    
+    router.post('/:projectId/member-participant/:memberId', async (req: Request, res: Response) => {
+        const project = await projectService.addMemberParticipant(
+            req.params.projectId, 
+            req.params.memberId
+        )
+        
+        return project ?
+            res.json(project) :
+            res.status(400).end()
+    })
+
+    router.delete('/:projectId/member-participant/:memberId', async (req: Request, res: Response) => {
+        const project = await projectService.removeMemberParticipant(
+            req.params.projectId, 
+            req.params.memberId
+        )
+        
+        return project ?
+            res.json(project) :
+            res.status(400).end()
+    })
+        
     router.get('/:id/tasks', async (req: Request, res: Response) => {
         const tasks = await taskService.getByProjectId(parseInt(req.params.id))
         
