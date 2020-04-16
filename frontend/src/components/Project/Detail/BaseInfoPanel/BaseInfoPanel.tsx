@@ -195,12 +195,14 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                         className="ml-3"
                                         members={project.managers || []} 
                                     />
-                                    <IconButton 
-                                        size="small"
-                                        onClick={this.handleOpenManagerEditDialog}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
+                                    {project.finish_datetime ? null : (
+                                        <IconButton 
+                                            size="small"
+                                            onClick={this.handleOpenManagerEditDialog}
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                    )}
                                 </Box>
                             ) : (
                                 <Box component="span" width="auto">
@@ -221,12 +223,14 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                             members={project.member_participants} 
                                         />
                                     ) : null}
-                                    <IconButton 
-                                        size="small"
-                                        onClick={this.handleOpenMemberParticipantEditDialog}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
+                                    {project.finish_datetime ? null : (
+                                        <IconButton 
+                                            size="small"
+                                            onClick={this.handleOpenMemberParticipantEditDialog}
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                    )}
                                 </Box>
                             ) : (
                                     <Box component="span" width="auto">

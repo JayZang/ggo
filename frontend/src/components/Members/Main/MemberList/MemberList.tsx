@@ -7,6 +7,7 @@ import { IMember } from 'contracts/member'
 
 type IProps = {
     members: IMember[]
+    hasPermissionToRegisterUser: boolean
 }
 
 type IState = {
@@ -23,7 +24,10 @@ class MemberList extends Component<IProps, IState> {
     }
 
     render() {
-        const members = this.props.members
+        const {
+            members,
+            hasPermissionToRegisterUser
+        } = this.props
         const {
             memberToRegisterUser
         } = this.state
@@ -34,15 +38,18 @@ class MemberList extends Component<IProps, IState> {
                     {members.map(member => (
                         <MemberItem 
                             member={member} key={member.id} 
+                            hasPermissionToRegisterUser={hasPermissionToRegisterUser}
                             onRegisterUserBtnClick={() => this.setState({ memberToRegisterUser: member })}
                         />
                     ))}
                 </Box>
 
-                <MemberRegisterUserDialog
-                    member={memberToRegisterUser}
-                    onClose={() => this.setState({ memberToRegisterUser: null })}
-                />
+                {hasPermissionToRegisterUser ? (
+                    <MemberRegisterUserDialog
+                        member={memberToRegisterUser}
+                        onClose={() => this.setState({ memberToRegisterUser: null })}
+                    />
+                ) : null}
             </Box>
         )
     }

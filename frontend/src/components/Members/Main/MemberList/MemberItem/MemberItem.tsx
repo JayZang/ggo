@@ -27,7 +27,8 @@ import { green } from '@material-ui/core/colors'
 import { Tooltip } from '@material-ui/core'
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
-    member: IMember,
+    member: IMember
+    hasPermissionToRegisterUser: boolean
     handleDeleteMember: (id: number | string) => Promise<void>
     onStatusChangeBtnClick: (id: number | string, status: MemberStatus) => Promise<void>
     onRegisterUserBtnClick?: () => void
@@ -111,7 +112,10 @@ class MemberItem extends Component<IProps, IState> {
 
     render() {
         const classes = this.props.classes
-        const member = this.props.member
+        const {
+            member,
+            hasPermissionToRegisterUser
+        } = this.props
 
         return (
             <div className={clsx(classes.memberItem, {
@@ -236,7 +240,7 @@ class MemberItem extends Component<IProps, IState> {
                                 </ListItemIcon>
                                 <ListItemText primary={member.status === MemberStatus.active ? '停用' : '啟用'} />
                             </MenuItem>
-                            {member.isUser ? null : (
+                            {member.isUser || !hasPermissionToRegisterUser ? null : (
                                 <MenuItem onClick={() => {
                                     this.handleCloseMenu()
                                     this.props.onRegisterUserBtnClick && this.props.onRegisterUserBtnClick()

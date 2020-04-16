@@ -80,7 +80,8 @@ class Header extends Component<IProps, IStates> {
         const account: string = user.account_id
         let name: string = ''
 
-        if (user.identity_type === UserIdentityType.member)  {
+        if (user.identity_type === UserIdentityType.member ||
+            user.identity_type === UserIdentityType.manager)  {
             avatarComponent = <Avatar src={user.identity!.avatar} />
             name = user.identity!.name
         } else if (user.identity_type === UserIdentityType.admin) {
