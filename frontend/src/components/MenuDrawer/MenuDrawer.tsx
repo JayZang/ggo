@@ -17,6 +17,7 @@ import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import MoneyIcon from '@material-ui/icons/LocalAtm';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import TaskIcon from '@material-ui/icons/Assignment';
+import ProjectIcon from '@material-ui/icons/BusinessCenter';
 import clsx from 'clsx';
 
 import styles from './styles';
@@ -66,6 +67,17 @@ function MenuDrawer(props: IProps) {
                             </Box>
                         </ListItemIcon>
                         <ListItemText primary="首頁" />
+                    </ListItem>
+                </Link>
+
+                <Link to="/m/projects">
+                    <ListItem button onClick={handleMenuItemClick}>
+                        <ListItemIcon>
+                            <Box color="primary.light">
+                                <ProjectIcon />
+                            </Box>
+                        </ListItemIcon>
+                        <ListItemText primary="我管理的專案" />
                     </ListItem>
                 </Link>
 

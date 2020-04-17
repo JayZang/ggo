@@ -13,8 +13,8 @@ class TaskPage extends Component<RouteComponentProps> {
 
         return (
             <Box>
-                <Route exact path={`${match.path}/tasks`} component={TaskDefault} />
-                <Route exact path={`${match.path}/tasks/:id`} render={props => <TaskDetail  taskId={props.match.params.id} />} />
+                <Route exact path={`${match.path}`} component={TaskDefault} />
+                <Route exact path={`${match.path}/:id`} render={props => <TaskDetail  taskId={props.match.params.id} />} />
             </Box>
         )
     }
