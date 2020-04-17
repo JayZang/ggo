@@ -19,7 +19,6 @@ export default (theme: Theme) => createStyles({
         }
     },
     memberSelectionWrapper: {
-        maxHeight: 300,
         padding: theme.spacing(1, 2),
         overflowY: 'auto'
     },

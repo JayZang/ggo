@@ -14,13 +14,20 @@ const styles = (theme: Theme) => createStyles({
     drawerPaper: {
         width: 'auto',
         minWidth: 500,
-        padding: theme.spacing(2, 1),
+        padding: theme.spacing(0, 1, 2),
         [theme.breakpoints.down('xs')]: {
             backgroundColor: '#fafafa',
             width: '100vw',
             minWidth: 'unset',
             padding: 0
         }
+    },
+    drawerTitleContainer: {
+        position: 'sticky',
+        zIndex: 2,
+        top: 0,
+        padding: theme.spacing(2, 0, 1),
+        backgroundColor: theme.palette.common.white
     },
     closeBtn: {
         marginRight: theme.spacing(1),
@@ -29,7 +36,7 @@ const styles = (theme: Theme) => createStyles({
         }
     },
     content: {
-        marginTop:theme.spacing(3),
+        marginTop:theme.spacing(2),
         padding: theme.spacing(0, 2)
     }
 })
@@ -68,7 +75,7 @@ class RightDrawerContainer extends Component<IProps> {
                 >
                     {this.props.headComponent}
 
-                    <Grid alignItems="center"  container>
+                    <Grid alignItems="center"  container className={classes.drawerTitleContainer}>
                         <Button className={classes.closeBtn} onClick={this.props.onClose}>
                             <CloseIcon />
                         </Button>

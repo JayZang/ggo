@@ -12,7 +12,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupIcon from '@material-ui/icons/Group';
 import CustomerIcon from '@material-ui/icons/AccountBox';
-import ProjectIcon from '@material-ui/icons/BusinessCenter';
 import GavelIcon from '@material-ui/icons/Gavel';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import MoneyIcon from '@material-ui/icons/LocalAtm';
@@ -21,7 +20,7 @@ import TaskIcon from '@material-ui/icons/Assignment';
 import clsx from 'clsx';
 
 import styles from './styles';
-import TaskManagementListItem from './TaskManagementListItem'
+import ProjectManagementDropdownMenu from './ProjectManagementDropdownMenu'
 import { Permissions, IUser, UserIdentityType } from 'contracts/user';
 import { Box } from '@material-ui/core';
 import { appName } from 'utils/viewConfig';
@@ -62,17 +61,21 @@ function MenuDrawer(props: IProps) {
                 <Link to="/dashboard">
                     <ListItem button onClick={handleMenuItemClick}>
                         <ListItemIcon>
-                            <DashboardIcon />
+                            <Box color="primary.light">
+                                <DashboardIcon />
+                            </Box>
                         </ListItemIcon>
                         <ListItemText primary="首頁" />
                     </ListItem>
                 </Link>
 
-                {user.identity_type === UserIdentityType.member ? (
+                {[UserIdentityType.manager, UserIdentityType.member].includes(user.identity_type) ? (
                     <Link to="/m/tasks">
                         <ListItem button onClick={handleMenuItemClick}>
                             <ListItemIcon>
-                                <TaskIcon />
+                                <Box color="primary.light">
+                                    <TaskIcon />
+                                </Box>
                             </ListItemIcon>
                             <ListItemText primary="我的任務" />
                         </ListItem>
@@ -89,7 +92,9 @@ function MenuDrawer(props: IProps) {
                     <Link to="/members">
                         <ListItem button onClick={handleMenuItemClick}>
                             <ListItemIcon>
-                                <PersonIcon />
+                                <Box color="primary.light">
+                                    <PersonIcon />
+                                </Box>
                             </ListItemIcon>
                             <ListItemText primary="成員管理" />
                         </ListItem>
@@ -100,7 +105,9 @@ function MenuDrawer(props: IProps) {
                     <Link to="/teams">
                         <ListItem button onClick={handleMenuItemClick}>
                             <ListItemIcon>
-                                <GroupIcon />
+                                <Box color="primary.light">
+                                    <GroupIcon />
+                                </Box>
                             </ListItemIcon>
                             <ListItemText primary="團隊管理" />
                         </ListItem>
@@ -111,7 +118,9 @@ function MenuDrawer(props: IProps) {
                     <Link to="/customers">
                         <ListItem button onClick={handleMenuItemClick}>
                             <ListItemIcon>
-                                <CustomerIcon />
+                                <Box color="primary.light">
+                                    <CustomerIcon />
+                                </Box>
                             </ListItemIcon>
                             <ListItemText primary="客戶管理" />
                         </ListItem>
@@ -129,10 +138,6 @@ function MenuDrawer(props: IProps) {
                     </Link>
                 )}
 
-                {permissions.project_management ? (
-                    <Divider />
-                ) : null}
-
                 {null && (
                     <ListItem button onClick={handleMenuItemClick}>
                         <ListItemIcon>
@@ -143,18 +148,7 @@ function MenuDrawer(props: IProps) {
                 )}
 
                 {permissions.project_management ? (
-                    <Link to="/projects">
-                        <ListItem button onClick={handleMenuItemClick}>
-                            <ListItemIcon>
-                                <ProjectIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="專案/案件管理" />
-                        </ListItem>
-                    </Link>
-                ) : null}
-
-                {permissions.project_management ? (
-                    <TaskManagementListItem />
+                    <ProjectManagementDropdownMenu />
                 ) : null}
 
                 {isIAMAvailable ? (
@@ -163,7 +157,9 @@ function MenuDrawer(props: IProps) {
                         <Link to="/iam">
                             <ListItem button onClick={handleMenuItemClick}>
                                 <ListItemIcon>
-                                    <GavelIcon />
+                                    <Box color="primary.light">
+                                        <GavelIcon />
+                                    </Box>
                                 </ListItemIcon>
                                 <ListItemText primary="使用者與權限" />
                             </ListItem>

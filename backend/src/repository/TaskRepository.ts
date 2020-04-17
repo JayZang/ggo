@@ -1,14 +1,13 @@
-import { EntityRepository, Repository, getCustomRepository, In } from 'typeorm'
+import { EntityRepository } from 'typeorm'
 import _ from 'lodash'
 
+import Project from '@/entity/Project'
 import Task, { TaskStatus } from '@/entity/Task'
 import TaskAssignment, { TaskAssignmentType } from '@/entity/TaskAssignment'
-import MemberRepo from './MemberRepository'
-import TeamRepo from './TeamRepository'
-import Project from '@/entity/Project'
 import { BaseRepository } from './BaseRepocitory'
 import WorkReport from '@/entity/WorkReport'
 import TaskHelper from '@/helper/TaskHelper'
+import Member from '@/entity/Member'
 
 @EntityRepository(Task)
 class TaskRepository extends BaseRepository<Task> {
@@ -21,8 +20,7 @@ class TaskRepository extends BaseRepository<Task> {
      *  
      * @param data
      */
-    public async createAndSave(data: any) {
-        const memberRepo = getCustomRepository(MemberRepo)
+    public async createAndSave(data: any, creator: Member) {
         const task = this.create()
 
         this.assignValue(task, data)
@@ -30,7 +28,7 @@ class TaskRepository extends BaseRepository<Task> {
         task.assignment = new TaskAssignment
         task.assignment.type = parseInt(data.assign_type)
         task.assignment.target_id = data.assign_id
-        task.assignment.distributor = await memberRepo.findOne(1)
+        task.assignment.distributor = creator
 
         return this.save(task)
             .then(task => TaskHelper.attachTasksAssignment([task]))

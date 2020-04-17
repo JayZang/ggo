@@ -6,20 +6,30 @@ import { TaskStatus } from '@/entity/Task'
 import TeamRepository from '@/repository/TeamRepository'
 import { TaskAssignmentType } from '@/entity/TaskAssignment'
 import TaskHelper from '@/helper/TaskHelper'
+import Member from '@/entity/Member'
+import ProjectRepo from '@/repository/ProjectRepository'
 
 @Service()
 export default class TaskService {
 
     /**
      *  Create a task
-     *  
-     * @param data 
      */
-    public async create(data: any) {
+    public async create(data: any, creator: Member) {
         try {
+            const projectRepo = getCustomRepository(ProjectRepo)
             const taskRepo = getCustomRepository(TaskRepo)
 
-            return await taskRepo.createAndSave(data)
+            const project = await projectRepo.findOneOrFail(data.project_id, {
+                relations: ['managers']
+            })
+
+            if (project.finish_datetime) 
+                return null
+            else if (project.managers.findIndex(manager => manager.id === creator.id) === -1) 
+                return null 
+
+            return await taskRepo.createAndSave(data, creator)
         } catch (err) {
             console.log('Create task fail')
             console.log(err.toString())
@@ -71,15 +81,17 @@ export default class TaskService {
      * @param taskId 
      * @param status 
      */
-    public async updateStatus(taskId: string | number, status: TaskStatus) {
+    public async updateStatus(taskId: string | number, status: TaskStatus, operator: Member) {
         try {
             const taskRepo = getCustomRepository(TaskRepo)
             const task = await taskRepo.findOneOrFail(taskId, {
-                relations: ['project']
+                relations: ['project', 'project.managers']
             })
 
             if (task.project.finish_datetime)
                 throw new Error('The project that the task belongs to is finished !')
+            else if (task.project.managers.findIndex(manager => manager.id === operator.id) === -1) 
+                return new Error('Operator(Login User) is not the manager of the project of the task')
 
             task.status = status
             return await taskRepo.save(task)

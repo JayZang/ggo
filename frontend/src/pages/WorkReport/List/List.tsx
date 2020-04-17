@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Grid, Paper, IconButton, InputBase, Tooltip, Box, Dialog } from '@material-ui/core'
+import { withRouter, RouteComponentProps } from 'react-router'
 import {
     Search as SearchIcon,
     Cached as CachedIcon,
@@ -12,7 +13,7 @@ import { IWorkReport } from 'contracts/workReport'
 import WorkReportItem from 'components/WorkReport/WorkReportPanel/WorkReportList/WorkReportItem'
 import WorkReportDisplayPanel from 'components/WorkReport/WorkReportPanel/WorkReportDisplayPanel'
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
-import { withRouter, RouteComponentProps } from 'react-router'
+import WorkReportItemSkeleton from 'components/WorkReport/WorkReportPanel/WorkReportList/WorkReportItemSkeleton'
 
 type IProps = RouteComponentProps & {
     workReports: IWorkReport[] | null
@@ -130,6 +131,7 @@ class WorkReportListPage extends Component<IProps, IState> {
                             onTaskLabelClick={() => this.props.history.push(`/tasks/${workReport.task!.id}`)}
                         />
                     ))}
+                    {loaded ? null : <WorkReportItemSkeleton />}
                 </Box>
 
                 <Dialog

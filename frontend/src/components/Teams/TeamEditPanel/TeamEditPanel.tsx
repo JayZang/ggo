@@ -272,6 +272,7 @@ class TeamEditPanel extends Component<IProps, IState> {
                             }}>
                                 {memberSelectionMenu ? (
                                     <MemberSelectionMenu
+                                        listMaxHeight={280}
                                         defaultMembers={team? [team.leader!] : null}
                                         members={memberSelectionMenu}
                                         onChange={this.handleLeaderSelectionChange.bind(this)!}
@@ -293,7 +294,8 @@ class TeamEditPanel extends Component<IProps, IState> {
                                 root: classes.memberSelectionWrapper
                             }}>
                                 {memberSelectionMenu ? (
-                                    <MemberSelectionMenu 
+                                    <MemberSelectionMenu
+                                        listMaxHeight={280} 
                                         defaultMembers={team? team.members! : null}
                                         members={memberSelectionMenu || []}
                                         multiple 

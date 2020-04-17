@@ -11,8 +11,10 @@ import { ITask, TaskStatus } from "contracts/task";
 
 type IProps = {
     id: string
-    project: IProject | null
     tasks: ITask[] | null
+    project: IProject | null
+    taskEditable: boolean
+    projectFinishable: boolean
     load: (id: string) => Promise<void>
 }
 
@@ -37,6 +39,7 @@ class ProjectDetail extends Component<IProps, IState> {
         const { loaded } = this.state
         const project = loaded ? this.props.project : null
         const tasks = loaded ? this.props.tasks : null
+        const {taskEditable, projectFinishable} = this.props
 
         return (
             <AppContent
@@ -51,16 +54,12 @@ class ProjectDetail extends Component<IProps, IState> {
                     <Box className="mr-4" width={450} flexShrink={0}>
                         <ProjectBaseInfoPanel 
                             project={project}
-                            isCanBeFinished={!!tasks && !!tasks.length && tasks.reduce<boolean>((preStatus, task) => {
-                                return preStatus && [
-                                    TaskStatus.Completed, 
-                                    TaskStatus.Terminated
-                                ].includes(task.status)
-                            }, true)}
+                            isCanBeFinished={projectFinishable}
                         />
                     </Box>
                     <Box flexGrow={1}>
-                        <ProjectTaskList 
+                        <ProjectTaskList
+                            editable={taskEditable}
                             project={project}
                             tasks={tasks}
                         />

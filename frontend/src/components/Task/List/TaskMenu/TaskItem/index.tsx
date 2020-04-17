@@ -81,7 +81,7 @@ class TaskItem extends Component<IProps> {
                         <AssignmentLabel task={task} disableLink={disableAssignmentLink} />
                     </Grid>
                     <Grid item className={clsx(classes.field, 'status')}>
-                        <StatusLabel  task={task} editable={!!task.project && !task.project.finish_datetime} />
+                        <StatusLabel  task={task} editable={false} />
                     </Grid>
                     <Grid item className={clsx(classes.field, 'action')}>
                         <Button color="primary" onClick={this.handleViewBtnClick.bind(this)}>查看</Button>

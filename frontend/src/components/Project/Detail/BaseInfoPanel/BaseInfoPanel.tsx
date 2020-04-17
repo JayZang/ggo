@@ -7,6 +7,7 @@ import {
     Done as DoneIcon,
     ErrorOutline as ErrorOutlineIcon
 } from '@material-ui/icons'
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import moment, { Moment } from 'moment'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
 import LabelIcon from '@material-ui/icons/Label'
@@ -278,23 +279,17 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                             </Box>
                         </Box>
 
-                        <Box className="mb-4">
-                            <Typography variant="h6">報價</Typography>
-                            {(() => {
-                                if (project) {
-                                    return (
-                                        <Typography>
-                                            <Box fontWeight={500} className="mr-1" component="span">$</Box>
-                                            {project.quote || '無報價'}
-                                        </Typography>
-                                    )
-                                } else return (
-                                    <Box component="span" width="auto">
-                                        <Skeleton width={150} />
+                        {project && project.quote && (
+                            <Box className="mb-4">
+                                <Typography variant="h6">報價</Typography>
+                                <Typography className="d-flex align-items-center" component="div">
+                                    <Box fontWeight={500} className="mr-1" component="span">
+                                        <AttachMoneyIcon fontSize="small" />
                                     </Box>
-                                )
-                            })()}
-                        </Box>
+                                    {project.quote || '無報價'}
+                                </Typography>
+                            </Box>
+                        )}
 
                         {project && project.remark && (
                             <Box className="mb-4">

@@ -12,7 +12,10 @@ const memberTaskService = Container.get(MemberTaskService)
 const taskWorkReportService = Container.get(TaskWorkReportService)
 
 export default (app: Router) => {
-    app.use('/tasks', validateIdentity(UserIdentityType.member), router)
+    app.use('/tasks', validateIdentity([
+        UserIdentityType.manager,
+        UserIdentityType.member
+    ]), router)
 
     router.get('', async (req, res) => {
         const member = req.user!.identity

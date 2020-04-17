@@ -17,6 +17,7 @@ import moment from 'moment'
 type IProps = WithStyles<typeof styles> & {
     project: IProject | null
     tasks: ITask[] | null
+    editable: boolean
 }
 
 type IState = {
@@ -38,6 +39,7 @@ class ProjectTaskList extends Component<IProps, IState> {
         const {
             project,
             tasks,
+            editable,
             classes
         } = this.props
         const {
@@ -77,7 +79,7 @@ class ProjectTaskList extends Component<IProps, IState> {
                                 </Box>
                             </Grid>
                         </Grid>
-                        {project && !project.finish_datetime ? (
+                        {editable ? (
                             <Grid item>
                                 <Button 
                                     color="primary" 
@@ -98,33 +100,34 @@ class ProjectTaskList extends Component<IProps, IState> {
                 {(() => {
                     if (tabIndex === 0) return (
                         <Box maxHeight={390} style={{ overflowY: 'auto' }}>
-                            {(() => {
-                                if (tasks) {
-                                    return tasks.length ? tasks.map(task => (
-                                        <Box key={task.id}>
-                                            <ProjectTaskItem task={task} isEditable={!!project && !project.finish_datetime}/>
-                                            <Divider />
-                                        </Box>
-                                    )) : (
-                                        <Box className="p-4">
-                                            <Button 
-                                                // color="primary" 
-                                                variant="outlined" 
-                                                startIcon={<AddIcon />} 
-                                                onClick={() => this.setState({ openCreateDrawer: true })}
-                                                fullWidth
-                                            >
-                                                新增工作任務
-                                            </Button>
-                                        </Box>
-                                    )
-                                } else return (
-                                    <Box className="p-3 px-4">
-                                        <Skeleton width={300} />
-                                        <Skeleton width={130} />
-                                    </Box>
-                                )
-                            })()}
+                            {tasks ? tasks.map(task => (
+                                <Box key={task.id}>
+                                    <ProjectTaskItem task={task} isEditable={editable}/>
+                                    <Divider />
+                                </Box>
+                            )) : (
+                                <Box className="p-3 px-4">
+                                    <Skeleton width={300} />
+                                    <Skeleton width={130} />
+                                </Box>
+                            )}
+                            {editable && tasks && tasks.length === 0 ? (
+                                <Box className="p-4">
+                                    <Button 
+                                        variant="outlined" 
+                                        startIcon={<AddIcon />} 
+                                        onClick={() => this.setState({ openCreateDrawer: true })}
+                                        fullWidth
+                                    >
+                                        新增工作任務
+                                    </Button>
+                                </Box>
+                            ) : null}
+                            {!editable && tasks && tasks.length === 0 ? (
+                                <Box className="p-4 text-center">
+                                    <Typography>尚無工作任務</Typography>
+                                </Box>
+                            ) : null}
                         </Box>
                     ) 
                     else if (tabIndex === 1) {
@@ -233,12 +236,14 @@ class ProjectTaskList extends Component<IProps, IState> {
                     }
                 })()}
 
-                <TaskEditDrawer 
-                    project={project}
-                    open={this.state.openCreateDrawer}
-                    onOpen={() => this.setState({ openCreateDrawer: true })}
-                    onClose={() => this.setState({ openCreateDrawer: false })}
-                />
+                {editable ? (
+                    <TaskEditDrawer 
+                        project={project}
+                        open={this.state.openCreateDrawer}
+                        onOpen={() => this.setState({ openCreateDrawer: true })}
+                        onClose={() => this.setState({ openCreateDrawer: false })}
+                    />
+                ) : null}
             </Paper>
         )
     }
