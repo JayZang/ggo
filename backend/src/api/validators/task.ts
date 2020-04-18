@@ -17,7 +17,6 @@ export function CreateAndEditTask(): RequestHandler[] {
             .custom((value, { req }) => {
                 return moment(value).isAfter(req.body.start_datetime)
             }),
-        body('project_id').exists({ checkFalsy: true }),
         body('remark').optional().exists({ checkFalsy: true }).isString(),
         body('assign_type').exists().isIn(Object.values(TaskAssignmentType)),
         body('assign_id').exists({ checkFalsy: true }),

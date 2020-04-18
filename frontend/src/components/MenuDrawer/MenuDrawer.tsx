@@ -70,28 +70,29 @@ function MenuDrawer(props: IProps) {
                     </ListItem>
                 </Link>
 
-                <Link to="/m/projects">
-                    <ListItem button onClick={handleMenuItemClick}>
-                        <ListItemIcon>
-                            <Box color="primary.light">
-                                <ProjectIcon />
-                            </Box>
-                        </ListItemIcon>
-                        <ListItemText primary="我管理的專案" />
-                    </ListItem>
-                </Link>
-
                 {[UserIdentityType.manager, UserIdentityType.member].includes(user.identity_type) ? (
-                    <Link to="/m/tasks">
-                        <ListItem button onClick={handleMenuItemClick}>
-                            <ListItemIcon>
-                                <Box color="primary.light">
-                                    <TaskIcon />
-                                </Box>
-                            </ListItemIcon>
-                            <ListItemText primary="我的任務" />
-                        </ListItem>
-                    </Link>
+                    <Box>
+                        <Link to="/m/projects">
+                            <ListItem button onClick={handleMenuItemClick}>
+                                <ListItemIcon>
+                                    <Box color="primary.light">
+                                        <ProjectIcon />
+                                    </Box>
+                                </ListItemIcon>
+                                <ListItemText primary="我管理的專案" />
+                            </ListItem>
+                        </Link>
+                        <Link to="/m/tasks">
+                            <ListItem button onClick={handleMenuItemClick}>
+                                <ListItemIcon>
+                                    <Box color="primary.light">
+                                        <TaskIcon />
+                                    </Box>
+                                </ListItemIcon>
+                                <ListItemText primary="我的任務" />
+                            </ListItem>
+                        </Link>
+                    </Box>
                 ) : null}
 
                 {permissions.member_management || 

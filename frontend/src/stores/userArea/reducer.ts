@@ -1,6 +1,18 @@
-import { UserAreaState, UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT } from './types'
+import { UserAreaState, UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT, GET_USER_PROJECT_SIMPLE_STATISTIC, GET_USER_PROJECT_LIST, GET_USER_PROJECT_DETAIL_INFO, FINISH_PROJECT, ADD_PROJECT_TASK, UPDATE_PROJECT_TASK_STATUS } from './types'
 
 const initState: UserAreaState = {
+    projectPage: {
+        default: {
+            countOfTotal: 0,
+            countOfFinished: 0,
+            countOfProcessing: 0,
+            projects: null
+        },
+        info: {
+            project: null,
+            tasks: null
+        }
+    },
     taskPage: {
         default: {
             simpleStatistic: {
@@ -22,6 +34,102 @@ const initState: UserAreaState = {
 
 export default function taskReducer(state: UserAreaState = initState, action: UserAreaActionType): UserAreaState {
     switch (action.type) {
+        case GET_USER_PROJECT_SIMPLE_STATISTIC:
+            return {
+                ...state,
+                projectPage: {
+                    ...state.projectPage,
+                    default: {
+                        ...state.projectPage.default,
+                        ...action.payload
+                    }
+                }
+            }
+
+        case GET_USER_PROJECT_LIST:
+            return {
+                ...state,
+                projectPage: {
+                    ...state.projectPage,
+                    default: {
+                        ...state.projectPage.default,
+                        projects: [
+                            ...(state.projectPage.default.projects || []),
+                            ...action.payload.projects
+                        ]
+                    }
+                }
+            }
+            
+        case GET_USER_PROJECT_DETAIL_INFO:
+            return {
+                ...state,
+                projectPage: {
+                    ...state.projectPage,
+                    info: {
+                        ...action.payload
+                    }
+                }
+            }
+            
+        case FINISH_PROJECT:
+            return {
+                ...state,
+                projectPage: {
+                    ...state.projectPage,
+                    default: {
+                        ...state.projectPage.default,
+                        projects: state.projectPage.default.projects && state.projectPage.default.projects.map(project => {
+                            if (project.id == action.payload.projectId) return {
+                                ...project,
+                                finish_datetime: action.payload.date
+                            }
+                            return project
+                        })
+                    },
+                    info: {
+                        ...state.projectPage.info,
+                        project: state.projectPage.info.project && state.projectPage.info.project.id == action.payload.projectId ? {
+                            ...state.projectPage.info.project,
+                            finish_datetime: action.payload.date
+                        } : state.projectPage.info.project
+                    }
+                }
+            }
+
+        case ADD_PROJECT_TASK:
+            return {
+                ...state,
+                projectPage: {
+                    ...state.projectPage,
+                    info: {
+                        ...state.projectPage.info,
+                        tasks: state.projectPage.info.tasks && [
+                            ...state.projectPage.info.tasks,
+                            action.payload.task
+                        ]
+                    }
+                }
+            }
+
+        case UPDATE_PROJECT_TASK_STATUS:
+            return {
+                ...state,
+                projectPage: {
+                    ...state.projectPage,
+                    info: {
+                        ...state.projectPage.info,
+                        tasks: state.projectPage.info.tasks && state.projectPage.info.tasks.map(task => {
+                            if (task.id === action.payload.taskId) return {
+                                ...task,
+                                status: action.payload.status
+                            }
+                            return task
+                        })
+                    }
+                }
+            }
+
         case GET_TASK_SIMPLE_STATISTIC:
             return {
                 ...state,

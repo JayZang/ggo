@@ -18,6 +18,7 @@ type IProps = WithStyles<typeof styles> & {
     project: IProject | null
     tasks: ITask[] | null
     editable: boolean
+    onTaskViewBtnClick?: (task: ITask) => void
 }
 
 type IState = {
@@ -40,7 +41,8 @@ class ProjectTaskList extends Component<IProps, IState> {
             project,
             tasks,
             editable,
-            classes
+            classes,
+            onTaskViewBtnClick
         } = this.props
         const {
             tabIndex
@@ -99,10 +101,16 @@ class ProjectTaskList extends Component<IProps, IState> {
 
                 {(() => {
                     if (tabIndex === 0) return (
-                        <Box maxHeight={390} style={{ overflowY: 'auto' }}>
+                        <Box>
                             {tasks ? tasks.map(task => (
                                 <Box key={task.id}>
-                                    <ProjectTaskItem task={task} isEditable={editable}/>
+                                    <ProjectTaskItem 
+                                        task={task} 
+                                        isEditable={editable}
+                                        onViewBtnClick={() => {
+                                            onTaskViewBtnClick && onTaskViewBtnClick(task)
+                                        }}
+                                    />
                                     <Divider />
                                 </Box>
                             )) : (

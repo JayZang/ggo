@@ -1,13 +1,12 @@
 import axios from 'axios'
 
-const URL = '/api/tasks'
+const URL = '/api/m/projects/:id/tasks'
 
-export function create(data: {
+export function createTask(id: number | string, data: {
     name: string
     description?: string
     start_datetime: string
     deadline_datetime: string
-    project_id: number | string
     remarks?: string
 }) {
     return axios.post<{
@@ -20,5 +19,5 @@ export function create(data: {
         project_id: number | string
         remark: string | null
         create_at: string
-    }>(URL, data)
+    }>(URL.replace(':id', id.toString()), data)
 }

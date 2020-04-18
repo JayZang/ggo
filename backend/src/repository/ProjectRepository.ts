@@ -6,7 +6,8 @@ import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Project)
 class ProjectRepository extends BaseRepository<Project> {
-    
+    managersAlias = 'managers'
+
     /**
      * Insert one Project
      *  
@@ -41,6 +42,17 @@ class ProjectRepository extends BaseRepository<Project> {
         this.queryBuilder.where({
             'finish_datetime': isFinish ? Not(null) : IsNull()
         })
+        return this
+    }
+
+    public withManagerCondition(memberId: number) {
+        this.queryBuilder
+            .innerJoinAndSelect(
+                `${this.entityAlias}.managers`, 
+                this.managersAlias,
+                `${this.managersAlias}.id = :memberId`,
+                { memberId }
+            )
         return this
     }
 

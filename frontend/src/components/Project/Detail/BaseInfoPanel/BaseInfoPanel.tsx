@@ -23,8 +23,9 @@ import styles from './style'
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     project: IProject | null
-    finishProject: (id: number | string, date: Moment) => Promise<void>,
+    editable: boolean
     isCanBeFinished: boolean
+    finishProject: (id: number | string, date: Moment) => Promise<void>
 }
 
 type IState = {
@@ -91,6 +92,8 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
     render() {
         const {
             project,
+            editable,
+            isCanBeFinished,
             classes
         } = this.props
         const {
@@ -196,7 +199,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                         className="ml-3"
                                         members={project.managers || []} 
                                     />
-                                    {project.finish_datetime ? null : (
+                                    {!editable || project.finish_datetime ? null : (
                                         <IconButton 
                                             size="small"
                                             onClick={this.handleOpenManagerEditDialog}
@@ -224,7 +227,7 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                                             members={project.member_participants} 
                                         />
                                     ) : null}
-                                    {project.finish_datetime ? null : (
+                                    {!editable || project.finish_datetime ? null : (
                                         <IconButton 
                                             size="small"
                                             onClick={this.handleOpenMemberParticipantEditDialog}
@@ -301,17 +304,19 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
                         )}
                     </Box>
                     <Divider />
-                    {project && !project.finish_datetime ? (
+                    {project && !project.finish_datetime && (editable || isCanBeFinished) ? (
                         <Box className="px-3 py-2 d-flex">
-                            <Button
-                                className="flex-grow-1"
-                                color="primary"
-                                startIcon={<EditIcon />}
-                                onClick={() => this.setState({ openEditDrawer: true })}
-                            >
-                                <Box whiteSpace="noWrap">編輯專案</Box>
-                            </Button>
-                            {this.props.isCanBeFinished ? (
+                            {editable ? (
+                                <Button
+                                    className="flex-grow-1"
+                                    color="primary"
+                                    startIcon={<EditIcon />}
+                                    onClick={() => this.setState({ openEditDrawer: true })}
+                                >
+                                    <Box whiteSpace="noWrap">編輯專案</Box>
+                                </Button>
+                            ) : null}
+                            {isCanBeFinished ? (
                                 <Button
                                     className="flex-grow-1 text-success ml-1"
                                     startIcon={<DoneIcon />}

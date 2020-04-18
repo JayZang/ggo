@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const URL = '/api/tasks/:id/status'
+const URL = '/api/m/projects/:projectId/tasks/:taskId/status'
 
-export function updateStatus(id: string | number, status: number) {
+export function updateTaskStatus(projectId: string | number, taskId: string | number, status: number) {
     return axios.post<{
         id: number
         name: string
@@ -13,7 +13,10 @@ export function updateStatus(id: string | number, status: number) {
         project_id: number | string
         remark: string | null
         create_at: string
-    }>(URL.replace(':id', id.toString()), {
+    }>(URL
+        .replace(':projectId', projectId.toString())
+        .replace(':taskId', taskId.toString()
+    ), {
         status
     })
 }

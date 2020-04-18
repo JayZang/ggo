@@ -4,9 +4,6 @@ import { isNull } from 'util'
 
 import TaskService from '@/services/TaskService'
 import validatePermission from '@/api/middleware/validatePermission'
-import { CreateAndEditTask, UpdateTaskStatus } from '@/api/validators/task'
-import validateIdentity from '@/api/middleware/validateIdentity'
-import { UserIdentityType } from '@/entity/User'
 
 const router = Router()
 const taskService = Container.get(TaskService)
@@ -31,30 +28,6 @@ export default (app: Router) => {
             res.json({
                 totalCount
             }) :
-            res.status(400).end()
-    })
-
-    router.post('', validateIdentity([
-        UserIdentityType.manager,
-        UserIdentityType.member
-    ]), CreateAndEditTask(), async (req: Request, res: Response) => {
-        const member = req.user!.identity!
-        const task = await taskService.create(req.body, member)
-
-        return task ? 
-            res.json(task) : 
-            res.status(400).end()
-    })
-
-    router.post('/:id/status', validateIdentity([
-        UserIdentityType.manager,
-        UserIdentityType.member
-    ]), UpdateTaskStatus(), async (req: Request, res: Response) => {
-        const member = req.user!.identity!
-        const task = await taskService.updateStatus(req.params.id, req.body.status, member)
-
-        return task ? 
-            res.json(task) : 
             res.status(400).end()
     })
 

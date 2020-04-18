@@ -1,9 +1,17 @@
 import axios from 'axios'
 
-const URL = '/api/projects/:id/finish'
+const URL = '/api/m/projects'
 
-export function finish(id: string | number, date: string) {
-    return axios.post<{
+export function get(option: {
+    offset: number
+    count: number
+}) {
+    const {
+        offset,
+        count
+    } = option
+
+    return axios.get<{
         id: string
         name: string
         description: string | null
@@ -16,5 +24,5 @@ export function finish(id: string | number, date: string) {
         customer: Object | null
         remark: string | null
         create_at: string
-    }>(URL.replace(':id', id.toString()), { date })
+    }[]>(`${URL}?offset=${offset}&count=${count}`)
 }

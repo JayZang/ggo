@@ -11,7 +11,6 @@ import {
     GET_PROJECT_COUNT_STATISTIC, 
     GET_PROJECT_DETAIL_INFO, 
     UPDATE_PROJECT, 
-    UPDATE_PROJECT_FINISH_DATE, 
     GET_PROJECTS, 
     CLEAR_LIST_PAGE_STATE, 
     GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
@@ -49,20 +48,6 @@ export const updateProject = (id: string | number, data: any) => async (dispatch
         type: UPDATE_PROJECT,
         payload: {
             project: regularizeProjectData(res.data)
-        }
-    }
-
-    dispatch(action)
-}
-
-export const finishProject = (id: number | string, date: Moment) => async (dispatch: Dispatch) => {
-    await projectApi.finish(id, date.toString())
-
-    const action: ProjectActionType = {
-        type: UPDATE_PROJECT_FINISH_DATE,
-        payload: {
-            projectId: id,
-            date
         }
     }
 

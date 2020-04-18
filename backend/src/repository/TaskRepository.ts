@@ -15,26 +15,6 @@ class TaskRepository extends BaseRepository<Task> {
     assignmentAlias = 'taskAssignment'
     workReportsAlias = 'workReports'
 
-    /**
-     * Insert one Project
-     *  
-     * @param data
-     */
-    public async createAndSave(data: any, creator: Member) {
-        const task = this.create()
-
-        this.assignValue(task, data)
-        task.status = TaskStatus.Normal
-        task.assignment = new TaskAssignment
-        task.assignment.type = parseInt(data.assign_type)
-        task.assignment.target_id = data.assign_id
-        task.assignment.distributor = creator
-
-        return this.save(task)
-            .then(task => TaskHelper.attachTasksAssignment([task]))
-            .then(tasks => tasks[0])
-    }
-
     public async getByProject(projectId: number) {
         return this.find({
             relations: ['assignment'],
@@ -48,14 +28,11 @@ class TaskRepository extends BaseRepository<Task> {
     }
 
     public assignValue(task: Task, data: any) {
-        Object.assign(task, _.pick(data, [
-            'name',
-            'description',
-            'start_datetime',
-            'deadline_datetime',
-            'project_id',
-            'remark',
-        ]))
+        task.name = data.name
+        task.description = data.description || null
+        task.start_datetime = data.start_datetime
+        task.deadline_datetime = data.deadline_datetime
+        task.remark = data.remark || null
     }
 
     public async getByAssignment(type: TaskAssignmentType, targetId: string | number, option: {

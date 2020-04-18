@@ -6,7 +6,6 @@ import {
     CLEAR_LIST_PAGE_STATE, 
     GET_PROJECT_DETAIL_INFO, 
     UPDATE_PROJECT, 
-    UPDATE_PROJECT_FINISH_DATE, 
     GET_PROJECT_COUNT_STATISTIC, 
     GET_PROJECTS,
     GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
@@ -16,7 +15,8 @@ import {
     ADD_PROJECT_MEMBER_PARTICIPANT,
     REMOVE_PROJECT_MEMBER_PARTICIPANT
 } from "./types"
-import { UPDATE_TASK_STATUS, TaskActionType, ADD_TASK } from "stores/task/types"
+import { TaskActionType } from "stores/task/types"
+import { UserAreaActionType, FINISH_PROJECT } from "stores/userArea/types"
 
 const initState: ProjectState = {
     listPage: {
@@ -36,7 +36,7 @@ const initState: ProjectState = {
     }
 }
 
-export default function customerReducer(state: ProjectState = initState, action: ProjectActionType | TaskActionType): ProjectState {
+export default function customerReducer(state: ProjectState = initState, action: ProjectActionType | TaskActionType | UserAreaActionType): ProjectState {
     switch (action.type) {
         case GET_PROJECTS:
             return {
@@ -81,7 +81,7 @@ export default function customerReducer(state: ProjectState = initState, action:
                 }
             }
 
-        case UPDATE_PROJECT_FINISH_DATE:
+        case FINISH_PROJECT:
             return {
                 ...state,
                 listPage: {
@@ -176,33 +176,6 @@ export default function customerReducer(state: ProjectState = initState, action:
                         if (project.id === action.payload.project.id)
                             return action.payload.project
                         return project
-                    })
-                }
-            }
-
-        case ADD_TASK:
-            return {
-                ...state,
-                infoPage: {
-                    ...state.infoPage,
-                    tasks: state.infoPage.project && state.infoPage.tasks && state.infoPage.project.id === action.payload.task.project_id ? [
-                        ...state.infoPage.tasks,
-                        action.payload.task
-                    ] : state.infoPage.tasks
-                }
-            }
-
-        case UPDATE_TASK_STATUS:
-            return {
-                ...state,
-                infoPage: {
-                    ...state.infoPage,
-                    tasks: (state.infoPage.tasks || []).map(task => {
-                        if (task.id === action.payload.taskId) return {
-                            ...task,
-                            status: action.payload.status       
-                        }
-                        return task
                     })
                 }
             }

@@ -285,39 +285,6 @@ export default class ProjectService {
     }
 
     /**
-     * Finish the project
-     */
-    public async finish(id: string | number, date: string) {
-        try {
-            const projectRepo = getCustomRepository(ProjectRepo)
-            const project = await projectRepo.findOneOrFail(id, {
-                relations: ['tasks']
-            })
-
-            if (project.finish_datetime)
-                throw new Error('The project has been set finish date !')
-            else if (moment(date).isBefore(project.start_datetime))
-                throw new Error('Finish date can not before project start date !')
-
-            const tasks = project.tasks
-            const isAllCompletedOrTerminated = !!tasks.length && tasks.reduce((status, task) => {
-                return status && (task.status === TaskStatus.Completed || task.status === TaskStatus.Terminated)
-            }, true)
-
-            if (!isAllCompletedOrTerminated)
-                throw new Error('Not all tasks are completed or terminated !')
-
-            project.finish_datetime = date
-
-            return projectRepo.save(project)
-        } catch (err) {
-            console.log('Finish Projects fail')
-            console.log(err.toString())
-            return 0
-        }
-    }
-
-    /**
      * Assign project data, prepare project entire data to store to db
      */
     private async assignProjectData(project: Project, data: any): Promise<void> {

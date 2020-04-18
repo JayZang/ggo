@@ -46,8 +46,7 @@ class ProjectMenu extends Component<IProps, IState> {
                         <ProjectItem 
                             key={project.id} 
                             project={project} 
-                            onEditBtnClick={() => this.handleOpenEditDrawer(project)}
-                        />
+                            onEditBtnClick={() => this.handleOpenEditDrawer(project)}                        />
                     ))}
                 </Grid>
                 <ProjectEditDrawer 

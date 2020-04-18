@@ -6,7 +6,7 @@ import { TaskStatus, ITask } from 'contracts/task'
 type IProps = {
     task: ITask
     editable?: boolean
-    updateStatus: (id: number | string, status: TaskStatus) => Promise<void>
+    updateStatus: (task: ITask, status: TaskStatus) => Promise<void>
 }
 
 type IStatus = {
@@ -29,7 +29,7 @@ class TaskStatusLabel extends Component<IProps, IStatus> {
             return
 
         this.props.updateStatus(
-            this.props.task.id,
+            this.props.task,
             status
         )
     }

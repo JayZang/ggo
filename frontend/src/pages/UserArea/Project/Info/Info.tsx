@@ -7,8 +7,8 @@ import ProjectBaseInfoPanel from 'components/Project/Detail/BaseInfoPanel'
 import ProjectTaskList from 'components/Project/Detail/TaskList'
 import ProjectEventStream from 'components/Project/Detail/EventStream'
 import { IProject } from "contracts/project";
-import { ITask, TaskStatus } from "contracts/task";
-import { RouteComponentProps, withRouter } from "react-router";
+import { ITask } from "contracts/task";
+import { withRouter, RouteComponentProps } from "react-router";
 
 type IProps = RouteComponentProps & {
     id: string
@@ -24,7 +24,7 @@ type IState = {
     loaded: boolean
 }
 
-class ProjectDetail extends Component<IProps, IState> {
+class ProjectInfo extends Component<IProps, IState> {
     state = {
         loaded: false
     }
@@ -65,9 +65,9 @@ class ProjectDetail extends Component<IProps, IState> {
                             editable={taskEditable}
                             project={project}
                             tasks={tasks}
-                            onTaskViewBtnClick={task => {
-                                this.props.history.push(`/tasks/${task.id}` )
-                            }}
+                            onTaskViewBtnClick={task => this.props.history.push(
+                                `${this.props.match.url}/tasks/${task.id}`
+                            ) }
                         />
                     </Box>
                     {/* <Grid item xs={4}>
@@ -79,4 +79,4 @@ class ProjectDetail extends Component<IProps, IState> {
     }
 }
 
-export default withRouter(ProjectDetail)
+export default withRouter(ProjectInfo)

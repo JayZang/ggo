@@ -3,7 +3,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { RootState } from 'stores';
 import TaskDefault from './Default'
-import { fetchTasks, fetchSimpleStatistic } from 'stores/userArea/action';
+import { fetchTasks, fetchTaskSimpleStatistic } from 'stores/userArea/action';
 
 const mapStateToProps = (state: RootState) => ({
     tasks: state.userArea.taskPage.default.listData.data,
@@ -13,7 +13,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (disaptch: ThunkDispatch<any, any, any>) => ({
     init: async () => {
         await Promise.all([
-            disaptch(fetchSimpleStatistic()),
+            disaptch(fetchTaskSimpleStatistic()),
             disaptch(fetchTasks())
         ])
     },

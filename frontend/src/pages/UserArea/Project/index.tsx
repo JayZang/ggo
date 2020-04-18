@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { Route, RouteComponentProps, withRouter } from 'react-router'
 import { Box } from '@material-ui/core'
 
+import ProjectTaskInfoPage from './Task'
 import ProjectListPage from './List'
-
+import ProjectInfo from './Info'
 
 class ProjectPage extends Component<RouteComponentProps> {
     render() {
@@ -14,7 +15,8 @@ class ProjectPage extends Component<RouteComponentProps> {
         return (
             <Box>
                 <Route exact path={`${match.path}`} component={ProjectListPage} />
-                {/* <Route exact path={`${match.path}/tasks/:id`} render={props => <TaskDetail taskId={props.match.params.id} />} /> */}
+                <Route exact path={`${match.path}/:id`} render={props => <ProjectInfo id={props.match.params.id} />} />
+                <Route exact path={`${match.path}/:id/tasks/:taskId`} render={props => <ProjectTaskInfoPage id={props.match.params.taskId} />} />
             </Box>
         )
     }

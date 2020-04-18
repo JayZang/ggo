@@ -1,15 +1,15 @@
 import React, { Component, ChangeEvent } from 'react'
 import { Grid, FormControl, TextField, FormHelperText, Button, Paper, FormLabel, RadioGroup, FormControlLabel, Radio, Box } from '@material-ui/core'
-import { Moment } from 'moment'
 import { DatePicker, MaterialUiPickersDate } from '@material-ui/pickers'
-import { IProject } from 'contracts/project'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
+import { Moment } from 'moment'
 
-import { TaskAssignType } from 'contracts/task'
-import MemberSelectionMenu from 'components/Members/SelectionMenu'
-import TeamSelectionMenu from 'components/Teams/SelectionMenu'
-import { IMember } from 'contracts/member'
 import { ITeam } from 'contracts/team'
+import { IProject } from 'contracts/project'
+import { IMember } from 'contracts/member'
+import { TaskAssignType } from 'contracts/task'
+import TeamSelectionMenu from 'components/Teams/SelectionMenu'
+import MemberSelectionMenu from 'components/Members/SelectionMenu'
 
 class FieldItem extends Component<{
     label: string,

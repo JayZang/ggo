@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { Paper, WithStyles, withStyles, Typography, Button, Box, Tooltip } from '@material-ui/core'
 import TodayOutlinedIcon from '@material-ui/icons/TodayOutlined';
 import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
-import { Link } from 'react-router-dom'
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 
 import styles from './style'
 import { IProject } from 'contracts/project'
 import ProjectSourceLabel from 'components/Project/ProjectSourceLabel'
 
-type IProps = WithStyles<typeof styles> & {
+type IProps = WithStyles<typeof styles> & RouteComponentProps & {
     project: IProject
-    onEditBtnClick: () => void
+    onEditBtnClick?: () => void
 }
 
 class ProjectItem extends Component<IProps> {
@@ -59,10 +59,10 @@ class ProjectItem extends Component<IProps> {
                 </Box>
 
                 <Box width={140} display="flex" justifyContent="flex-end" alignItems="center">
-                    {project.finish_datetime ? null : (
+                    {project.finish_datetime || !this.props.onEditBtnClick ? null : (
                         <Button color="primary" onClick={this.props.onEditBtnClick}>編輯</Button>
                     )}
-                    <Link to={`/projects/${project.id}`}>
+                    <Link to={`${this.props.match.path}/${project.id}`}>
                         <Button color="primary">查看</Button>
                     </Link>
                 </Box>
@@ -72,4 +72,6 @@ class ProjectItem extends Component<IProps> {
     }
 }
 
-export default withStyles(styles)(ProjectItem)
+export default withStyles(styles)(
+    withRouter(ProjectItem)
+)

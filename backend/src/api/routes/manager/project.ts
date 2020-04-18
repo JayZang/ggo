@@ -5,7 +5,7 @@ import { ProjectSrcType } from '@/entity/Project'
 import TaskService from '@/services/TaskService'
 import ProjectService from '@/services/ProjectService'
 import validatePermission from '@/api/middleware/validatePermission'
-import { CreateAndEditProject, FinishProject } from '@/api/validators/project'
+import { CreateAndEditProject } from '@/api/validators/project'
 
 const router = Router()
 const projectService = Container.get(ProjectService)
@@ -114,14 +114,6 @@ export default (app: Router) => {
         
         return tasks ?
             res.json(tasks) :
-            res.status(400).end()
-    })
-    
-    router.post('/:id/finish', FinishProject(),  async (req: Request, res: Response) => {
-        const project = await projectService.finish(req.params.id, req.body.date)
-        
-        return project ?
-            res.json(project) :
             res.status(400).end()
     })
 }

@@ -27,14 +27,16 @@ class RequestLoadingBar extends Component<IProps> {
             return config
         })
         axios.interceptors.response.use(response => {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    this.props.hideLoading()
-                    setTimeout(() => {
-                        resolve(response)
-                    }, 200);
-                }, 500)
-            })
+            this.props.hideLoading()
+            return response
+            // return new Promise(resolve => {
+            //     setTimeout(() => {
+            //         this.props.hideLoading()
+            //         setTimeout(() => {
+            //             resolve(response)
+            //         }, 200);
+            //     }, 500)
+            // })
         }, (error) => {
             this.props.hideLoading()
             return Promise.reject(error);

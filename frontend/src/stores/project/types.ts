@@ -8,7 +8,6 @@ import { ITeam } from 'contracts/team'
 export const GET_PROJECTS = 'GET_PROJECTS'
 export const ADD_PROJECT = 'ADD_PROJECT'
 export const UPDATE_PROJECT = 'UPDATE_PROJECT'
-export const UPDATE_PROJECT_FINISH_DATE = 'UPDATE_PROJECT_FINISH_DATE'
 export const CLEAR_LIST_PAGE_STATE = 'CLEAR_LIST_PAGE_STATE'
 export const GET_PROJECT_COUNT_STATISTIC = 'GET_PROJECT_COUNT_STATISTIC'
 export const GET_PROJECT_DETAIL_INFO = 'GET_PROJECT_DETAIL_INFO'
@@ -59,14 +58,6 @@ type UpdateProject = {
     type: typeof UPDATE_PROJECT,
     payload: {
         project: IProject
-    }
-}
-
-type UpdateProjectFinishDate = {
-    type: typeof UPDATE_PROJECT_FINISH_DATE,
-    payload: {
-        projectId: string | number,
-        date: Moment
     }
 }
 
@@ -144,7 +135,6 @@ export type ProjectActionType =
     GetProjects |
     AddProject |
     UpdateProject |
-    UpdateProjectFinishDate |
     ClearListPageState |
     GetCountStatistic |
     GetProjectDetailInfo |
