@@ -16,7 +16,9 @@ class ProjectPage extends Component<RouteComponentProps> {
             <Box>
                 <Route exact path={`${match.path}`} component={ProjectListPage} />
                 <Route exact path={`${match.path}/:id`} render={props => <ProjectInfo id={props.match.params.id} />} />
-                <Route exact path={`${match.path}/:id/tasks/:taskId`} render={props => <ProjectTaskInfoPage id={props.match.params.taskId} />} />
+                <Route exact path={`${match.path}/:id/tasks/:taskId`} 
+                    render={props => <ProjectTaskInfoPage projectId={props.match.params.id} taskId={props.match.params.taskId} />} 
+                />
             </Box>
         )
     }

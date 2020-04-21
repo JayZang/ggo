@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import * as userAreaTaskApi from 'api/userArea/task'
 import * as userProjectApi from 'api/userArea/project'
 import { regularizeTaskData } from "stores/utils/regularizeTaskData";
-import { UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT, GET_USER_PROJECT_SIMPLE_STATISTIC, GET_USER_PROJECT_LIST, GET_USER_PROJECT_DETAIL_INFO, FINISH_PROJECT, ADD_PROJECT_TASK, UPDATE_PROJECT_TASK_STATUS } from "./types";
+import { UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT, GET_USER_PROJECT_SIMPLE_STATISTIC, GET_USER_PROJECT_LIST, GET_USER_PROJECT_DETAIL_INFO, FINISH_PROJECT, ADD_PROJECT_TASK, UPDATE_PROJECT_TASK_STATUS, GET_PROJECT_TASK_INFO } from "./types";
 import { RootState } from "stores";
 import { regularizeWorkReportData } from "stores/utils/regularizeWorkReportData";
 import { regularizeProjectData } from "stores/utils/regularizeProjectData";
@@ -100,6 +100,19 @@ export const updateTaskStatus = (task: ITask, status: TaskStatus) => async (disp
         payload: {
             taskId: res.data.id,
             status
+        }
+   }
+
+   dispatch(action)
+}
+
+export const fetchProjectTaskInfo = (projectId: number | string, taskId: number | string) => async (dispatch: Dispatch) => {
+    const res = await userProjectApi.getTaskInfo(projectId, taskId)
+
+    const action: UserAreaActionType = {
+        type: GET_PROJECT_TASK_INFO,
+        payload: {
+            task: regularizeTaskData(res.data)
         }
    }
 

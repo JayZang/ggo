@@ -1,4 +1,4 @@
-import { UserAreaState, UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT, GET_USER_PROJECT_SIMPLE_STATISTIC, GET_USER_PROJECT_LIST, GET_USER_PROJECT_DETAIL_INFO, FINISH_PROJECT, ADD_PROJECT_TASK, UPDATE_PROJECT_TASK_STATUS } from './types'
+import { UserAreaState, UserAreaActionType, GET_TASK_LIST, GET_TASK_SIMPLE_STATISTIC, GET_TASK_INFO, ADD_TASK_WORK_REPORT, UPDATE_TASK_WORK_REPORT, GET_USER_PROJECT_SIMPLE_STATISTIC, GET_USER_PROJECT_LIST, GET_USER_PROJECT_DETAIL_INFO, FINISH_PROJECT, ADD_PROJECT_TASK, UPDATE_PROJECT_TASK_STATUS, GET_PROJECT_TASK_INFO } from './types'
 
 const initState: UserAreaState = {
     projectPage: {
@@ -11,7 +11,8 @@ const initState: UserAreaState = {
         info: {
             project: null,
             tasks: null
-        }
+        },
+        taskInfo: null
     },
     taskPage: {
         default: {
@@ -127,6 +128,15 @@ export default function taskReducer(state: UserAreaState = initState, action: Us
                             return task
                         })
                     }
+                }
+            }
+
+        case GET_PROJECT_TASK_INFO:
+            return {
+                ...state,
+                projectPage: {
+                    ...state.projectPage,
+                    taskInfo: action.payload.task
                 }
             }
 

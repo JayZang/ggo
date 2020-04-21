@@ -8,9 +8,10 @@ import { ITask } from 'contracts/task'
 import { Grid } from '@material-ui/core'
 
 type IProps = {
-    id: number | string
+    projectId: number | string
+    taskId: number | string
     task: ITask | null
-    load: (id: number | string) => Promise<void>
+    load: (projectId: number | string, taskId: number | string) => Promise<void>
 }
 
 type IStatus = {
@@ -27,10 +28,10 @@ class ProjectTaskInfoPage extends Component<IProps, IStatus> {
     }
 
     async componentDidMount() {
-        const { id, task } = this.props
+        const { projectId, taskId, task } = this.props
 
-        if (!task || task.id != id)
-            await this.props.load(this.props.id)
+        if (!task || task.id != taskId)
+            await this.props.load(projectId, taskId)
 
         this.setState({ loaded: true })
     }
