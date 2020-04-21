@@ -12,6 +12,7 @@ import TaskRoute from 'pages/Task'
 import WorkReportRoute from 'pages/WorkReport'
 import IamRoute from 'pages/IAM'
 import UserAreaRoute from 'pages/UserArea'
+import ProfileRoute from 'pages/Profile'
 
 interface IProps extends WithStyles<typeof styles> {
     isLeftDrawerOpen: boolean
@@ -37,6 +38,7 @@ class ContentWrapper extends Component<IProps> {
                     <WorkReportRoute />
                     <IamRoute />
                     <UserAreaRoute />
+                    <ProfileRoute />
                 </div>
             </div>
         )

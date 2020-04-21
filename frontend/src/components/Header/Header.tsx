@@ -99,17 +99,19 @@ class Header extends Component<IProps, IStates> {
                 open={Boolean(this.state.profileAnchorEl)}
                 onClose={this.handleMenuClose}
             >
-                <Paper className="p-3 m-3 mb-2" style={{ minWidth: 250 }}>
-                    <Box className="d-flex align-items-center">
-                        {avatarComponent}
-                        <Box className="ml-2">
-                            <Typography>{name}</Typography>
-                            <Typography component="div">
-                                <Box color="text.hint">{account}</Box>
-                            </Typography>
+                <Link to="/profile" onClick={this.handleMenuClose}>
+                    <Paper className="p-3 m-3 mb-2" style={{ minWidth: 250 }}>
+                        <Box className="d-flex align-items-center">
+                            {avatarComponent}
+                            <Box className="ml-2">
+                                <Typography>{name}</Typography>
+                                <Typography component="div">
+                                    <Box color="text.hint">{account}</Box>
+                                </Typography>
+                            </Box>
                         </Box>
-                    </Box>
-                </Paper>
+                    </Paper>
+                </Link>
                 <MenuItem onClick={() => this.props.logout()}>
                     <ExitToAppIcon className="mr-2" />
                     登出
