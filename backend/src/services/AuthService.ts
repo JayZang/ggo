@@ -80,6 +80,18 @@ export default class AuthService {
         }
     }
 
+    public async refreshUserToken(user: User, oldToken: string, ip: string) {
+        try {
+            await this.removeTokenFromStorage(oldToken, user.id)
+            const newToken = this.generateAuthToken(user, ip, null)
+            await this.storeAuthToken(newToken, user.id)
+            return newToken
+        } catch (err) {
+            console.log(err)
+            return null
+        }
+    }
+
     private async attachPermissions(user: User) {
         let policies: Policy[] = []
 
@@ -119,11 +131,11 @@ export default class AuthService {
         }
     }
 
-    private generateAuthToken(user: User, ip?: string) {
+    private generateAuthToken(user: User, ip?: string, expiresIn = jwtConfig.authValidDuration) {
         return jwt.sign(
             Object.assign({}, user),
             ip || jwtConfig.secret,
-            { expiresIn: jwtConfig.authValidDuration }
+            expiresIn ? { expiresIn } : undefined
         )
     }
 

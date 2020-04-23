@@ -9,12 +9,13 @@ import CakeIcon from '@material-ui/icons/Cake'
 import PhoneIcon from '@material-ui/icons/Phone'
 import MailOutlineIcon from '@material-ui/icons/MailOutline'
 import WorkOutlineIcon from '@material-ui/icons/WorkOutline'
+import { withSnackbar, WithSnackbarProps } from "notistack";
 
 import styles from './style'
 import fileValidate from 'utils/fileValidate'
 import { IMember } from "contracts/member";
 
-type IProps = WithStyles<typeof styles> & {
+type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     member: IMember
     storeAvatar: (avatar: File) => Promise<void>
 }
@@ -41,6 +42,16 @@ class MemberProfilePanel extends Component<IProps, IState> {
         if (!this.state.avatar)
             return
         this.props.storeAvatar(this.state.avatar!)
+            .then(() => {
+                this.props.enqueueSnackbar('除存頭貼成功！', {
+                    variant: 'success'
+                })
+                this.setState({ avatar: null })
+            }).catch(() => {
+                this.props.enqueueSnackbar('除存頭貼失敗！', {
+                    variant: 'error'
+                })
+            })
     }
 
     render() {
@@ -54,7 +65,7 @@ class MemberProfilePanel extends Component<IProps, IState> {
 
         return (
             <Paper className="p-3">
-                <Box textAlign="center" maxWidth={750} marginX="auto" position="relative">
+                <Box textAlign="center" maxWidth={600} marginX="auto" position="relative">
                     <Badge
                         overlap="circle"
                         anchorOrigin={{
@@ -93,16 +104,16 @@ class MemberProfilePanel extends Component<IProps, IState> {
                     <Typography variant="h5" className="mt-3">
                         {member.name}
                     </Typography>
-                    <Divider className="my-4" />
+
                     {avatar ? (
-                        <Box position="absolute" right={0} bottom={12}>
+                        <Box position="absolute" right={0} bottom={0}>
                             <Button color="default" variant="outlined" onClick={this.handleStoreAvatar.bind(this)}>
                                 儲存頭貼
                             </Button>
                         </Box>
                     ) : null}
                 </Box>
-                <Box maxWidth={600} marginX="auto" padding={3} marginBottom={0}>
+                <Box maxWidth={600} marginX="auto" paddingY={3} marginBottom={0}>
                     <TextField
                         label="Email"
                         defaultValue={member.email}
@@ -164,4 +175,6 @@ class MemberProfilePanel extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(MemberProfilePanel) 
+export default withStyles(styles)(
+    withSnackbar(MemberProfilePanel)
+) 

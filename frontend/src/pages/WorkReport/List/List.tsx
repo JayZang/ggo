@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Paper, IconButton, InputBase, Tooltip, Box, Dialog } from '@material-ui/core'
+import { Grid, Paper, IconButton, InputBase, Tooltip, Box, Dialog, Typography } from '@material-ui/core'
 import { withRouter, RouteComponentProps } from 'react-router'
 import {
     Search as SearchIcon,
@@ -31,7 +31,6 @@ class WorkReportListPage extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
-        this.trackScrolling = this.trackScrolling.bind(this)
         this.state = {
             isLoading: false,
             workReportToDisplay: null
@@ -56,24 +55,17 @@ class WorkReportListPage extends Component<IProps, IState> {
 
     componentDidMount() {
         this.props.workReports || this.load()
-        document.addEventListener('scroll', this.trackScrolling);
     }
 
-    componentWillUnmount() {
-        document.removeEventListener('scroll', this.trackScrolling);
-    }
-
-    async trackScrolling() {
+    handleScrollBottom() {
         if (this.state.isLoading)
             return
 
-        if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
-            this.setState({ isLoading: true }, () => {
-                this.props.fetchWorkReports().finally(() => {
-                    this.setState({ isLoading: false })
-                })
+        this.setState({ isLoading: true }, () => {
+            this.props.fetchWorkReports().finally(() => {
+                this.setState({ isLoading: false })
             })
-        }
+        })
     }
 
     render() {
@@ -89,10 +81,13 @@ class WorkReportListPage extends Component<IProps, IState> {
                         defaultHidden={false}
                     />
                 )}
+                onScrollBottom={this.handleScrollBottom.bind(this)}
             >
                 <Grid container className="align-items-center mb-3">
                     <Grid item>
-                        <h3>工作報告列表</h3>
+                        <Typography variant="h5" component="div">
+                            <Box fontWeight={500}>工作報告列表</Box>
+                        </Typography>
                         <Box className="d-flex mt-2 align-items-center">
                             <Paper className="px-1">
                                 <IconButton size="small" >

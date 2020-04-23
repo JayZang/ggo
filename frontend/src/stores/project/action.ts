@@ -79,14 +79,18 @@ export const fetchProjects = () => async (dispatch: Dispatch, getState: () => Ro
 }
 
 export const loadListPage = () => async (dispatch : Dispatch, getState: () => RootState) => {
-    getCountStatistic()(dispatch)
-    fetchProjects()(dispatch, getState)
+    await Promise.all([
+        getCountStatistic()(dispatch),
+        fetchProjects()(dispatch, getState)
+    ])
 }
 
 export const reloadListPage = () => async (dispatch : Dispatch, getState: () => RootState) => {
     dispatch({ type: CLEAR_LIST_PAGE_STATE })
-    getCountStatistic()(dispatch)
-    fetchProjects()(dispatch, getState)
+    await Promise.all([
+        getCountStatistic()(dispatch),
+        fetchProjects()(dispatch, getState)
+    ])
 }
 
 export const getCountStatistic = () => async (dispatch: Dispatch) => {

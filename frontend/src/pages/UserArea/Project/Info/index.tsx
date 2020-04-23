@@ -16,10 +16,6 @@ const mapStateToProps = (state: RootState) => {
         taskEditable:
             !!project && 
             !project.finish_datetime,
-        projectEditable:
-            !!user &&
-            !!user.permissions &&
-            !!user.permissions.project_management,
         projectFinishable:
             !!tasks &&
             !!project && 

@@ -64,11 +64,6 @@ class ProjectListPage extends Component<IProps, IState> {
         isFetching: false
     }
 
-    constructor(props: IProps) {
-        super(props)
-        this.trackScrolling = this.trackScrolling.bind(this)
-    }
-
     async componentDidMount() {
         const { projects, countOfTotal } = this.props
 
@@ -76,24 +71,17 @@ class ProjectListPage extends Component<IProps, IState> {
             await this.props.load()
 
         this.setState({ loaded: true })
-        document.addEventListener('scroll', this.trackScrolling);
     }
 
-    componentWillUnmount() {
-        document.removeEventListener('scroll', this.trackScrolling);
-    }
-
-    trackScrolling() {
+    handleScrollBottom() {
         if (this.state.isFetching)
             return
 
-        if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
-            this.setState({ isFetching: true }, () => {
-                this.props.fetchProjects().finally(() => {
-                    this.setState({ isFetching: false })
-                })
+        this.setState({ isFetching: true }, () => {
+            this.props.fetchProjects().finally(() => {
+                this.setState({ isFetching: false })
             })
-        }
+        })
     }
 
     render() {
@@ -113,6 +101,7 @@ class ProjectListPage extends Component<IProps, IState> {
                         defaultHidden={false}
                     />
                 )}
+                onScrollBottom={this.handleScrollBottom.bind(this)}
             >
                 <Typography variant="h5" component="div">
                     <Box fontWeight={500}>我管理的專案</Box>

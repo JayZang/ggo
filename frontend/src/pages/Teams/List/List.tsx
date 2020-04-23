@@ -7,7 +7,8 @@ import {
     Tabs,
     Tab,
     Button,
-    Box
+    Box,
+    Typography
 } from '@material-ui/core'
 import {
     Add as AddIcon
@@ -87,7 +88,9 @@ class TeamList extends Component<IProps, IState> {
             >
                 <Grid container className="align-items-center">
                     <Grid item>
-                        <h3>團隊管理</h3>
+                        <Typography variant="h5" component="div">
+                            <Box fontWeight={500}>團隊管理</Box>
+                        </Typography>
                     </Grid>
                     <Grid item className="ml-auto">
                         <Button

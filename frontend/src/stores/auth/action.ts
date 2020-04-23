@@ -6,13 +6,13 @@ import * as profileApi from 'api/profile'
 import { regularizeUserData } from "stores/iam/utils"
 import { authTokenName } from 'config/httpHeader'
 import { authTokenKeyName } from 'config/localStorage'
-import { AuthActionTypes, LOGIN, LOGOUT, UPDATE_USER_MEMBER_AVATAR } from "./types"
+import { AuthActionTypes, LOGIN, LOGOUT, UPDATE_USER_MEMBER_AVATAR, REFRESH_AUTH_TOKEN } from "./types"
 import { regularizeMemberData } from "stores/utils/regularizeMemberData";
 
 // axios request interceptor
-let interceptorOfInsertTokenToHeader:number | null = null
+let requestInterceptor:number | null = null
 // axios response interceptor
-let interceptorOfAuthExpired:number | null = null
+let responseInterceptor:number | null = null
 
 export const login = (account_id: string, password: string) => async (dispatch: Dispatch) => {
     const res = await authApi.login(account_id, password)
@@ -27,8 +27,8 @@ export const login = (account_id: string, password: string) => async (dispatch: 
     }
 
     localStorage.setItem(authTokenKeyName, token)
-    insertTokenToRequestHeader(token)
-    handleAuthExpired(dispatch)
+    registerRequestInterceptor()
+    registerResponseInterceptor(dispatch)
     dispatch(action)
 }
 
@@ -40,7 +40,8 @@ export const logout = () => async (dispatch: Dispatch) => {
     await authApi.logout(token)
     
     localStorage.removeItem(authTokenKeyName)
-    interceptorOfInsertTokenToHeader !== null && axios.interceptors.request.eject(interceptorOfInsertTokenToHeader)
+    requestInterceptor !== null && axios.interceptors.request.eject(requestInterceptor)
+    responseInterceptor !== null && axios.interceptors.response.eject(responseInterceptor)
     const action: AuthActionTypes = {
         type: LOGOUT,
     }
@@ -62,8 +63,8 @@ export const checkAuthToken = () => async (dispatch: Dispatch) => {
             }
         }
     
-        insertTokenToRequestHeader(token)
-        handleAuthExpired(dispatch)
+        registerRequestInterceptor()
+        registerResponseInterceptor(dispatch)
         dispatch(action)
     }).catch(() => {
         localStorage.removeItem(authTokenKeyName)
@@ -83,19 +84,38 @@ export const updateAvatar = (file: File) => async (dispatch: Dispatch) => {
     dispatch(action)
 }
 
-function insertTokenToRequestHeader(token: string) {
-    interceptorOfInsertTokenToHeader = axios.interceptors.request.use(config => {
-        config.headers[authTokenName] = token
+function registerRequestInterceptor() {
+    requestInterceptor = axios.interceptors.request.use(config => {
+        /**  insert token to http header **/
+        config.headers[authTokenName] = localStorage.getItem(authTokenKeyName)
+
         return config
     })
 }
 
-function handleAuthExpired(dispatch: Dispatch) {
-    interceptorOfAuthExpired = axios.interceptors.response.use(undefined, error => {
+function registerResponseInterceptor(dispatch: Dispatch) {
+    responseInterceptor = axios.interceptors.response.use(res => {
+        /** if response header has new token, refresh local token state  **/
+        const newToken = res.headers[authTokenName]
+        if (res.headers[authTokenName]) {
+            localStorage.setItem(authTokenKeyName, newToken)
+
+            const action: AuthActionTypes = {
+                type: REFRESH_AUTH_TOKEN,
+                payload: {
+                    token: newToken
+                }
+            }
+
+            dispatch(action)
+        }
+
+        return res
+    }, error => {
         if (error.response.status === 401) {
             localStorage.removeItem(authTokenKeyName)
-            interceptorOfInsertTokenToHeader !== null && axios.interceptors.request.eject(interceptorOfInsertTokenToHeader)
-            interceptorOfAuthExpired !== null && axios.interceptors.response.eject(interceptorOfAuthExpired)
+            requestInterceptor !== null && axios.interceptors.request.eject(requestInterceptor)
+            responseInterceptor !== null && axios.interceptors.response.eject(responseInterceptor)
 
             const action: AuthActionTypes = {
                 type: LOGOUT,

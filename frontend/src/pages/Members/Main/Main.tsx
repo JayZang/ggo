@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Box, Tooltip, IconButton } from '@material-ui/core'
+import { Box, Tooltip, IconButton, Typography } from '@material-ui/core'
 import { useTheme, WithStyles, withStyles } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import {
@@ -17,6 +17,8 @@ import MemberItemSkeleton from 'components/Members/Main/MemberList/MemberItem/Sk
 import styles from './styles'
 import { IMember } from 'contracts/member'
 
+const PageSymbol = Symbol('Management.Member.List')
+
 type  IProps = WithStyles<typeof styles> & {
     load: () => Promise<void>,
     reload: () => Promise<void>,
@@ -32,16 +34,14 @@ function Members(props: IProps) {
     const useFabBtn = useMediaQuery(theme.breakpoints.down('xs'))
     let isFetching = false
 
-    const trackScrolling = () => {
+    function handleScrollBottom() {
         if (isFetching)
             return
 
-        if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
-            isFetching = true
-            props.fetchMembers().finally(() => {
-                isFetching = false
-            })
-        }
+        isFetching = true
+        props.fetchMembers().finally(() => {
+            isFetching = false
+        })
     }
 
     // componentDidMount
@@ -52,11 +52,6 @@ function Members(props: IProps) {
                 isFetching = false
             })
         })()
-        document.addEventListener('scroll', trackScrolling);
-
-        return () => {
-            document.removeEventListener('scroll', trackScrolling);
-        }
     }, [])
 
     return (
@@ -67,10 +62,14 @@ function Members(props: IProps) {
                     defaultHidden={false}
                 />
             }
+            onScrollBottom={handleScrollBottom}
+            pageSymbol={PageSymbol}
         >
             <div className={classes.header}>
                 <div className={classes.headerLeft}>
-                    <h3 className={classes.headerTitle}>成員管理</h3>
+                    <Typography variant="h5" component="div">
+                        <Box fontWeight={500}>成員管理</Box>
+                    </Typography>
                     <Box display="flex">
                         <MemberSearchBar />
                         <Tooltip title="過濾設置">

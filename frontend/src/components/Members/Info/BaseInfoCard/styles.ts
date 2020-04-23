@@ -10,13 +10,14 @@ export default (theme: Theme) => createStyles({
         height: 130,
         position: 'absolute',
         top: 0,
-        zIndex: 1
+        zIndex: 1,
+        marginLeft: theme.spacing(2)
     },
     memberName: {
         position: 'absolute',
         fontWeight: 'bold',
-        top: 30,
-        marginLeft: 140
+        top: 44,
+        marginLeft: 160
     },
     editBtn: {
         position: 'absolute',

@@ -6,7 +6,9 @@ import {
     IconButton,
     InputBase,
     WithStyles,
-    withStyles
+    withStyles,
+    Typography,
+    Box
 } from '@material-ui/core'
 import {
     Add as AddIcon,
@@ -63,7 +65,9 @@ class CustomerList extends Component<IProps, IState> {
             >
                 <Grid container className="align-items-center mb-3">
                     <Grid item>
-                        <h3>客戶管理</h3>
+                        <Typography variant="h5" component="div">
+                            <Box fontWeight={500}>客戶管理</Box>
+                        </Typography>
                         <Paper className={classes.searchPaper}>
                             <IconButton size="small" >
                                 <SearchIcon />

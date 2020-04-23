@@ -16,8 +16,9 @@ export default class MemberProfileService {
     public async updateAvatar(member: Member, file: Express.Multer.File) {
         try {
             const memberRepo = getCustomRepository(MemberRepo)
-            member.avatar = await storeFileWithRandomName(file, resource.memberAvatar.dest)
-            return await memberRepo.save(member)
+            return await memberRepo.updateById(member.id, {
+                avatar: await storeFileWithRandomName(file, resource.memberAvatar.dest)
+            })
         } catch (err) {
             console.log('Update member avatar error')
             console.log(err.toString())

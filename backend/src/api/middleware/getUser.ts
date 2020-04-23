@@ -12,6 +12,7 @@ export default async function getUser(req: Request, res: Response, next: NextFun
         const payload = await authService.verifyAuthToken(token, req.ip)
 
         payload && (req.user = payload)
+        req.authToken = token || undefined
     } catch { }
     
     next()

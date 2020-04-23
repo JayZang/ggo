@@ -6,7 +6,9 @@ import {
     IconButton,
     InputBase,
     Tooltip,
-    WithStyles
+    WithStyles,
+    Typography,
+    Box
 } from '@material-ui/core'
 import {
     Add as AddIcon,
@@ -25,6 +27,8 @@ import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDr
 import ProjectCountBar from 'components/Project/List/ProjectCountBar'
 import { IProject } from 'contracts/project'
 
+const PageSymbol = Symbol('Management.Project.List')
+
 type IProps = WithStyles<typeof styles> & {
     load: () => Promise<void>
     reload: () => Promise<void>
@@ -39,14 +43,9 @@ type IState = {
 }
 
 class ProjectList extends Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props)
-
-        this.trackScrolling = this.trackScrolling.bind(this)
-        this.state = {
-            openDrawer: false,
-            isProjectFetching: false
-        }
+    state = {
+        openDrawer: false,
+        isProjectFetching: false
     }
 
     componentDidMount() {
@@ -57,24 +56,28 @@ class ProjectList extends Component<IProps, IState> {
                 })
             })
         }
-        document.addEventListener('scroll', this.trackScrolling);
     }
 
-    componentWillUnmount() {
-        document.removeEventListener('scroll', this.trackScrolling);
+    handleReloadBtnClick() {
+        if (this.state.isProjectFetching)
+            return
+
+        this.setState({ isProjectFetching: true }, () => {
+            this.props.reload().finally(() => {
+                this.setState({ isProjectFetching: false })
+            })
+        })
     }
 
-    async trackScrolling() {
+    handleScrollBottom() {
         if (this.state.isProjectFetching)
             return
             
-        if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
-            this.setState({ isProjectFetching: true }, () => {
-                this.props.getProject().finally(() => {
-                    this.setState({ isProjectFetching: false })
-                })
+        this.setState({ isProjectFetching: true }, () => {
+            this.props.getProject().finally(() => {
+                this.setState({ isProjectFetching: false })
             })
-        }
+        })
     }
 
     render() {
@@ -95,10 +98,14 @@ class ProjectList extends Component<IProps, IState> {
                         defaultHidden={false}
                     />
                 )}
+                onScrollBottom={this.handleScrollBottom.bind(this)}
+                pageSymbol={PageSymbol}
             >
                 <Grid container className="align-items-center mb-3">
                     <Grid item>
-                        <h3>專案/案件管理</h3>
+                        <Typography variant="h5" component="div">
+                            <Box fontWeight={500}>專案/案件管理</Box>
+                        </Typography>
                         <div className="d-flex mt-1 align-items-center">
                             <Paper className={classes.searchPaper}>
                                 <IconButton size="small" >
@@ -124,7 +131,7 @@ class ProjectList extends Component<IProps, IState> {
                                         <IconButton 
                                             size="small"
                                             color="primary"
-                                            onClick={this.props.reload.bind(this)}
+                                            onClick={this.handleReloadBtnClick.bind(this)}
                                         >
                                             <CachedIcon />
                                         </IconButton>

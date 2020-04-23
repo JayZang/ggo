@@ -96,7 +96,7 @@ class MemberBaseInfoCard extends Component<IProps, IState> {
                         )
                 })()}
                
-                <Typography variant="h3" className={classes.memberName}>
+                <Typography variant="h4" className={classes.memberName}>
                     { member ? member.name : <Skeleton width={200} height={40} variant="rect" />}
                 </Typography>
                 <Paper className={classes.papper}>

@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import { Box } from '@material-ui/core'
+
+import RestorableScrollElement from 'components/RestorableScrollElement'
 
 const styles = (theme: Theme) => createStyles({
     content: {
+        flexGrow: 1,
+        overflowY: 'auto',
         padding: theme.spacing(3),
         [theme.breakpoints.down('xs')]: {
             padding: theme.spacing(1, 0),
@@ -13,23 +18,31 @@ const styles = (theme: Theme) => createStyles({
 
 type IProps = WithStyles<typeof styles> & {
     mobileHeader: any
+    pageSymbol?: Symbol
+    onScrollBottom?: () => void
 }
 
 class AppContent extends Component<IProps> {
     render() {
         const {
             classes,
+            onScrollBottom,
+            pageSymbol,
             mobileHeader
         } = this.props
 
         return (
-            <div>
+            <Box height="100vh" display="flex" flexDirection="column">
                 {mobileHeader}
 
-                <div className={classes.content}>
+                <RestorableScrollElement 
+                    symbol={pageSymbol}
+                    onScrollBottom={onScrollBottom}
+                    className={classes.content}
+                >
                     {this.props.children}
-                </div>
-            </div>
+                </RestorableScrollElement>
+            </Box>
         )
     }
 }

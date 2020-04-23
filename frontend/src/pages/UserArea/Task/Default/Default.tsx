@@ -58,13 +58,8 @@ type IState = {
 }
 
 class TaskDefault extends Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props)
-
-        this.trackScrolling = this.trackScrolling.bind(this)
-        this.state = {
-            isFetching: false
-        }
+    state = {
+        isFetching: false
     }
 
     componentDidMount() {
@@ -75,24 +70,17 @@ class TaskDefault extends Component<IProps, IState> {
                 })
             })
         }
-        document.addEventListener('scroll', this.trackScrolling);
     }
 
-    componentWillUnmount() {
-        document.removeEventListener('scroll', this.trackScrolling);
-    }
-
-    trackScrolling() {
+    handleScrollBottom() {
         if (this.state.isFetching)
             return
 
-        if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
-            this.setState({ isFetching: true }, () => {
-                this.props.fetchTasks().finally(() => {
-                    this.setState({ isFetching: false })
-                })
+        this.setState({ isFetching: true }, () => {
+            this.props.fetchTasks().finally(() => {
+                this.setState({ isFetching: false })
             })
-        }
+        })
     }
 
     render() {
@@ -112,6 +100,7 @@ class TaskDefault extends Component<IProps, IState> {
                         defaultHidden={false}
                     />
                 )}
+                onScrollBottom={this.handleScrollBottom.bind(this)}
             >
                 <Typography variant="h5" component="div">
                     <Box fontWeight={500}>我的任務</Box>

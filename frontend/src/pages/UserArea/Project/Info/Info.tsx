@@ -14,7 +14,6 @@ type IProps = RouteComponentProps & {
     id: string
     tasks: ITask[] | null
     project: IProject | null
-    projectEditable: boolean
     taskEditable: boolean
     projectFinishable: boolean
     load: (id: string) => Promise<void>
@@ -41,7 +40,7 @@ class ProjectInfo extends Component<IProps, IState> {
         const { loaded } = this.state
         const project = loaded ? this.props.project : null
         const tasks = loaded ? this.props.tasks : null
-        const {taskEditable, projectEditable, projectFinishable} = this.props
+        const {taskEditable, projectFinishable} = this.props
 
         return (
             <AppContent
@@ -56,7 +55,7 @@ class ProjectInfo extends Component<IProps, IState> {
                     <Box className="mr-4" width={450} flexShrink={0}>
                         <ProjectBaseInfoPanel 
                             project={project}
-                            editable={projectEditable}
+                            editable={false}
                             isCanBeFinished={projectFinishable}
                         />
                     </Box>

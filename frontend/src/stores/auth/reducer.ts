@@ -1,4 +1,4 @@
-import { AuthState, AuthActionTypes, LOGIN, LOGOUT, UPDATE_USER_MEMBER_AVATAR } from './types'
+import { AuthState, AuthActionTypes, LOGIN, LOGOUT, UPDATE_USER_MEMBER_AVATAR, REFRESH_AUTH_TOKEN } from './types'
 
 const initState: AuthState = {
     token: null,
@@ -19,6 +19,12 @@ export default function authReducer(state: AuthState = initState, action: AuthAc
                 ...state,
                 token: null,
                 user: null
+            }
+
+        case REFRESH_AUTH_TOKEN:
+            return {
+                ...state,
+                token: action.payload.token
             }
 
         case UPDATE_USER_MEMBER_AVATAR:

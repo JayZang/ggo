@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Paper, IconButton, InputBase, Tooltip, WithStyles } from '@material-ui/core'
+import { Grid, Paper, IconButton, InputBase, Tooltip, WithStyles, Typography, Box } from '@material-ui/core'
 import {
     Search as SearchIcon,
     Cached as CachedIcon,
@@ -27,13 +27,8 @@ type IStatus = {
 }
 
 class TaskList extends Component<IProps, IStatus> {
-    constructor(props: IProps) {
-        super(props)
-
-        this.trackScrolling = this.trackScrolling.bind(this)
-        this.state = {
-            isTaskFetching: false
-        }
+    state = {
+        isTaskFetching: false
     }
 
     componentDidMount() {
@@ -44,24 +39,17 @@ class TaskList extends Component<IProps, IStatus> {
                 })
             })
         }
-        document.addEventListener('scroll', this.trackScrolling);
     }
 
-    componentWillUnmount() {
-        document.removeEventListener('scroll', this.trackScrolling);
-    }
-
-    async trackScrolling() {
+    handleScrollBottom() {
         if (this.state.isTaskFetching)
             return
 
-        if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
-            this.setState({ isTaskFetching: true }, () => {
-                this.props.fetchTasks().finally(() => {
-                    this.setState({ isTaskFetching: false })
-                })
+        this.setState({ isTaskFetching: true }, () => {
+            this.props.fetchTasks().finally(() => {
+                this.setState({ isTaskFetching: false })
             })
-        }
+        })
     }
 
     render() {
@@ -79,10 +67,13 @@ class TaskList extends Component<IProps, IStatus> {
                         defaultHidden={false}
                     />
                 )}
+                onScrollBottom={this.handleScrollBottom.bind(this)}
             >
                 <Grid container className="align-items-center mb-3">
                     <Grid item>
-                        <h3>工作任務項目</h3>
+                        <Typography variant="h5" component="div">
+                            <Box fontWeight={500}>工作任務項目</Box>
+                        </Typography>
                         <div className="d-flex mt-1 align-items-center">
                             <Paper className={classes.searchPaper}>
                                 <IconButton size="small" >

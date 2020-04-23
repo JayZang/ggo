@@ -86,7 +86,7 @@ export default function customerReducer(state: ProjectState = initState, action:
                 ...state,
                 listPage: {
                     ...state.listPage,
-                    projects: (state.listPage.projects || []).map(project => {
+                    projects: state.listPage.projects && state.listPage.projects.map(project => {
                         if (project.id === action.payload.projectId) return {
                             ...project,
                             finish_datetime: action.payload.date
