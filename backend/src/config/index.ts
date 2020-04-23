@@ -27,6 +27,9 @@ export const database = {
 export const resource = {
     customerLogo: {
         dest: 'uploads/customer/logo/'
+    },
+    memberAvatar: {
+        dest: 'uploads/member/avatar/'
     }
 }
 

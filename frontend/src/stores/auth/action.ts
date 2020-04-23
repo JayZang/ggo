@@ -2,10 +2,12 @@ import { Dispatch } from "redux";
 import axios from "axios";
 
 import * as authApi from 'api/auth'
+import * as profileApi from 'api/profile'
 import { regularizeUserData } from "stores/iam/utils"
 import { authTokenName } from 'config/httpHeader'
 import { authTokenKeyName } from 'config/localStorage'
-import { AuthActionTypes, LOGIN, LOGOUT } from "./types"
+import { AuthActionTypes, LOGIN, LOGOUT, UPDATE_USER_MEMBER_AVATAR } from "./types"
+import { regularizeMemberData } from "stores/utils/regularizeMemberData";
 
 // axios request interceptor
 let interceptorOfInsertTokenToHeader:number | null = null
@@ -66,6 +68,19 @@ export const checkAuthToken = () => async (dispatch: Dispatch) => {
     }).catch(() => {
         localStorage.removeItem(authTokenKeyName)
     })
+}
+
+export const updateAvatar = (file: File) => async (dispatch: Dispatch) => {
+    const res = await profileApi.updateAvatar(file)
+    
+    const action: AuthActionTypes = {
+        type: UPDATE_USER_MEMBER_AVATAR,
+        payload: {
+            member: regularizeMemberData(res.data)
+        }
+    }
+
+    dispatch(action)
 }
 
 function insertTokenToRequestHeader(token: string) {

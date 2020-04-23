@@ -30,7 +30,6 @@ export default class Team {
     })
     status: number
 
-    
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
     

@@ -1,21 +1,14 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
-import multer from 'multer'
 
 import { CreateCustomer } from '@/api/validators/customer'
 import CustomerService from '@/services/CustomerService'
 import validatePermission from '@/api/middleware/validatePermission'
+import getImageMulter from '@/utils/multer/getImageMulter'
 
 const router = Router()
 const customerService = Container.get(CustomerService)
-const customerLogoUpload = multer({ 
-    fileFilter: (req, file, cb) => {
-        if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.mimetype))
-            cb(null, true)
-        else
-            cb(new Error('檔案上傳錯誤，只能上傳圖檔'), false)
-    }
-})
+const customerLogoUpload = getImageMulter()
 
 export default (app: Router) => {
     app.use('/customers', validatePermission('customer_management'), router)

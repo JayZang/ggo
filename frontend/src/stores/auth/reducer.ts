@@ -1,4 +1,4 @@
-import { AuthState, AuthActionTypes, LOGIN, LOGOUT } from './types'
+import { AuthState, AuthActionTypes, LOGIN, LOGOUT, UPDATE_USER_MEMBER_AVATAR } from './types'
 
 const initState: AuthState = {
     token: null,
@@ -19,6 +19,18 @@ export default function authReducer(state: AuthState = initState, action: AuthAc
                 ...state,
                 token: null,
                 user: null
+            }
+
+        case UPDATE_USER_MEMBER_AVATAR:
+            return {
+                ...state,
+                user: state.user && {
+                    ...state.user,
+                    identity: state.user.identity && {
+                        ...state.user.identity,
+                        avatar: action.payload.member.avatar
+                    }
+                }
             }
 
         default:

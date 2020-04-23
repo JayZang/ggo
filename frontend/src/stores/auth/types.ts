@@ -1,8 +1,9 @@
 import { IUser } from "contracts/user"
+import { IMember } from "contracts/member"
 
 export const LOGIN = 'LOGIN'
 export const LOGOUT = 'LOGOUT'
-export const SET_TOKEN = 'SET_TOKEN'
+export const UPDATE_USER_MEMBER_AVATAR = 'UPDATE_USER_MEMBER_AVATAR'
 
 export type AuthState = {
     token: string | null
@@ -21,6 +22,14 @@ type Logout = {
     type: typeof LOGOUT,
 }
 
+type UpdateUserMemberAvatar = {
+    type: typeof UPDATE_USER_MEMBER_AVATAR,
+    payload: {
+        member: IMember
+    }
+}
+
 export type AuthActionTypes = 
     Login |
-    Logout
+    Logout |
+    UpdateUserMemberAvatar

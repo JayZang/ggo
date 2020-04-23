@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany, OneToOne } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany, OneToOne, AfterLoad, AfterInsert, AfterUpdate } from 'typeorm'
 
 import EmergencyContact from './EmergencyContact'
 import Team from './Team'
 import WorkReport from './WorkReport'
 import Project from './Project'
+import MemberDataRegularizer from '@/regularizer/MemberDataRegularizer'
 
 @Entity()
 export default class Member {
@@ -81,6 +82,13 @@ export default class Member {
     projects_as_member_participant: Project[]
 
     isUser?: boolean
+
+    @AfterLoad()
+    @AfterInsert()
+    @AfterUpdate()
+    regularize() {
+        MemberDataRegularizer.regularize(this)
+    }   
 }
 
 export enum MemberStatus {
