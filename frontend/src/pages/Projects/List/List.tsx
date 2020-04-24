@@ -14,7 +14,8 @@ import {
     Add as AddIcon,
     Search as SearchIcon,
     Cached as CachedIcon,
-    FilterList as FilterListIcon
+    FilterList as FilterListIcon,
+    Equalizer as EqualizerIcon
 } from '@material-ui/icons'
 
 import styles from './styles'
@@ -25,6 +26,7 @@ import ProjectMenu from 'components/Project/List/ProjectMenu'
 import ProjectItemSkeleton from 'components/Project/List/ProjectMenu/ProjectItem/Skeleton'
 import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
 import ProjectCountBar from 'components/Project/List/ProjectCountBar'
+import ProjectsGanttChartDialog from 'components/Project/GanttChart/Dialog'
 import { IProject } from 'contracts/project'
 
 const PageSymbol = Symbol('Management.Project.List')
@@ -38,14 +40,16 @@ type IProps = WithStyles<typeof styles> & {
 }
 
 type IState = {
-    openDrawer: boolean,
+    openDrawer: boolean
     isProjectFetching: boolean
+    openProjectGanttChart: boolean
 }
 
 class ProjectList extends Component<IProps, IState> {
     state = {
         openDrawer: false,
-        isProjectFetching: false
+        isProjectFetching: false,
+        openProjectGanttChart: false
     }
 
     componentDidMount() {
@@ -138,6 +142,16 @@ class ProjectList extends Component<IProps, IState> {
                                     </Tooltip> :
                                     null
                             })()}
+
+                            <Tooltip title="甘特圖">
+                                <IconButton 
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => this.setState({ openProjectGanttChart: true })}
+                                >
+                                    <EqualizerIcon />
+                                </IconButton>
+                            </Tooltip>
                         </div>
                     </Grid>
                     <Grid item className="ml-auto">
@@ -158,6 +172,12 @@ class ProjectList extends Component<IProps, IState> {
 
                 {projects && <ProjectMenu projects={projects} />}
                 {isProjectAllLoaded ? null : <ProjectItemSkeleton />}
+
+                <ProjectsGanttChartDialog 
+                    projects={projects || []} 
+                    open={this.state.openProjectGanttChart}    
+                    onClose={() => this.setState({ openProjectGanttChart: false })}
+                />
 
                 <ProjectEditDrawer 
                     open={openDrawer}

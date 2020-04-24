@@ -6,12 +6,19 @@ let positionMemoryStorage: {
 }[] = []
 
 type IProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+    elementRef?: React.RefObject<HTMLDivElement> 
     symbol?: Symbol
     onScrollBottom?: () => void
 }
 
 export default class RestorableScrollElement extends Component<IProps>{
-    elementRef = React.createRef<HTMLDivElement>()
+    elementRef: React.RefObject<HTMLDivElement> 
+
+    constructor(props: IProps) {
+        super(props)
+
+        this.elementRef = props.elementRef || React.createRef<HTMLDivElement>()
+    }
 
     handleScroll(event: React.UIEvent<HTMLDivElement>) {
         this.props.onScroll && this.props.onScroll(event)
@@ -45,6 +52,7 @@ export default class RestorableScrollElement extends Component<IProps>{
     render() {
         const {
             symbol,
+            elementRef,
             onScrollBottom,
             ...restProps
         } = this.props

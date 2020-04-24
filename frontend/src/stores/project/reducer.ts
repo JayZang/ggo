@@ -16,7 +16,7 @@ import {
     REMOVE_PROJECT_MEMBER_PARTICIPANT
 } from "./types"
 import { TaskActionType } from "stores/task/types"
-import { UserAreaActionType, FINISH_PROJECT } from "stores/userArea/types"
+import { UserAreaActionType, FINISH_PROJECT, UPDATE_PROJECT_TASK_STATUS, ADD_PROJECT_TASK } from "stores/userArea/types"
 
 const initState: ProjectState = {
     listPage: {
@@ -156,6 +156,36 @@ export default function customerReducer(state: ProjectState = initState, action:
                     ...state.infoPage,
                     project: action.payload.project,
                     tasks: action.payload.tasks
+                }
+            }
+
+        case UPDATE_PROJECT_TASK_STATUS:
+            return {
+                ...state,
+                infoPage: {
+                    ...state.infoPage,
+                    tasks: state.infoPage.tasks && state.infoPage.tasks.map(task => {
+                        if (task.id === action.payload.taskId)
+                            return {
+                                ...task,
+                                status: action.payload.status
+                            }
+                        return task
+                    })
+                }
+            }
+
+        case ADD_PROJECT_TASK:
+            return {
+                ...state,
+                infoPage: {
+                    ...state.infoPage,
+                    tasks: state.infoPage.project && 
+                        state.infoPage.project.id === action.payload.task.project_id && 
+                        state.infoPage.tasks ? [
+                            ...state.infoPage.tasks,
+                            action.payload.task
+                        ] : state.infoPage.tasks
                 }
             }
 

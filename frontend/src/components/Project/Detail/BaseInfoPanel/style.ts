@@ -9,8 +9,7 @@ export default (theme: Theme) => createStyles({
         marginBottom: theme.spacing(2)
     },
     datesBoxItem: {
-        padding: theme.spacing(2),
-        flexGrow: 1
+        padding: theme.spacing(2)
     },
     remarkWrapper: {
         padding: theme.spacing(2),

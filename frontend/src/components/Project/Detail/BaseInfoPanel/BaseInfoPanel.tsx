@@ -103,92 +103,102 @@ class ProjectBaseInfoPanel extends Component<IProps, IState> {
 
         return (
             <Box>
-                {project ? (
-                    <Box>
-                        <Typography variant="h4" component="div">
-                            <Box display="flex" alignItems="center">
-                                <Box fontWeight={500} component="span">
-                                    {project.name}
-                                </Box>
-                                {project.finish_datetime ? (
-                                    <Typography variant="subtitle2" component="span" className="badge badge-success ml-3 py-0">
-                                        已結案
-                                    </Typography>
-                                ): null }
-                            </Box>
-                        </Typography>
-                        {project.description && (
-                            <Box>
-                                <Box className="mt-1 mb-1" position="relative">
-                                    <Divider />
-                                    <LabelIcon className={classes.labelIcon} />
-                                </Box>
-                                <Typography variant="subtitle2" component="div">
-                                    <Box whiteSpace="pre-line" color="text.hint" paddingLeft="22px">
-                                        {project.description}
+                <Paper>
+                    <Box className="pt-3 px-4">
+                        {project ? (
+                            <Box marginBottom={2}>
+                                <Typography variant="h4" component="div">
+                                    <Box display="flex" alignItems="center">
+                                        <Box fontWeight={500} component="span">
+                                            {project.name}
+                                        </Box>
+                                        {project.finish_datetime ? (
+                                            <Typography variant="subtitle2" component="span" className="badge badge-success ml-3 py-0">
+                                                已結案
+                                            </Typography>
+                                        ) : null}
                                     </Box>
                                 </Typography>
+                                {project.description && (
+                                    <Box>
+                                        <Box className="mt-1 mb-1" position="relative">
+                                            <Divider />
+                                            <LabelIcon className={classes.labelIcon} />
+                                        </Box>
+                                        <Typography variant="subtitle2" component="div">
+                                            <Box whiteSpace="pre-line" color="text.hint" paddingLeft="22px">
+                                                {project.description}
+                                            </Box>
+                                        </Typography>
+                                    </Box>
+                                )}
                             </Box>
+                        ) : (
+                            <Skeleton width={300} />
                         )}
-                    </Box>
-                ) : (
-                    <Skeleton width={300} />
-                )}
-                <Paper className="mt-2">
-                    <Box className="pt-4 px-4">
+                        
                         <Grid container className={clsx(classes.datesBoxRoot, 'shadow-sm')}>
-                            <Grid item className={classes.datesBoxItem}>
-                                {(() => {
-                                    if (project) return (
-                                        <Typography align="center">
-                                            {project.start_datetime.format('YYYY-MM-DD')}
-                                        </Typography>
-                                    ) 
-                                    else return (
-                                        <Box width={70} marginX="auto">
-                                            <Skeleton />
-                                        </Box>
-                                    )
-                                })()}
-                                <Typography variant="h6" align="center">起始日期</Typography>
-                            </Grid>
-                            <Divider orientation="vertical" style={{height: 'auto'}} />
-                            <Grid item className={classes.datesBoxItem}>
-                                {(() => {
-                                    if (project) return (
-                                        <Typography align="center">
-                                            {project.deadline_datetime.format('YYYY-MM-DD')}
-                                        </Typography>
-                                    ) 
-                                    else return (
-                                        <Box width={70} marginX="auto">
-                                            <Skeleton />
-                                        </Box>
-                                    )
-                                })()}
-                                <Typography variant="h6" align="center">最後期限日期</Typography>
-                            </Grid>
-                            <Divider orientation="vertical" style={{height: 'auto'}} />
-                            <Grid item className={classes.datesBoxItem}>
-                                {(() => {
-                                    if (project) {
-                                        return (
+                            <Grid item xs style={{ flexBasis: 'auto' }}>
+                                <Box className={classes.datesBoxItem}>
+                                    {(() => {
+                                        if (project) return (
                                             <Typography align="center">
-                                                {project.finish_datetime ? project.finish_datetime.format('YYYY-MM-DD') : '尚未完成'}
+                                                {project.start_datetime.format('YYYY-MM-DD')}
                                             </Typography>
                                         )
-                                    } else return (
-                                        <Box width={70} marginX="auto">
-                                            <Skeleton />
-                                        </Box>
-                                    )
-                                })()}
-                                <Typography variant="h6" align="center">完成日期</Typography>
+                                        else return (
+                                            <Box width={70} marginX="auto">
+                                                <Skeleton />
+                                            </Box>
+                                        )
+                                    })()}
+                                    <Typography variant="h6" align="center">起始日期</Typography>
+                                </Box>
+                                <Divider />
+                            </Grid>
+                            <Divider orientation="vertical" style={{height: 'auto'}} />
+                            <Grid item xs style={{ flexBasis: 'auto' }}>
+                                <Box className={classes.datesBoxItem}>
+                                    {(() => {
+                                        if (project) return (
+                                            <Typography align="center">
+                                                {project.deadline_datetime.format('YYYY-MM-DD')}
+                                            </Typography>
+                                        ) 
+                                        else return (
+                                            <Box width={70} marginX="auto">
+                                                <Skeleton />
+                                            </Box>
+                                        )
+                                    })()}
+                                    <Typography variant="h6" align="center">最後期限日期</Typography>
+                                </Box>
+                                <Divider />
+                            </Grid>
+                            <Divider orientation="vertical" style={{height: 'auto'}} />
+                            <Grid item xs style={{ flexBasis: 'auto' }}>
+                                <Box className={classes.datesBoxItem}>
+                                    {(() => {
+                                        if (project) {
+                                            return (
+                                                <Typography align="center">
+                                                    {project.finish_datetime ? project.finish_datetime.format('YYYY-MM-DD') : '尚未完成'}
+                                                </Typography>
+                                            )
+                                        } else return (
+                                            <Box width={70} marginX="auto">
+                                                <Skeleton />
+                                            </Box>
+                                        )
+                                    })()}
+                                    <Typography variant="h6" align="center">完成日期</Typography>
+                                </Box>
+                                <Divider />
                             </Grid>
                         </Grid>
                     </Box>
-                    <Box className="px-4">
 
+                    <Box className="px-4">
                         <Box className="mb-4">
                             <Typography variant="h6">專案管理者</Typography>
                             {project ? (

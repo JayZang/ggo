@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import { Box, Grid } from "@material-ui/core";
+import { RouteComponentProps, withRouter } from "react-router";
 
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import ProjectBaseInfoPanel from 'components/Project/Detail/BaseInfoPanel'
+import TasksStatisticPanel from 'components/Task/Statistic/Panel'
 import ProjectTaskList from 'components/Project/Detail/TaskList'
 import ProjectEventStream from 'components/Project/Detail/EventStream'
+import TasksGanttChartPanel from 'components/Task/GanttChart/Panel'
 import { IProject } from "contracts/project";
-import { ITask, TaskStatus } from "contracts/task";
-import { RouteComponentProps, withRouter } from "react-router";
+import { ITask } from "contracts/task";
 
 type IProps = RouteComponentProps & {
     id: string
@@ -52,24 +54,41 @@ class ProjectDetail extends Component<IProps, IState> {
                     />
                 }
             >
-                <Grid container wrap="nowrap">
-                    <Box className="mr-4" width={450} flexShrink={0}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} lg={4}>
                         <ProjectBaseInfoPanel 
                             project={project}
                             editable={projectEditable}
                             isCanBeFinished={projectFinishable}
                         />
-                    </Box>
-                    <Box flexGrow={1}>
-                        <ProjectTaskList
-                            editable={taskEditable}
-                            project={project}
-                            tasks={tasks}
-                            onTaskViewBtnClick={task => {
-                                this.props.history.push(`/tasks/${task.id}` )
-                            }}
-                        />
-                    </Box>
+                    </Grid>
+                    <Grid item xs={12} lg={8}>
+                        <Grid container direction="column" spacing={3}>
+                            <Grid item>
+                                <ProjectTaskList
+                                    listMaxHeight={389}
+                                    editable={taskEditable}
+                                    project={project}
+                                    tasks={tasks}
+                                    onTaskViewBtnClick={task => {
+                                        this.props.history.push(`/tasks/${task.id}`)
+                                    }}
+                                />
+                            </Grid>
+
+                            {tasks && (
+                                <Grid item>
+                                    <TasksStatisticPanel tasks={tasks} />
+                                </Grid>
+                            )}
+
+                            {tasks && tasks.length ? (
+                                <Grid item>
+                                    <TasksGanttChartPanel tasks={tasks || []} />
+                                </Grid>
+                            ) : null}
+                        </Grid>
+                    </Grid>
                     {/* <Grid item xs={4}>
                         <ProjectEventStream />
                     </Grid> */}

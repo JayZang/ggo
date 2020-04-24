@@ -43,12 +43,12 @@ class MemberProfilePanel extends Component<IProps, IState> {
             return
         this.props.storeAvatar(this.state.avatar!)
             .then(() => {
-                this.props.enqueueSnackbar('除存頭貼成功！', {
+                this.props.enqueueSnackbar('儲存頭貼成功！', {
                     variant: 'success'
                 })
                 this.setState({ avatar: null })
             }).catch(() => {
-                this.props.enqueueSnackbar('除存頭貼失敗！', {
+                this.props.enqueueSnackbar('儲存頭貼失敗！', {
                     variant: 'error'
                 })
             })
@@ -64,7 +64,7 @@ class MemberProfilePanel extends Component<IProps, IState> {
         } = this.state
 
         return (
-            <Paper className="p-3">
+            <Paper className="px-3 py-5">
                 <Box textAlign="center" maxWidth={600} marginX="auto" position="relative">
                     <Badge
                         overlap="circle"

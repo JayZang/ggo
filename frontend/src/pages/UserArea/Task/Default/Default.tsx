@@ -8,6 +8,8 @@ import { green, blue, lime, amber } from '@material-ui/core/colors'
 import { ITask } from 'contracts/task'
 import { withRouter, RouteComponentProps } from 'react-router'
 
+const PageSymbol = Symbol('User.Task.List')
+
 class TaskCountCard extends Component<{
     title: string
     count: number
@@ -101,6 +103,7 @@ class TaskDefault extends Component<IProps, IState> {
                     />
                 )}
                 onScrollBottom={this.handleScrollBottom.bind(this)}
+                pageSymbol={PageSymbol}
             >
                 <Typography variant="h5" component="div">
                     <Box fontWeight={500}>我的任務</Box>

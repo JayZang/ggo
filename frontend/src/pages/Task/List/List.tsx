@@ -3,7 +3,8 @@ import { Grid, Paper, IconButton, InputBase, Tooltip, WithStyles, Typography, Bo
 import {
     Search as SearchIcon,
     Cached as CachedIcon,
-    FilterList as FilterListIcon
+    FilterList as FilterListIcon,
+    Equalizer as EqualizerIcon
 } from '@material-ui/icons'
 
 import styles from './styles'
@@ -13,6 +14,9 @@ import { ITask } from 'contracts/task'
 import { withStyles } from '@material-ui/styles'
 import TaskMenu from 'components/Task/List/TaskMenu'
 import TaskItemSkeleton from 'components/Task/List/TaskMenu/TaskItem/Skeleton'
+import TasksGanttChartDialog from 'components/Task/GanttChart/Dialog'
+
+const PageSymbol = Symbol('Management.Task.List')
 
 type IProps = WithStyles<typeof styles> & {
     tasks: ITask[] | null
@@ -24,11 +28,13 @@ type IProps = WithStyles<typeof styles> & {
 
 type IStatus = {
     isTaskFetching: boolean
+    openGanttDialog: boolean
 }
 
 class TaskList extends Component<IProps, IStatus> {
     state = {
-        isTaskFetching: false
+        isTaskFetching: false,
+        openGanttDialog: false
     }
 
     componentDidMount() {
@@ -68,6 +74,7 @@ class TaskList extends Component<IProps, IStatus> {
                     />
                 )}
                 onScrollBottom={this.handleScrollBottom.bind(this)}
+                pageSymbol={PageSymbol}
             >
                 <Grid container className="align-items-center mb-3">
                     <Grid item>
@@ -106,12 +113,28 @@ class TaskList extends Component<IProps, IStatus> {
                                     </Tooltip> :
                                     null
                             })()}
+
+                            <Tooltip title="甘特圖">
+                                <IconButton
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => this.setState({ openGanttDialog: true })}
+                                >
+                                    <EqualizerIcon />
+                                </IconButton>
+                            </Tooltip>
                         </div>
                     </Grid>
                 </Grid>
 
                 {tasks && <TaskMenu  tasks={tasks} />}
                 {isAllTasksLoaded ? null : <TaskItemSkeleton />}
+
+                <TasksGanttChartDialog 
+                    tasks={tasks || []}
+                    open={this.state.openGanttDialog}
+                    onClose={() => this.setState({ openGanttDialog: false })}
+                />
             </AppContent>
         )
     }

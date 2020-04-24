@@ -15,6 +15,8 @@ import WorkReportDisplayPanel from 'components/WorkReport/WorkReportPanel/WorkRe
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import WorkReportItemSkeleton from 'components/WorkReport/WorkReportPanel/WorkReportList/WorkReportItemSkeleton'
 
+const PageSymbol = Symbol('Management.WorkReport.List')
+
 type IProps = RouteComponentProps & {
     workReports: IWorkReport[] | null
     load: () => Promise<void>
@@ -82,6 +84,7 @@ class WorkReportListPage extends Component<IProps, IState> {
                     />
                 )}
                 onScrollBottom={this.handleScrollBottom.bind(this)}
+                pageSymbol={PageSymbol}
             >
                 <Grid container className="align-items-center mb-3">
                     <Grid item>

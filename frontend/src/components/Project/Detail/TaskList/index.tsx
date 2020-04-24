@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Paper, Box, Divider, Typography, Grid, Button, Tabs, Tab, LinearProgress } from '@material-ui/core'
+import { Paper, Box, Divider, Typography, Grid, Button } from '@material-ui/core'
 import {
     Add as AddIcon,
     Assignment as TaskIcon,
@@ -8,22 +8,19 @@ import { Skeleton } from '@material-ui/lab'
 
 import ProjectTaskItem from './TaskItem'
 import TaskEditDrawer from 'components/Task/EditPanel/EditDrawer'
-import { ITask, TaskStatus } from 'contracts/task'
+import { ITask } from 'contracts/task'
 import { IProject } from 'contracts/project'
-import { WithStyles, withStyles } from '@material-ui/styles'
-import styles from './styles'
-import moment from 'moment'
 
-type IProps = WithStyles<typeof styles> & {
+type IProps = {
     project: IProject | null
     tasks: ITask[] | null
     editable: boolean
+    listMaxHeight?: number
     onTaskViewBtnClick?: (task: ITask) => void
 }
 
 type IState = {
     openCreateDrawer: boolean
-    tabIndex: number
 }
 
 class ProjectTaskList extends Component<IProps, IState> {
@@ -32,7 +29,6 @@ class ProjectTaskList extends Component<IProps, IState> {
 
         this.state= {
             openCreateDrawer: false,
-            tabIndex: 0
         }
     }
 
@@ -41,49 +37,26 @@ class ProjectTaskList extends Component<IProps, IState> {
             project,
             tasks,
             editable,
-            classes,
+            listMaxHeight,
             onTaskViewBtnClick
         } = this.props
-        const {
-            tabIndex
-        } = this.state
 
         return (
             <Paper>
                 <Box className="py-3 px-4">
                     <Grid container alignItems="center" justify="space-between">
                         <Grid item>
-                            <Grid container alignItems="center">
-                                <Typography variant="h5" component="div">
-                                    <TaskIcon className="mr-1" />
-                                    <Box component="span">
-                                        工作任務 {tasks && tasks.length ? `(${tasks.length})` : null}
-                                    </Box>
-                                </Typography>
-                                <Box
-                                    border="1px solid rgba(0, 0, 0, .1)"
-                                    borderRadius={5}
-                                    marginLeft={3}
-                                >
-                                    <Tabs 
-                                        classes={{
-                                            root: classes.tabsWrapper
-                                        }}
-                                        width="200px"
-                                        value={tabIndex} 
-                                        indicatorColor="primary"
-                                        textColor="primary"
-                                        onChange={(event, val) => this.setState({ tabIndex: val })}
-                                    >
-                                        <Tab label="列表" className={classes.tabItem}/>
-                                        <Tab label="統計" className={classes.tabItem}/>
-                                    </Tabs>
+                            <Typography variant="h6" component="div" className="d-flex align-items-center">
+                                <TaskIcon className="mr-1" />
+                                <Box component="span">
+                                    工作任務 {tasks && tasks.length ? `(${tasks.length})` : null}
                                 </Box>
-                            </Grid>
+                            </Typography>
                         </Grid>
                         {editable ? (
                             <Grid item>
                                 <Button 
+                                    size="small"
                                     color="primary" 
                                     variant="contained"
                                     startIcon={<AddIcon />}
@@ -93,156 +66,47 @@ class ProjectTaskList extends Component<IProps, IState> {
                                 </Button>
                             </Grid>
                         ) : null}
-                        
                     </Grid>
                 </Box>
 
                 <Divider />
 
-                {(() => {
-                    if (tabIndex === 0) return (
-                        <Box>
-                            {tasks ? tasks.map(task => (
-                                <Box key={task.id}>
-                                    <ProjectTaskItem 
-                                        task={task} 
-                                        isEditable={editable}
-                                        onViewBtnClick={() => {
-                                            onTaskViewBtnClick && onTaskViewBtnClick(task)
-                                        }}
-                                    />
-                                    <Divider />
-                                </Box>
-                            )) : (
-                                <Box className="p-3 px-4">
-                                    <Skeleton width={300} />
-                                    <Skeleton width={130} />
-                                </Box>
-                            )}
-                            {editable && tasks && tasks.length === 0 ? (
-                                <Box className="p-4">
-                                    <Button 
-                                        variant="outlined" 
-                                        startIcon={<AddIcon />} 
-                                        onClick={() => this.setState({ openCreateDrawer: true })}
-                                        fullWidth
-                                    >
-                                        新增工作任務
-                                    </Button>
-                                </Box>
-                            ) : null}
-                            {!editable && tasks && tasks.length === 0 ? (
-                                <Box className="p-4 text-center">
-                                    <Typography>尚無工作任務</Typography>
-                                </Box>
-                            ) : null}
+                <Box maxHeight={listMaxHeight} overflow="auto">
+                    {tasks ? tasks.map(task => (
+                        <Box key={task.id}>
+                            <ProjectTaskItem 
+                                task={task} 
+                                isEditable={editable}
+                                onViewBtnClick={() => {
+                                    onTaskViewBtnClick && onTaskViewBtnClick(task)
+                                }}
+                            />
+                            <Divider />
                         </Box>
-                    ) 
-                    else if (tabIndex === 1) {
-                        const totalCount = tasks ? tasks.length : 0
-                        let progressingCount = 0
-                        let pauseCount = 0
-                        let completedCount = 0
-                        let terminatedCount = 0
-                        let expiredCount = 0
-
-                        tasks && tasks.forEach(task => {
-                            if (task.status !== TaskStatus.Completed && 
-                                task.status !== TaskStatus.Terminated &&
-                                moment().isAfter(task.deadline_datetime))
-                                expiredCount++
-                                
-                            switch (task.status) {
-                                case TaskStatus.Normal:
-                                    progressingCount++
-                                    break
-                                    
-                                case TaskStatus.Pause:
-                                    pauseCount++
-                                    break
-
-                                case TaskStatus.Completed:
-                                    completedCount++
-                                    break
-
-                                case TaskStatus.Terminated:
-                                    terminatedCount++
-                                    break
-
-                            }
-                        })
-
-                        let progressingRate = parseInt((progressingCount / totalCount * 100).toString()) || 0
-                        let pauseRate = parseInt((pauseCount / totalCount * 100).toString()) || 0
-                        let completedRate = parseInt((completedCount / totalCount * 100).toString()) || 0
-                        let terminatedRate = parseInt((terminatedCount / totalCount * 100).toString()) || 0
-                        let expiredRate = parseInt((expiredCount / totalCount * 100).toString()) || 0
-
-                        return ( 
-                            <Box className="p-4">
-                                <Grid container spacing={5}>
-                                    <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
-                                            <Typography variant="h6">工作任務總數</Typography>
-                                            <Typography variant="body2">{totalCount} 筆</Typography>
-                                        </Box>
-                                        <LinearProgress variant="determinate" value={100} color="primary" />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
-                                            <Typography variant="h6">執行中</Typography>
-                                            <Typography variant="body2">{progressingCount} 筆 ({progressingRate}％)</Typography>
-                                        </Box>
-                                        <LinearProgress variant="determinate" value={progressingRate} classes={{
-                                            root: classes.progressingBarContainer,
-                                            bar: classes.progressingBarIndicator
-                                        }} />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
-                                            <Typography variant="h6">暫停中</Typography>
-                                            <Typography variant="body2">{pauseCount} 筆 ({pauseRate}％)</Typography>
-                                        </Box>
-                                        <LinearProgress variant="determinate" value={pauseRate} classes={{
-                                            root: classes.pauseBarContainer,
-                                            bar: classes.pauseBarIndicator
-                                        }} />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
-                                            <Typography variant="h6">已終止</Typography>
-                                            <Typography variant="body2">{terminatedCount} 筆 ({terminatedRate}％)</Typography>
-                                        </Box>
-                                        <LinearProgress variant="determinate" value={terminatedRate} classes={{
-                                            root: classes.terminatedBarContainer,
-                                            bar: classes.terminatedBarIndicator
-                                        }} />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
-                                            <Typography variant="h6">已完成</Typography>
-                                            <Typography variant="body2">{completedCount} 筆 ({completedRate}％)</Typography>
-                                        </Box>
-                                        <LinearProgress variant="determinate" value={completedRate} classes={{
-                                            root: classes.successBarContainer,
-                                            bar: classes.successBarIndicator
-                                        }} />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="baseline" marginBottom={1}>
-                                            <Typography variant="h6">逾期未完成</Typography>
-                                            <Typography variant="body2">{expiredCount} 筆 ({expiredRate}％)</Typography>
-                                        </Box>
-                                        <LinearProgress variant="determinate" value={expiredRate} classes={{
-                                            root: classes.expiredBarContainer,
-                                            bar: classes.expiredBarIndicator
-                                        }} />
-                                    </Grid>
-                                </Grid>
-                            </Box>
-                        )
-                    }
-                })()}
+                    )) : (
+                        <Box className="p-3 px-4">
+                            <Skeleton width={300} />
+                            <Skeleton width={130} />
+                        </Box>
+                    )}
+                    {editable && tasks && tasks.length === 0 ? (
+                        <Box className="p-4">
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<AddIcon />} 
+                                onClick={() => this.setState({ openCreateDrawer: true })}
+                                fullWidth
+                            >
+                                新增工作任務
+                            </Button>
+                        </Box>
+                    ) : null}
+                    {!editable && tasks && tasks.length === 0 ? (
+                        <Box className="p-4 text-center">
+                            <Typography>尚無工作任務</Typography>
+                        </Box>
+                    ) : null}
+                </Box>
 
                 {editable ? (
                     <TaskEditDrawer 
@@ -257,4 +121,4 @@ class ProjectTaskList extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(ProjectTaskList)
+export default ProjectTaskList

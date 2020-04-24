@@ -7,6 +7,8 @@ import MobileHeader from 'components/MobileHeader'
 import { IProject } from 'contracts/project'
 import ProjectItem from 'components/Project/List/ProjectMenu/ProjectItem'
 import ProjectSkeleton from 'components/Project/List/ProjectMenu/ProjectItem/Skeleton'
+ 
+const PageSymbol = Symbol('User.Project.List')
 
 class ProjectCountCard extends Component<{
     title: string
@@ -102,6 +104,7 @@ class ProjectListPage extends Component<IProps, IState> {
                     />
                 )}
                 onScrollBottom={this.handleScrollBottom.bind(this)}
+                pageSymbol={PageSymbol}
             >
                 <Typography variant="h5" component="div">
                     <Box fontWeight={500}>我管理的專案</Box>
