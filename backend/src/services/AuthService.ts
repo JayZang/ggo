@@ -80,6 +80,9 @@ export default class AuthService {
         }
     }
 
+    /**
+     * Refresh user auth token
+     */
     public async refreshUserToken(user: User, oldToken: string, ip: string) {
         try {
             await this.removeTokenFromStorage(oldToken, user.id)
@@ -87,7 +90,24 @@ export default class AuthService {
             await this.storeAuthToken(newToken, user.id)
             return newToken
         } catch (err) {
+            console.log('Refresh user auth token error')
             console.log(err)
+            return null
+        }
+    }
+
+    /**
+     * Get user by line user id
+     */
+    public async getUserByLineUserId(userId: string) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            return await userRepo.findOne({
+                line_user_id: userId
+            })
+        } catch (err) {
+            console.log('Get user by line user id error')
+            console.log( err)
             return null
         }
     }

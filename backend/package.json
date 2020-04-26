@@ -21,6 +21,7 @@
     "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
+    "@line/bot-sdk": "^6.8.4",
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/mime-types": "^2.1.0",

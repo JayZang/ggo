@@ -7,7 +7,7 @@ import customerRouter from './customer'
 import projectRouter from './project'
 import taskRouter from './task'
 import workReportRouter from './workReport'
-import validateIsAuth from '@/api/middleware/validateIsAuth'
+import validateIsAuth from '@/routers/api/middleware/validateIsAuth'
 
 const router = Router()
 

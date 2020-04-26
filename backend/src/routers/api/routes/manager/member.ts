@@ -4,12 +4,12 @@ import _ from 'lodash'
 
 import TeamService from '@/services/TeamService'
 import MemberService from '@/services/MemberService'
-import validatePermission from '@/api/middleware/validatePermission'
+import validatePermission from '@/routers/api/middleware/validatePermission'
 import { 
     CreateAndEditMember, 
     CreateEmergencyContact, 
     UpdateMemberStatus
- } from '@/api/validators/member'
+ } from '@/routers/api/validators/member'
 
 const router = Router()
 const memberService = Container.get(MemberService)

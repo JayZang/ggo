@@ -2,8 +2,8 @@ import { Router, Response, Request } from 'express'
 import { Container } from 'typedi'
 
 import { UserIdentityType } from '@/entity/User'
-import validateIdentity from '@/api/middleware/validateIdentity'
-import { CreateWorkReportValidator } from '@/api/validators/workReport'
+import validateIdentity from '@/routers/api/middleware/validateIdentity'
+import { CreateWorkReportValidator } from '@/routers/api/validators/workReport'
 import MemberTaskService from '@/services/UserArea/MemberTask/MemberTaskService'
 import TaskWorkReportService from '@/services/UserArea/MemberTask/TaskWorkReportService'
 

@@ -1,11 +1,11 @@
 import { Router, Response, Request } from 'express'
 import { Container } from 'typedi'
 
-import { UserIdentityType } from '@/entity/User'
-import validateIdentity from '@/api/middleware/validateIdentity'
+import { CreateAndEditTask, UpdateTaskStatus } from '@/routers/api/validators/task'
+import validateIdentity from '@/routers/api/middleware/validateIdentity'
+import { FinishProject } from '@/routers/api/validators/project'
 import UserProjectService from '@/services/UserArea/UserProjectService'
-import { FinishProject } from '@/api/validators/project'
-import { CreateAndEditTask, UpdateTaskStatus } from '@/api/validators/task'
+import { UserIdentityType } from '@/entity/User'
 
 const router = Router()
 const userProjectService = Container.get(UserProjectService)

@@ -4,8 +4,8 @@ import { Container } from 'typedi'
 import { ProjectSrcType } from '@/entity/Project'
 import TaskService from '@/services/TaskService'
 import ProjectService from '@/services/ProjectService'
-import validatePermission from '@/api/middleware/validatePermission'
-import { CreateAndEditProject } from '@/api/validators/project'
+import validatePermission from '@/routers/api/middleware/validatePermission'
+import { CreateAndEditProject } from '@/routers/api/validators/project'
 
 const router = Router()
 const projectService = Container.get(ProjectService)

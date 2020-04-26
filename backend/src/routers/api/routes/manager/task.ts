@@ -3,7 +3,7 @@ import { Container } from 'typedi'
 import { isNull } from 'util'
 
 import TaskService from '@/services/TaskService'
-import validatePermission from '@/api/middleware/validatePermission'
+import validatePermission from '@/routers/api/middleware/validatePermission'
 
 const router = Router()
 const taskService = Container.get(TaskService)

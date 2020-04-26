@@ -3,8 +3,8 @@ import { Container } from 'typedi'
 import mimiTypes from 'mime-types'
 
 import IAMService from '@/services/IAMService'
-import validateIdentity from '@/api/middleware/validateIdentity'
-import { CreateOrUpdateGroup, DeleteGroups, CreateUser, UpdateUserPolicies, DeleteUsers } from '@/api/validators/iam'
+import validateIdentity from '@/routers/api/middleware/validateIdentity'
+import { CreateOrUpdateGroup, DeleteGroups, CreateUser, UpdateUserPolicies, DeleteUsers } from '@/routers/api/validators/iam'
 import { UserIdentityType } from '@/entity/User'
 
 const router = Router()

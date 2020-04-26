@@ -38,3 +38,10 @@ export const jwt = {
     authValidDuration: 60 * 60 * 3,
     authHeaderName: 'x-access-token'
 }
+
+export const line = {
+    messageApi: {
+        channelAccessToken: process.env.LINE_MESSAGE_API_CHANNEL_ACCESS_TOKEN,
+        channelSecret: process.env.LINE_MESSAGE_API_CHANNEL_SECRET
+    }
+}

@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 
 import DashboardService from '@/services/DashboardService'
-import validateIsAuth from '@/api/middleware/validateIsAuth'
+import validateIsAuth from '@/routers/api/middleware/validateIsAuth'
 
 const router = Router()
 const dashboardService = Container.get(DashboardService)

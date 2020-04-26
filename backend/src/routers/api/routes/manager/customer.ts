@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
 
-import { CreateCustomer } from '@/api/validators/customer'
+import { CreateCustomer } from '@/routers/api/validators/customer'
 import CustomerService from '@/services/CustomerService'
-import validatePermission from '@/api/middleware/validatePermission'
+import validatePermission from '@/routers/api/middleware/validatePermission'
 import getImageMulter from '@/utils/multer/getImageMulter'
 
 const router = Router()

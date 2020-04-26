@@ -37,6 +37,16 @@ export default class User {
     @Column()
     identity_id: number
 
+    @Column({
+        nullable: true
+    })
+    line_user_id: string | null
+
+    @Column({
+        nullable: true
+    })
+    line_nonce: string | null
+
     @CreateDateColumn({ type: 'timestamp' })
     create_at: Date
 

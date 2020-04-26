@@ -4,8 +4,8 @@ import { Container } from 'typedi'
 import TaskService from '@/services/TaskService'
 import TeamService from '@/services/TeamService'
 import MemberService from '@/services/MemberService'
-import { CreateTeamValidator } from '@/api/validators/team'
-import validatePermission from '@/api/middleware/validatePermission'
+import { CreateTeamValidator } from '@/routers/api/validators/team'
+import validatePermission from '@/routers/api/middleware/validatePermission'
 
 const router = Router()
 const teamService = Container.get(TeamService)

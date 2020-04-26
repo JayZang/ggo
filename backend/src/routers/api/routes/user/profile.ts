@@ -2,7 +2,7 @@ import { Router, Response, Request } from 'express'
 import { Container } from 'typedi'
 
 import { UserIdentityType } from '@/entity/User'
-import validateIdentity from '@/api/middleware/validateIdentity'
+import validateIdentity from '@/routers/api/middleware/validateIdentity'
 import MemberProfileService from '@/services/Profile/MemberProfileService'
 import getImageMulter from '@/utils/multer/getImageMulter'
 import AuthService from '@/services/AuthService'

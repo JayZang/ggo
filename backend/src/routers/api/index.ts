@@ -13,8 +13,8 @@ export default () => {
 
     authRouter(app)
     userRouter(app)
-    managerRouter(app)
     dashboardRouter(app)
+    managerRouter(app)
 
     return app
 }

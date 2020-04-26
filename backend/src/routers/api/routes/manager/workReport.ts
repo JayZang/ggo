@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { Container } from 'typedi'
 
 import WorkReportService from '@/services/WorkReportService'
-import validatePermission from '@/api/middleware/validatePermission'
+import validatePermission from '@/routers/api/middleware/validatePermission'
 
 const router = Router()
 const workReportService = Container.get(WorkReportService)
