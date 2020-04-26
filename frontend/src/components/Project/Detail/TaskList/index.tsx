@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
-import { Paper, Box, Divider, Typography, Grid, Button } from '@material-ui/core'
+import { Paper, Box, Divider, Typography, Grid, Button, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import {
     Add as AddIcon,
     Assignment as TaskIcon,
 } from '@material-ui/icons'
 import { Skeleton } from '@material-ui/lab'
 
+import { ITask, TaskStatus } from 'contracts/task'
+import { IProject } from 'contracts/project'
 import ProjectTaskItem from './TaskItem'
 import TaskEditDrawer from 'components/Task/EditPanel/EditDrawer'
-import { ITask } from 'contracts/task'
-import { IProject } from 'contracts/project'
 
 type IProps = {
     project: IProject | null
@@ -21,6 +21,7 @@ type IProps = {
 
 type IState = {
     openCreateDrawer: boolean
+    statusFilter?: | TaskStatus
 }
 
 class ProjectTaskList extends Component<IProps, IState> {
@@ -29,6 +30,7 @@ class ProjectTaskList extends Component<IProps, IState> {
 
         this.state= {
             openCreateDrawer: false,
+            statusFilter: undefined
         }
     }
 
@@ -40,6 +42,9 @@ class ProjectTaskList extends Component<IProps, IState> {
             listMaxHeight,
             onTaskViewBtnClick
         } = this.props
+        const {
+            statusFilter
+        } = this.state
 
         return (
             <Paper>
@@ -53,26 +58,45 @@ class ProjectTaskList extends Component<IProps, IState> {
                                 </Box>
                             </Typography>
                         </Grid>
-                        {editable ? (
-                            <Grid item>
+                        <Grid item className="d-flex align-items-center">
+                            <FormControl variant="outlined">
+                                <Select
+                                    displayEmpty
+                                    value={statusFilter}
+                                    onChange={event => this.setState({ statusFilter: event.target.value as any })}
+                                    inputProps={{
+                                        className: 'py-1'
+                                    }}
+                                >
+                                    <MenuItem value={undefined}>全部</MenuItem>
+                                    <MenuItem value={TaskStatus.Normal}>執行中</MenuItem>
+                                    <MenuItem value={TaskStatus.Pause}>暫停中</MenuItem>
+                                    <MenuItem value={TaskStatus.Completed}>已完成</MenuItem>
+                                    <MenuItem value={TaskStatus.Terminated}>已終止</MenuItem>
+                                </Select>
+                            </FormControl>
+                            {editable ? (
                                 <Button 
                                     size="small"
                                     color="primary" 
+                                    className="ml-3"
                                     variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={() => this.setState({ openCreateDrawer: true })}
                                 >
                                     新增工作任務
                                 </Button>
-                            </Grid>
-                        ) : null}
+                            ) : null}
+                        </Grid>
                     </Grid>
                 </Box>
 
                 <Divider />
 
                 <Box maxHeight={listMaxHeight} overflow="auto">
-                    {tasks ? tasks.map(task => (
+                    {tasks ? tasks
+                        .filter(task => statusFilter === undefined ? true : statusFilter === task.status )
+                        .map(task => (
                         <Box key={task.id}>
                             <ProjectTaskItem 
                                 task={task} 

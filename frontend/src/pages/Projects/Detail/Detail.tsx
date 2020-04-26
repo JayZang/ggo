@@ -66,7 +66,7 @@ class ProjectDetail extends Component<IProps, IState> {
                         <Grid container direction="column" spacing={3}>
                             <Grid item>
                                 <ProjectTaskList
-                                    listMaxHeight={389}
+                                    listMaxHeight={390}
                                     editable={taskEditable}
                                     project={project}
                                     tasks={tasks}
