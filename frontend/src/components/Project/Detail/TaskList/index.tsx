@@ -21,7 +21,7 @@ type IProps = {
 
 type IState = {
     openCreateDrawer: boolean
-    statusFilter?: | TaskStatus
+    statusFilter: TaskStatus | ''
 }
 
 class ProjectTaskList extends Component<IProps, IState> {
@@ -30,7 +30,7 @@ class ProjectTaskList extends Component<IProps, IState> {
 
         this.state= {
             openCreateDrawer: false,
-            statusFilter: undefined
+            statusFilter: ''
         }
     }
 
@@ -68,7 +68,7 @@ class ProjectTaskList extends Component<IProps, IState> {
                                         className: 'py-1'
                                     }}
                                 >
-                                    <MenuItem value={undefined}>全部</MenuItem>
+                                    <MenuItem value="">全部</MenuItem>
                                     <MenuItem value={TaskStatus.Normal}>執行中</MenuItem>
                                     <MenuItem value={TaskStatus.Pause}>暫停中</MenuItem>
                                     <MenuItem value={TaskStatus.Completed}>已完成</MenuItem>
@@ -95,7 +95,7 @@ class ProjectTaskList extends Component<IProps, IState> {
 
                 <Box maxHeight={listMaxHeight} overflow="auto">
                     {tasks ? tasks
-                        .filter(task => statusFilter === undefined ? true : statusFilter === task.status )
+                        .filter(task => statusFilter === '' ? true : statusFilter === task.status )
                         .map(task => (
                         <Box key={task.id}>
                             <ProjectTaskItem 
