@@ -1,16 +1,18 @@
+import queryString from 'query-string'
+import { Box } from '@material-ui/core'
 import React, { Component } from 'react'
+import { Switch, Route, Redirect } from 'react-router'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 import RequestLoadingBar from 'components/RequestLoadingBar'
-import Header from 'components/Header'
-import MenuDrawer from 'components/MenuDrawer'
 import MobileBottomBar from 'components/MobileBottomBar'
+import LineAccountLinkPage from 'pages/LineAccountLink'
+import MenuDrawer from 'components/MenuDrawer'
 import ContentWrapper from './ContentWrapper'
-import AuthPage from 'pages/Auth'
-import { Switch, Route, Redirect } from 'react-router'
-import { Box } from '@material-ui/core'
+import Header from 'components/Header'
 import { IUser } from 'contracts/user'
+import AuthPage from 'pages/Auth'
 
 type IProps = WithSnackbarProps & {
     init: () => Promise<void>
@@ -61,6 +63,11 @@ class App extends Component<IProps, IState> {
                     return initialed ? (
                         <Switch>
                             <Route path="/auth" render={() => !!user ? <Redirect to="/" /> : <AuthPage />} />
+                            <Route path="/line/account-link" render={props => {
+                                let linkToken = queryString.parse(props.location.search).linkToken
+                                linkToken = typeof linkToken === 'string' ? linkToken : undefined
+                                return <LineAccountLinkPage linkToken={linkToken} />
+                            }} />
                             <Route render={() => user ? (
                                 <Box>
                                     <Header user={user} />

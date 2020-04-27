@@ -5,7 +5,8 @@ dotenv.config()
 const env = process.env.NODE_ENV || 'development'
 
 export const system = {
-    port: process.env.PORT || 300
+    port: process.env.PORT || 300,
+    appDomain: process.env.APP_DOMAIN || 'https://0.0.0.0'
 }
 
 export const database = {

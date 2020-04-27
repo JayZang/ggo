@@ -1,5 +1,7 @@
 import { Message } from '@line/bot-sdk'
 
+import { system } from '@/config'
+
 export default function (linkToken: string): Message | Message[] {
     return {
         type: 'flex',
@@ -28,7 +30,7 @@ export default function (linkToken: string): Message | Message[] {
                     action: {
                         type: "uri",
                         label: "登入網站系統",
-                        uri: `https://b61ced8f.ngrok.io?linkToken=${linkToken}`
+                        uri: `${system.appDomain}/line/account-link?linkToken=${linkToken}`
                     }
                 }, {
                     type: "spacer",

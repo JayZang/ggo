@@ -10,7 +10,7 @@ export default (app: Application) => {
 
     // Uploaded files
     app.use('/uploads', express.static(__dirname + '/../../uploads'))
-    
+
     // Line
     app.use(lineRouter())
 

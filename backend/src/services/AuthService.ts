@@ -2,6 +2,7 @@ import { getCustomRepository } from 'typeorm'
 import jwt from 'jsonwebtoken'
 import { Service } from 'typedi'
 import bcryptjs from 'bcryptjs'
+import crypto from 'crypto'
 import _ from 'lodash'
 
 import UserRepo from '@/repository/UserRepository'
@@ -147,6 +148,51 @@ export default class AuthService {
 
             return payload
         } catch {
+            return null
+        }
+    }
+
+    /**
+     * Generate line account link nonce
+     */
+    public async generateLineAccountLinkNonce(account_id: string, password: string) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            const user = await userRepo.createQueryBuilder('user')
+                .addSelect('user.password')
+                .where({ account_id, loginable: true })
+                .getOne()
+    
+            if (!user || !bcryptjs.compareSync(password, user.password))
+                return null
+
+            user.line_nonce = crypto.randomBytes(16).toString('base64')
+            await userRepo.save(user)
+            
+            return user.line_nonce
+        } catch (err) {
+            console.log('Generate line account link nonce error')
+            console.log(err)
+            return null
+        }
+    }
+
+    /**
+     * Link line account
+     */
+    public async linkLineAccount(nonce: string, lineUserId: string) {
+        try {
+            const userRepo = getCustomRepository(UserRepo)
+            const user = await userRepo.findOneOrFail({
+                line_nonce: nonce
+            })
+    
+            user.line_user_id = lineUserId
+
+            return await userRepo.save(user)
+        } catch (err) {
+            console.log('Link line account error')
+            console.log(err)
             return null
         }
     }

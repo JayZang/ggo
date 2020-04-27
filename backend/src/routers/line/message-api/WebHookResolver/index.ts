@@ -1,6 +1,7 @@
 import { WebhookEvent, Client } from "@line/bot-sdk";
 import MessageEventResolver from "./MessageEventResolver.ts";
 import FollowEventResolver from "./FollowEventResolver";
+import AccountLinkEventResolver from "./AccountLinkEventResolver";
 
 export default class WebHookResolver {
     client: Client
@@ -18,6 +19,8 @@ export default class WebHookResolver {
             return new MessageEventResolver(client, event).resolve()
         else if (event.type === 'follow')
             return new FollowEventResolver(client, event).resolve()
+        else if (event.type === 'accountLink')
+            return new AccountLinkEventResolver(client, event).resolve()
 
         return Promise.resolve(null)
     }

@@ -20,11 +20,6 @@ export default class User {
     password: string
 
     @Column({
-        nullable: true
-    })
-    line_id: string
-
-    @Column({
         default: true
     })
     loginable: boolean
