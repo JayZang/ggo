@@ -6,16 +6,16 @@ import validateIdentity from '@/routers/api/middleware/validateIdentity'
 import { CreateWorkReportValidator } from '@/routers/api/validators/workReport'
 import MemberTaskService from '@/services/UserArea/MemberTask/MemberTaskService'
 import TaskWorkReportService from '@/services/UserArea/MemberTask/TaskWorkReportService'
+import { UserHelper } from '@/helper/UserHelper'
 
 const router = Router()
 const memberTaskService = Container.get(MemberTaskService)
 const taskWorkReportService = Container.get(TaskWorkReportService)
 
 export default (app: Router) => {
-    app.use('/tasks', validateIdentity([
-        UserIdentityType.manager,
-        UserIdentityType.member
-    ]), router)
+    app.use('/tasks', validateIdentity(
+        UserHelper.identitiesForMember
+    ), router)
 
     router.get('', async (req, res) => {
         const member = req.user!.identity

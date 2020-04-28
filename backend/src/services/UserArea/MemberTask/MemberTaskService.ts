@@ -21,7 +21,7 @@ export default class MemberTaskService {
     }) {
         try {
             const taskRepo = getCustomRepository(TaskRepo)
-            const assignmentConditions = await this.getTaskAssignmentConditions(member.id)
+            const assignmentConditions = await TaskHelper.getMemberAssignableCondition(member.id)
  
             return await taskRepo
                 .initQueryBuilder()
@@ -49,7 +49,7 @@ export default class MemberTaskService {
         try {
             const taskRepo = getCustomRepository(TaskRepo)
             const workReportRepo = getCustomRepository(WorkReportRepo)
-            const assignmentConditions = await this.getTaskAssignmentConditions(member.id)
+            const assignmentConditions = await TaskHelper.getMemberAssignableCondition(member.id)
 
             const [
                 countOfTotal,
@@ -114,18 +114,5 @@ export default class MemberTaskService {
             console.log(err)
             return null
         }
-    }
-
-    private async getTaskAssignmentConditions(memberId: number) {
-        const teamRepo = getCustomRepository(TeamRepo)
-        const teams = await teamRepo.getByMember(memberId)
-
-        return [{
-            type: TaskAssignmentType.Member,
-            targetIds: [memberId]
-        }, {
-            type: TaskAssignmentType.Team,
-            targetIds: teams.map(team => team.id)
-        }]
     }
 }

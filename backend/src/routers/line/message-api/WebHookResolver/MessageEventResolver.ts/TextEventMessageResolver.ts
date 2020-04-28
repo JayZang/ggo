@@ -36,7 +36,7 @@ export default class TextEventMessageResolver {
         if (commandTypes === CommandTypes.ACCOUNT_LINK) 
             return this.handleAccountLink()
         else if (commandTypes === CommandTypes.WORK_REPORT)
-            return this.handleWorkReportStart()
+            return this.handleWorkReportCommand()
 
         return Promise.resolve(null)
     }
@@ -54,7 +54,7 @@ export default class TextEventMessageResolver {
         return client.replyMessage(event.replyToken, getAccountLinkMessage(linkToken))
     }
 
-    private async handleWorkReportStart() {
+    private async handleWorkReportCommand() {
         const { client, event } = this
         const userId = event.source.userId
         const user = await authService.getUserByLineUserId(userId)
@@ -63,7 +63,7 @@ export default class TextEventMessageResolver {
             return this.replyUserNotFoundMessage()
 
         const replyMessage = await workReportService.execute(
-            event.source.userId, 
+            user,
             this.commandAction, 
             this.commandParameter
         )

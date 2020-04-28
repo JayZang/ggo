@@ -24,7 +24,7 @@ export default class TaskWorkReportService {
             const task = await taskRepo.findOneOrFail(taskId, { relations: ['assignment'] })
             const isAvailable = await TaskHelper.isTaskAvailableByMember(task, member.id)
 
-            if (!isAvailable || task.status !== TaskStatus.Normal) 
+            if (!isAvailable || !TaskHelper.avaliableStatusToSubmitWorkReport.includes(task.status)) 
                 return null
 
             const workReport = workReportRepo.create()

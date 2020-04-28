@@ -3,9 +3,12 @@ import { getCustomRepository } from "typeorm"
 import { TaskAssignmentType } from "@/entity/TaskAssignment"
 import MemberRepo from "@/repository/MemberRepository"
 import TeamRepo from "@/repository/TeamRepository"
-import Task from "@/entity/Task"
+import Task, { TaskStatus } from "@/entity/Task"
 
 export class TaskHelper {
+    static avaliableStatusToSubmitWorkReport = [
+        TaskStatus.Normal
+    ]
 
     static async isTaskAvailableByMember(task: Task, memberId: number) {
         const teamRepo = getCustomRepository(TeamRepo)
@@ -18,6 +21,19 @@ export class TaskHelper {
         }
 
         return false
+    }
+
+    static async getMemberAssignableCondition(memberId: number) {
+        const teamRepo = getCustomRepository(TeamRepo)
+        const teams = await teamRepo.getByMember(memberId)
+
+        return [{
+            type: TaskAssignmentType.Member,
+            targetIds: [memberId]
+        }, {
+            type: TaskAssignmentType.Team,
+            targetIds: teams.map(team => team.id)
+        }]
     }
 
     static async attachTasksAssignment(tasks: Task[]) {

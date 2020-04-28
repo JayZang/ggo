@@ -6,15 +6,15 @@ import validateIdentity from '@/routers/api/middleware/validateIdentity'
 import { FinishProject } from '@/routers/api/validators/project'
 import UserProjectService from '@/services/UserArea/UserProjectService'
 import { UserIdentityType } from '@/entity/User'
+import { UserHelper } from '@/helper/UserHelper'
 
 const router = Router()
 const userProjectService = Container.get(UserProjectService)
 
 export default (app: Router) => {
-    app.use('/projects', validateIdentity([
-        UserIdentityType.manager,
-        UserIdentityType.member
-    ]), router)
+    app.use('/projects', validateIdentity(
+        UserHelper.identitiesForMember
+    ), router)
 
     router.get('/', async (req, res) => {
         const member = req.user!.identity

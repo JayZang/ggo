@@ -7,6 +7,7 @@ import MemberProfileService from '@/services/Profile/MemberProfileService'
 import getImageMulter from '@/utils/multer/getImageMulter'
 import AuthService from '@/services/AuthService'
 import { jwt as jwtConfig } from '@/config'
+import { UserHelper } from '@/helper/UserHelper'
 
 const router = Router()
 const authService = Container.get(AuthService)
@@ -14,10 +15,9 @@ const memberProfileService = Container.get(MemberProfileService)
 const memberAvatarUpload = getImageMulter()
 
 export default (app: Router) => {
-    app.use('/profile', validateIdentity([
-        UserIdentityType.manager,
-        UserIdentityType.member
-    ]), router)
+    app.use('/profile', validateIdentity(
+        UserHelper.identitiesForMember
+    ), router)
 
     router.post(
         '/avatar', 
