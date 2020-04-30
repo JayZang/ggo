@@ -1,5 +1,5 @@
 import { WebhookEvent, Client } from "@line/bot-sdk";
-import MessageEventResolver from "./MessageEventResolver.ts";
+import MessageEventResolver from "./MessageEventResolver";
 import FollowEventResolver from "./FollowEventResolver";
 import AccountLinkEventResolver from "./AccountLinkEventResolver";
 

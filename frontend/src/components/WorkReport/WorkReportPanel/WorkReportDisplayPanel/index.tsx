@@ -63,7 +63,7 @@ class WorkReportDisplayPanel extends Component<IProps> {
                 </Box>
                 <Divider className="mt-2 mb-4" />
                 <Typography component="div">
-                    <div dangerouslySetInnerHTML={{ __html: workReport.content }} />
+                    <div style={{ whiteSpace: 'pre-line' }} dangerouslySetInnerHTML={{ __html: workReport.content }} />
                 </Typography>
             </Box>
         )

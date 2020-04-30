@@ -33,6 +33,7 @@ export default function (tasks: Task[], command: string): Message | Message[]{
                             type: 'text',
                             text: `名稱：${task.name}`,
                             color: '#ffffff',
+                            weight: 'bold',
                             align: 'start',
                             size: 'md',
                             gravity: 'center',

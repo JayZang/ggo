@@ -1,4 +1,5 @@
 import { LineOperationState } from "@/contract/line"
+import { client as redisClient } from '@/loaders/redis'
 
 export class LineBotHelper {
     static async checkOperationState(userId: string, state: string): Promise<boolean> {
@@ -6,10 +7,23 @@ export class LineBotHelper {
     }
 
     static async getOperationState(userId: string): Promise<string | null> {
-        return LineOperationState.NONE
+        return new Promise((resolve, reject) => {
+            redisClient.get(`line-user-operation-state:${userId}`, (err, state) => {
+                if (err) reject(err)
+                resolve(state || LineOperationState.NONE)
+            })
+        })
     }
 
-    static async setOperationState(userId: string, state: string) {
-
+    /**
+     * @param duration seconds
+     */
+    static async setOperationState(userId: string, state: string, duration: number = 60) {
+        return new Promise((resolve, reject) => {
+            redisClient.set(`line-user-operation-state:${userId}`, state, 'EX', duration, err => {
+                if (err) reject(err)
+                resolve()
+            })
+        })
     }
 }

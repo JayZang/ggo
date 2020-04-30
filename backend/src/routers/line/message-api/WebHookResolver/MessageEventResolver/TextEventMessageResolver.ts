@@ -1,11 +1,17 @@
 import Container from "typedi"
-import { TextEventMessage, MessageEvent, Client } from "@line/bot-sdk"
+import { TextEventMessage, MessageEvent, Client, Message } from "@line/bot-sdk"
+
+export const opStateHandlerRegister: {
+    state: LineOperationState,
+    action: (lineUserId: string, message: string) => Promise<null | undefined | Message | Message[]>
+}[] = []
 
 import AuthService from "@/services/AuthService"
 import WorkReportService from "@/services/Line/WorkReportService"
 import getAccountLinkMessage from "@/linebot-messages/getAccountLinkMessage"
 import getUserNotFoundMessage from "@/linebot-messages/getUserNotFoundMessage"
-import { CommandTypes } from "@/contract/line"
+import { CommandTypes, LineOperationState } from "@/contract/line"
+import { LineBotHelper } from "@/helper/LineBotHelper"
 
 const authService = Container.get(AuthService)
 const workReportService = Container.get(WorkReportService)
@@ -27,7 +33,7 @@ export default class TextEventMessageResolver {
         this.commandParameter = parsedCommand[2]
     }
 
-    resolve() {
+    async resolve() {
         const { client, event } = this
         const message = event.message as TextEventMessage
         const text = message.text
@@ -38,7 +44,25 @@ export default class TextEventMessageResolver {
         else if (commandTypes === CommandTypes.WORK_REPORT)
             return this.handleWorkReportCommand()
 
-        return Promise.resolve(null)
+        const replyMessage = await TextEventMessageResolver.execOpStateHandler(event.source.userId, text)
+
+        return replyMessage ?
+            client.replyMessage(event.replyToken, replyMessage) :
+            Promise.resolve(null)
+    }
+
+    private static async execOpStateHandler(lineUserId: string, message: string) {
+        const state = await LineBotHelper.getOperationState(lineUserId)
+        let replyMessage: null | undefined | Message | Message[] = null
+
+        for (let i = 0; i < opStateHandlerRegister.length; i++) {
+            if (opStateHandlerRegister[i].state === state) {
+                replyMessage = await opStateHandlerRegister[i].action(lineUserId, message)
+                break
+            }
+        }
+
+        return replyMessage
     }
 
     private async handleAccountLink() {

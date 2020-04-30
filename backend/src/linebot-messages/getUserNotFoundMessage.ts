@@ -1,4 +1,5 @@
 import { Message } from '@line/bot-sdk'
+import { CommandTypes } from '@/contract/line'
 
 export default function (): Message | Message[] {
     return {
@@ -28,7 +29,7 @@ export default function (): Message | Message[] {
                     action: {
                         type: "message",
                         label: "綁定帳號",
-                        text: "綁定帳號"
+                        text: CommandTypes.ACCOUNT_LINK
                     }
                 }, {
                     type: "spacer",

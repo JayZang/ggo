@@ -6,7 +6,7 @@ import TeamRepo from "@/repository/TeamRepository"
 import Task, { TaskStatus } from "@/entity/Task"
 
 export class TaskHelper {
-    static avaliableStatusToSubmitWorkReport = [
+    static availableStatusToSubmitWorkReport = [
         TaskStatus.Normal
     ]
 
