@@ -118,7 +118,7 @@ export const fetchEditPanelMemberSelection = () => async (dispatch: Dispatch) =>
     const action: TeamActionType = {
         type: GET_TEAM_EDIT_PANEL_MEMBER_SELECTION,
         payload: {
-            members: res.data.members.map(member => regularizeMemberData(member))
+            members: res.data.map(member => regularizeMemberData(member))
         }
     }
 

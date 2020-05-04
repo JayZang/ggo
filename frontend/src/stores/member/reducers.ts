@@ -17,7 +17,6 @@ import { REGISTER_MEMBER_USER, IAMActionTypes } from 'stores/iam/types'
 const initState: MemberState = {
     listPage: {
         list: null,
-        listCount: 0,
         totalCount: 0,
         activeCount: 0,
         inactiveCount: 0
@@ -56,8 +55,7 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                     list: [
                         ...(state.listPage.list || []),
                         ...action.payload.members
-                    ],
-                    listCount: action.payload.listCount
+                    ]
                 }
             }
 
@@ -70,7 +68,6 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                         ...(state.listPage.list || []),
                         action.payload.member
                     ],
-                    listCount: state.listPage.listCount + 1,
                     totalCount: state.listPage.totalCount + 1
                 }
             }
@@ -121,7 +118,6 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                     list: state.listPage.list && state.listPage.list.filter(member => {
                         return member.id !== action.payload.id
                     }),
-                    listCount: state.listPage.listCount - 1,
                     totalCount: state.listPage.totalCount - 1
                 }
             }

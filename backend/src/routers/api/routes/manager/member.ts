@@ -36,7 +36,7 @@ export default (app: Router) => {
     })
 
     router.get('/count-statistic', async (req, res) => {
-        const countStatistic = await memberService.getCountStatistic()
+        const countStatistic = await memberService.getCountStatistic(req.query)
         return res.json(countStatistic)
     })
 

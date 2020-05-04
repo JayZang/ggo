@@ -6,6 +6,7 @@ import {
     Cached as CachedIcon
 } from '@material-ui/icons'
 
+import styles from './styles'
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import MemberSearchBar from 'components/Members/Main/SearchBar'
@@ -13,7 +14,6 @@ import MemberDataCards from 'components/Members/Main/MemberDataCards'
 import AddMemberBtn from 'components/Members/Main/AddMember/Button'
 import MemberList from 'components/Members/Main/MemberList'
 import MemberItemSkeleton from 'components/Members/Main/MemberList/MemberItem/Skeleton'
-import styles from './styles'
 import { IMember } from 'contracts/member'
 
 const PageSymbol = Symbol('Management.Member.List')
@@ -70,7 +70,7 @@ function Members(props: IProps) {
                         <Box fontWeight={500}>成員管理</Box>
                     </Typography>
                     <Box display="flex" className="mt-1">
-                        <MemberSearchBar />
+                        <MemberSearchBar className="mr-1" placeholder="搜尋成員姓名" />
 
                         {/* <Tooltip title="過濾設置">
                             <IconButton 

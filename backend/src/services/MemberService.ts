@@ -36,30 +36,28 @@ export default class MemberService {
     }, query?: ObjectLiteral) {
         const memberRepo = getCustomRepository(MemberRepo).initQueryBuilder()
 
-        query && Object.keys(query).forEach(key => {
-            memberRepo.withFieldCondition(key, query[key])
-        })
+        query && this.setQueryConfig(memberRepo, query)
 
-        const [members, count] = await memberRepo
+        const members = await memberRepo
             .limit(option.take)
             .offset(option.skip)
-            .getManyAndCount()
+            .getMany()
         await MemberHelper.attachIsUserField(members)
 
-        return {
-            members,
-            count
-        }
+        return members
     }
 
     /**
      * Get Count Statistic
      */
-    public async getCountStatistic() {
-        const memberRepo = getCustomRepository(MemberRepo)
+    public async getCountStatistic(query?: ObjectLiteral) {
+        const memberRepo = getCustomRepository(MemberRepo).initQueryBuilder()
+
+        query && this.setQueryConfig(memberRepo, query)
+
         const [totalMemberCount, activeMemberCount] =  await Promise.all([
-            memberRepo.count(),
-            memberRepo.count({ status: MemberStatus.active }),
+            memberRepo.getCount(),
+            memberRepo.withStatusCondition(MemberStatus.active).getCount(),
         ])
         return {
             total: totalMemberCount,
@@ -231,5 +229,14 @@ export default class MemberService {
             console.log(err.toString())
             return null
         }
+    }
+
+    private setQueryConfig(repo: MemberRepo, query: ObjectLiteral) {
+        Object.keys(query).forEach(key => {
+            if (['name', 'email'].includes(key))
+                repo.withFieldLikeCondition(key, query[key])
+            else if (['status'].includes(key))
+                repo.withFieldCondition(key, query[key])
+        })
     }
 }

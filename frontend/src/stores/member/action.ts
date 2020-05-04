@@ -15,11 +15,13 @@ import {
     ADD_MEMBER_TO_LIST,
     UPDATE_MEMBER_STATUS,
 } from './types'
-import { IEmergencyContactEditDTO, MemberStatus } from 'contracts/member'
+import { IEmergencyContactEditDTO, MemberStatus, IMember } from 'contracts/member'
 import { RootState } from 'stores'
 
-export const fetchMemberCountStatistic = () => async (dispatch: Dispatch) => {
-    const res = await memberAPI.getCountStatistic()
+export const fetchMemberCountStatistic = (
+    parameters?: Partial<Record<keyof IMember, string | number>>
+) => async (dispatch: Dispatch) => {
+    const res = await memberAPI.getCountStatistic(parameters)
 
     const action: MemberActionTypes = {
         type: GET_MEMBER_COUNT_STATISTIC,
@@ -33,16 +35,19 @@ export const fetchMemberCountStatistic = () => async (dispatch: Dispatch) => {
     dispatch(action)
 }
 
-export const fetchMembers = () => async (dispatch: Dispatch, getState: () => RootState) => {
+export const fetchMembers = (
+    parameters?: Partial<Record<keyof IMember, string | number>>
+) => async (dispatch: Dispatch, getState: () => RootState) => {
     const {
         list: memberList,
-        listCount
+        totalCount
     } = getState().member.listPage
 
-    if (memberList && memberList.length >= listCount)
+    if (memberList && memberList.length >= totalCount)
         return
 
     const res = await memberAPI.get({
+        ...parameters,
         offset: memberList ? memberList.length : 0,
         count: 10
     })
@@ -50,8 +55,7 @@ export const fetchMembers = () => async (dispatch: Dispatch, getState: () => Roo
     const action: MemberActionTypes = {
         type: GET_MEMBER_LIST,
         payload: {
-            members: res.data.members.map(member => regularizeMemberData(member)),
-            listCount: res.data.count
+            members: res.data.map(member => regularizeMemberData(member))
         }
     }
 

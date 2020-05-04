@@ -1,20 +1,16 @@
-import React, { Component } from 'react'
-import InputBase from '@material-ui/core/InputBase'
-import SearchIcon from '@material-ui/icons/Search'
+import { connect } from 'react-redux';
+import SearchBar from 'components/SearchBar'
+import { ThunkDispatch } from 'redux-thunk';
+import { fetchMembers, clearMembers, fetchMemberCountStatistic } from 'stores/member/action';
 
-import { Paper, IconButton } from '@material-ui/core'
-
-class SearchBar extends Component {
-    render() {
-        return (
-            <Paper className="px-1 mr-1">
-                <IconButton size="small" >
-                    <SearchIcon />
-                </IconButton>
-                <InputBase placeholder="搜尋成員" />
-            </Paper>
-        )
+const mapDispatchToProp = (dispatch: ThunkDispatch<any, any, any>) => ({
+    search: async (text: string) => {
+        dispatch(clearMembers())
+        await Promise.all([
+            dispatch(fetchMemberCountStatistic({ name: text || undefined })),
+            dispatch(fetchMembers({ name: text || undefined }))
+        ])
     }
-}
+})
 
-export default SearchBar
+export default connect(null, mapDispatchToProp)(SearchBar)

@@ -198,7 +198,7 @@ export const fetchMemberSelectionMenu = () => async (dispatch : Dispatch) => {
     const action: ProjectActionType = {
         type: GET_PROJECT_EDIT_PANEL_MEMBER_SELECTION,
         payload: {
-            members: res.data.members.map(member => regularizeMemberData(member))
+            members: res.data.map(member => regularizeMemberData(member))
         }
     }
 

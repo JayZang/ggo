@@ -9,7 +9,7 @@ const mapStateToProps = (state: RootState) => {
     const members = state.member.listPage
     return {
         members: members.list,
-        isAllMemberFetched: !!members.list && members.list.length >= members.listCount
+        isAllMemberFetched: !!members.list && members.list.length >= members.totalCount
     }
 }
 

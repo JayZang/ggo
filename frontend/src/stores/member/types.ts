@@ -18,7 +18,6 @@ export type MemberState = {
      */
     listPage: {
         list: IMember[] | null
-        listCount: number
         totalCount: number
         activeCount: number
         inactiveCount: number
@@ -50,8 +49,7 @@ type GetMemberCountStatistic = {
 type GetMemberList = {
     type: typeof GET_MEMBER_LIST,
     payload: {
-        members: IMember[],
-        listCount: number
+        members: IMember[]
     }
 }
 

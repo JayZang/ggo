@@ -50,6 +50,14 @@ export class BaseRepository<T> extends Repository<T> {
         return this
     }
 
+    public withFieldLikeCondition(field: string, value: any, type: 'AND' | 'OR' = 'AND') {
+        if (type === 'AND')
+            this.queryBuilder.andWhere(`${this.entityAlias}.${field} LIKE :${field}`, { [field]: `%${value}%` })
+        else
+            this.queryBuilder.orWhere(`${this.entityAlias}.${field} LIKE :${field}`, { [field]: `%${value}%` })
+        return this
+    }
+
     public withIdCondition(id: number | string) {
         this.queryBuilder.andWhere(`${this.entityAlias}.${this.ID} = :id`, { id })
         return this

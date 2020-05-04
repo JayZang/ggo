@@ -13,7 +13,7 @@ export default (theme: Theme) => createStyles({
     headerBtnsContainer: {
         width: 156,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-end',
         [theme.breakpoints.down('xs')]: {
             width: 0
         }
@@ -25,7 +25,6 @@ export default (theme: Theme) => createStyles({
         }
     },
     addMemberBtn: {
-        marginBottom: theme.spacing(1),
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
