@@ -1,33 +1,20 @@
 import React, { Component } from 'react'
-import { WithStyles, withStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
 
-import styles from './styles'
+import { Paper, IconButton } from '@material-ui/core'
 
-interface IProps extends WithStyles<typeof styles> { }
-
-class SearchBar extends Component<IProps> {
-  render() {
-    const classes = this.props.classes
-
-    return (
-      <div className={classes.wrapper}>
-        <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search Name"
-            classes={{
-              root: classes.searchInputRoot,
-              input: classes.searchInput
-            }}
-          />
-        </div>
-      </div>
-    )
-  }
+class SearchBar extends Component {
+    render() {
+        return (
+            <Paper className="px-1 mr-1">
+                <IconButton size="small" >
+                    <SearchIcon />
+                </IconButton>
+                <InputBase placeholder="搜尋成員" />
+            </Paper>
+        )
+    }
 }
 
-export default withStyles(styles)(SearchBar)
+export default SearchBar

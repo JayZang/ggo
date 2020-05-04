@@ -4,7 +4,6 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import {
     Search as SearchIcon,
     Cached as CachedIcon,
-    FilterList as FilterListIcon
 } from '@material-ui/icons'
 
 import AppContent from 'pages/App/Content'
@@ -91,19 +90,19 @@ class WorkReportListPage extends Component<IProps, IState> {
                         <Typography variant="h5" component="div">
                             <Box fontWeight={500}>工作報告列表</Box>
                         </Typography>
-                        <Box className="d-flex mt-2 align-items-center">
-                            <Paper className="px-1">
+                        <Box className="d-flex mt-1 align-items-center">
+                            <Paper className="px-1 mr-1">
                                 <IconButton size="small" >
                                     <SearchIcon />
                                 </IconButton>
                                 <InputBase placeholder="搜尋工作報告" />
                             </Paper>
 
-                            <Tooltip title="過濾設置">
+                            {/* <Tooltip title="過濾設置">
                                 <IconButton size="small" color="primary">
                                     <FilterListIcon />
                                 </IconButton>
-                            </Tooltip>
+                            </Tooltip> */}
 
                             { loaded ? (
                                 <Tooltip title="重新載入">

@@ -14,7 +14,6 @@ import {
     Add as AddIcon,
     Search as SearchIcon,
     Cached as CachedIcon,
-    FilterList as FilterListIcon,
     Equalizer as EqualizerIcon
 } from '@material-ui/icons'
 
@@ -111,7 +110,7 @@ class ProjectList extends Component<IProps, IState> {
                             <Box fontWeight={500}>專案/案件管理</Box>
                         </Typography>
                         <div className="d-flex mt-1 align-items-center">
-                            <Paper className={classes.searchPaper}>
+                            <Paper className="mr-1 px-1">
                                 <IconButton size="small" >
                                     <SearchIcon />
                                 </IconButton>
@@ -120,14 +119,14 @@ class ProjectList extends Component<IProps, IState> {
                                 />
                             </Paper>
 
-                            <Tooltip title="過濾設置">
+                            {/* <Tooltip title="過濾設置">
                                 <IconButton 
                                     size="small"
                                     color="primary"
                                 >
                                     <FilterListIcon />
                                 </IconButton>
-                            </Tooltip>
+                            </Tooltip> */}
                             
                             {(() => {
                                 return projects ? 
@@ -149,7 +148,9 @@ class ProjectList extends Component<IProps, IState> {
                                     color="primary"
                                     onClick={() => this.setState({ openProjectGanttChart: true })}
                                 >
-                                    <EqualizerIcon />
+                                    <Box style={{ transform: 'rotate(90deg)' }}>
+                                        <EqualizerIcon />
+                                    </Box>
                                 </IconButton>
                             </Tooltip>
                         </div>

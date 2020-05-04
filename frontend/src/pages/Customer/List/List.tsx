@@ -68,13 +68,11 @@ class CustomerList extends Component<IProps, IState> {
                         <Typography variant="h5" component="div">
                             <Box fontWeight={500}>客戶管理</Box>
                         </Typography>
-                        <Paper className={classes.searchPaper}>
+                        <Paper className="px-1 mr-1 mt-1">
                             <IconButton size="small" >
                                 <SearchIcon />
                             </IconButton>
-                            <InputBase
-                                placeholder="搜尋客戶"
-                            />
+                            <InputBase placeholder="搜尋客戶" />
                         </Paper>
                     </Grid>
                     <Grid item className="ml-auto">

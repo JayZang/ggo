@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Grid, Paper, IconButton, InputBase, Tooltip, WithStyles, Typography, Box } from '@material-ui/core'
+import { Grid, Paper, IconButton, InputBase, Tooltip, WithStyles, Typography, Box, ButtonGroup, Button } from '@material-ui/core'
 import {
     Search as SearchIcon,
     Cached as CachedIcon,
-    FilterList as FilterListIcon,
     Equalizer as EqualizerIcon
 } from '@material-ui/icons'
 
@@ -82,7 +81,7 @@ class TaskList extends Component<IProps, IStatus> {
                             <Box fontWeight={500}>工作任務項目</Box>
                         </Typography>
                         <div className="d-flex mt-1 align-items-center">
-                            <Paper className={classes.searchPaper}>
+                            <Paper className="mr-1 px-1">
                                 <IconButton size="small" >
                                     <SearchIcon />
                                 </IconButton>
@@ -91,19 +90,19 @@ class TaskList extends Component<IProps, IStatus> {
                                 />
                             </Paper>
 
-                            <Tooltip title="過濾設置">
+                            {/* <Tooltip title="過濾設置">
                                 <IconButton 
                                     size="small"
                                     color="primary"
                                 >
                                     <FilterListIcon />
                                 </IconButton>
-                            </Tooltip>
+                            </Tooltip> */}
                             
                             {(() => {
                                 return tasks ? 
                                     <Tooltip title="重新載入">
-                                        <IconButton 
+                                        <IconButton
                                             size="small"
                                             color="primary"
                                             onClick={this.props.reload.bind(this)}
@@ -120,7 +119,9 @@ class TaskList extends Component<IProps, IStatus> {
                                     color="primary"
                                     onClick={() => this.setState({ openGanttDialog: true })}
                                 >
-                                    <EqualizerIcon />
+                                    <Box style={{ transform: 'rotate(90deg)' }}>
+                                        <EqualizerIcon />
+                                    </Box>
                                 </IconButton>
                             </Tooltip>
                         </div>

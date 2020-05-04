@@ -3,7 +3,6 @@ import { Box, Tooltip, IconButton, Typography } from '@material-ui/core'
 import { useTheme, WithStyles, withStyles } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import {
-    FilterList as FilterListIcon,
     Cached as CachedIcon
 } from '@material-ui/icons'
 
@@ -70,9 +69,10 @@ function Members(props: IProps) {
                     <Typography variant="h5" component="div">
                         <Box fontWeight={500}>成員管理</Box>
                     </Typography>
-                    <Box display="flex">
+                    <Box display="flex" className="mt-1">
                         <MemberSearchBar />
-                        <Tooltip title="過濾設置">
+
+                        {/* <Tooltip title="過濾設置">
                             <IconButton 
                                 className="ml-3"
                                 size="small"
@@ -80,7 +80,8 @@ function Members(props: IProps) {
                             >
                                 <FilterListIcon />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
+                        
                         {(() => {
                             return members && (
                                 <Tooltip title="重新載入">
