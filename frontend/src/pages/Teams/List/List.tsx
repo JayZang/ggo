@@ -111,8 +111,8 @@ class TeamList extends Component<IProps, IState> {
                     onClose={() => this.setState({ openEditPanel: false, teamToEdit: null })}
                 />
 
-                <Box className="mt-4">
-                    <Paper>
+                <Box className="mt-3">
+                    {/* <Paper>
                         <Tabs
                             classes={{
                                 root: classes.teamsTab
@@ -125,26 +125,27 @@ class TeamList extends Component<IProps, IState> {
                             <Tab label="常駐團隊" />
                             <Tab label="臨時團隊" />
                         </Tabs>
-                    </Paper>
+                    </Paper> */}
 
-                    <SwipeableViews
+                    {/* <SwipeableViews
                         axis="x"
+                        disabled={true}
                         index={tabIndex}
                         onChangeIndex={newIndex => this.setState({ tabIndex: newIndex })}
-                    >
+                    > */}
                         <Box>
                             <TeamMenu 
                                 teams={permanentTeams} 
                                 onTeamEdit={this.handleTeamEditEvent}
                             />
                         </Box>
-                        <Box>
+                        {/* <Box>
                             <TeamMenu 
                                 teams={temporaryTeams} 
                                 onTeamEdit={this.handleTeamEditEvent}
                             />
                         </Box>
-                    </SwipeableViews>
+                    </SwipeableViews> */}
                 </Box>
             </AppContent>
         )

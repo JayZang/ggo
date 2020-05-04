@@ -1,35 +1,29 @@
 import React, { Component } from 'react'
 import { 
-    withStyles,
-    WithStyles,
     Card,
     CardContent,
-    Box
+    Box,
+    Grid
 } from '@material-ui/core'
 import {
     Skeleton
 } from '@material-ui/lab'
 
-import styles from './styles'
 import { ITeam } from 'contracts/team'
 import TeamItem from './TeamItem'
 
-type IProps = WithStyles<typeof styles> & {
+type IProps = {
     teams: ITeam[] | null
     onTeamEdit?: (team: ITeam) => void
 }
 
 class TeamMenu extends Component<IProps> {
     render() {
-        const {
-            classes,
-        } = this.props
-
         return (
-            <div className={classes.root}>
+            <Grid container spacing={3}>
                 { this.renderLoading() }
                 { this.renderTeams() }
-            </div>
+            </Grid>
         )
     }
 
@@ -37,14 +31,14 @@ class TeamMenu extends Component<IProps> {
         if (!this.props.teams) return null
 
         return this.props.teams.map(team => (
-            <Box className={this.props.classes.item} key={team.id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }} key={team.id}>
                 <TeamItem 
                     team={team}
                     onEditBtnClick={() => {
                         this.props.onTeamEdit && this.props.onTeamEdit(team)
                     }}
                 />
-            </Box>
+            </Grid>
         ))
     }
 
@@ -56,7 +50,7 @@ class TeamMenu extends Component<IProps> {
 
     renderLoadingItem() {
         return (
-            <Box className={this.props.classes.item}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card style={{ width: '100%' }}>
                     <CardContent>
                         <Skeleton animation="wave" height={30} />
@@ -75,9 +69,9 @@ class TeamMenu extends Component<IProps> {
                         </div>
                     </CardContent>
                 </Card>
-            </Box>
+            </Grid>
         )
     }
 }
 
-export default withStyles(styles)(TeamMenu)
+export default TeamMenu
