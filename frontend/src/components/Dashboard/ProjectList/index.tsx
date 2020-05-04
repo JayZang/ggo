@@ -11,6 +11,7 @@ import { blue } from '@material-ui/core/colors';
 
 type IProps = {
     projects: IProject[]
+    moreLink: string
     onCheckBoxChange?: (checked: boolean) => void
 }
 
@@ -29,7 +30,8 @@ export default class ProjectList extends Component<IProps, IState> {
 
     render() {
         const {
-            projects
+            projects,
+            moreLink
         } = this.props
         const {
             projectToDisplayDetail
@@ -80,7 +82,7 @@ export default class ProjectList extends Component<IProps, IState> {
                 </Box>
                 <Divider />
                 <Box paddingY={1} paddingX={2} color="primary.main" textAlign="right">
-                    <Link to="/projects">
+                    <Link to={moreLink}>
                         <Typography component="span" variant="subtitle2">
                             <ArrowRightAltIcon /> 查看更多
                         </Typography>

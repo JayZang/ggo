@@ -88,7 +88,7 @@ class TaskDetailDialog extends Component<IProps> {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Paper className="p-3">
-                                        <TaskAssignmentLabel  task={task} />
+                                        <TaskAssignmentLabel  task={task} disableLink />
                                     </Paper>
                                 </Grid>
                             </Grid>

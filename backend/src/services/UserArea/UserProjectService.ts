@@ -182,12 +182,17 @@ export default class UserProjectService {
                 relations: ['project', 'project.managers']
             })
 
+            if (task.project.managers.findIndex(manager => manager.id === operator.id) === -1) 
+                throw new Error('Operator(Login User) is not the manager of the project of the task')
             if (task.project.finish_datetime)
                 throw new Error('The project that the task belongs to is finished !')
-            else if (task.project.managers.findIndex(manager => manager.id === operator.id) === -1) 
-                throw new Error('Operator(Login User) is not the manager of the project of the task')
 
             task.status = status
+            if (status === TaskStatus.Completed)
+                task.finish_datetime = moment().toDate()
+            else
+                task.finish_datetime = null
+
             return await taskRepo.save(task)
         } catch (err) {
             console.log('Update task status fail')

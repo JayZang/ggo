@@ -72,10 +72,15 @@ export default class DashboardMain extends Component<IProps, IState> {
             >
                 <Grid container spacing={3}>
                     <Grid item xs={4}>
-                        {user && user.permissions && user.permissions.project_management ? (
+                        {user && [
+                            UserIdentityType.admin,
+                            UserIdentityType.manager, 
+                            UserIdentityType.member 
+                        ].includes(user.identity_type) ? (
                             <Box marginBottom={3}>
                                 <ProjectList
                                     projects={projects}
+                                    moreLink={user.identity_type === UserIdentityType.admin ? '/projects' : '/m/projects'}
                                     onCheckBoxChange={checked => this.setState({
                                         displayProjectInCalendar: checked
                                     })}
@@ -83,18 +88,15 @@ export default class DashboardMain extends Component<IProps, IState> {
                             </Box>
                         ) : null}
 
-                        {user && ((user.permissions && user.permissions.project_management) || user.identity_type === UserIdentityType.member) ? (
+                        {user && [
+                            UserIdentityType.admin,
+                            UserIdentityType.manager, 
+                            UserIdentityType.member 
+                        ].includes(user.identity_type) ? (
                             <Box marginBottom={3}>
                                 <TaskList
                                     tasks={tasks}
-                                    moreLink={(() => {
-                                        if (user.identity_type === UserIdentityType.member)
-                                            return '/m/tasks'
-                                        else if (user.permissions && user.permissions.project_management)
-                                            return '/tasks'
-                                        return null
-                                    })()}
-                                    hiddenCheckbox={user && user.permissions && user.permissions.project_management ? false : true}
+                                    moreLink={user.identity_type === UserIdentityType.admin ? '/tasks' : '/m/tasks'}
                                     onListTasksChange={tasks => this.setState({
                                         listedTasks: tasks
                                     })}

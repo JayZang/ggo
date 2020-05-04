@@ -1,48 +1,39 @@
-import { getCustomRepository, In } from 'typeorm'
+import { getCustomRepository } from 'typeorm'
 import { Service } from 'typedi'
 import _ from 'lodash'
 
-import ProjectRepo from '@/repository/ProjectRepository'
-import TaskRepo from '@/repository/TaskRepository'
-import { TaskAssignmentType } from '@/entity/TaskAssignment'
-import User, { UserIdentityType } from '@/entity/User'
-import { TaskStatus } from '@/entity/Task'
-import TeamRepo from '@/repository/TeamRepository'
-import WorkReportRepo from '@/repository/WorkReportRepository'
 import TaskHelper from '@/helper/TaskHelper'
+import { UserHelper } from '@/helper/UserHelper'
+import TaskRepo from '@/repository/TaskRepository'
+import ProjectRepo from '@/repository/ProjectRepository'
+import WorkReportRepo from '@/repository/WorkReportRepository'
+import { TaskStatus } from '@/entity/Task'
+import User, { UserIdentityType } from '@/entity/User'
 
 @Service()
 export default class DashboardService {
 
     /**
      * Get dashboard tasks
-     * only user who has task permission and member identity return tasks
+     * only user who is member return tasks
      */
     public async getInProgressTasks(user: User) {
         try {
             const taskRepo = getCustomRepository(TaskRepo).initQueryBuilder()
 
-            if (!user.permissions.project_management && user.identity_type !== UserIdentityType.member)
-                return null
-            else if (user.permissions.project_management)
+            if (user.identity_type === UserIdentityType.admin)
                 taskRepo.withAssignmentRelation()
-            else if (user.identity_type === UserIdentityType.member) {
+            else if (UserHelper.isIdentityForMember(user.identity_type)) {
                 const memberId = user.identity!.id
-                const teamRepo = getCustomRepository(TeamRepo)
-                const teams = await teamRepo.getByMember(memberId)
-                
-                taskRepo.withAssignmentCondition([{
-                    type: TaskAssignmentType.Member,
-                    targetIds: [memberId]
-                }, {
-                    type: TaskAssignmentType.Team,
-                    targetIds: teams.map(team => team.id)
-                }])
-            }
+                taskRepo.withAssignmentCondition(
+                    await TaskHelper.getMemberAssignableCondition(memberId)
+                )
+            } else
+                return null
 
             return await taskRepo
-                .withProjectRelation()
                 .withStatusCondition([TaskStatus.Normal, TaskStatus.Pause])
+                .withProjectRelation()
                 .withCreateAtOrder('DESC')
                 .getMany()
                 .then(tasks => TaskHelper.attachTasksAssignment(tasks))
@@ -55,13 +46,16 @@ export default class DashboardService {
 
     /**
      * Get dashboard projects
-     * only user who has project permission return tasks
+     * only user who is member and project manager return projects
      */
     public async getInProgressProjects(user: User) {
         try {
-            const projectRepo = getCustomRepository(ProjectRepo)
+            const projectRepo = getCustomRepository(ProjectRepo).initQueryBuilder()
 
-            if (!user.permissions.project_management)
+            if (UserHelper.isIdentityForMember(user.identity_type)) {
+                const memberId = user.identity!.id
+                projectRepo.withManagerCondition(memberId)
+            } else if (user.identity_type !== UserIdentityType.admin)
                 return null
 
             return await projectRepo
@@ -86,10 +80,10 @@ export default class DashboardService {
         try {
             const workReportRepo = getCustomRepository(WorkReportRepo).initQueryBuilder()
 
-            if (!user.permissions.project_management && user.identity_type !== UserIdentityType.member)
-                return null
-            else if (user.identity_type === UserIdentityType.member)
+            if (UserHelper.isIdentityForMember(user.identity_type))
                 workReportRepo.withSubmitterIdCondition(user.identity_id)
+            else if (user.identity_type !== UserIdentityType.admin)
+                return null
 
             return await workReportRepo
                 .withTaskRelation()
