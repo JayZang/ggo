@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { WithSnackbarProps, withSnackbar } from 'notistack';
-import { Paper, Grid } from '@material-ui/core'
+import { Paper, Grid, Hidden } from '@material-ui/core'
 
 import bkgImg from 'assets/images/login-bkg.png'
 import LoginForm from 'components/Auth/LoginForm'
@@ -39,13 +39,15 @@ class Login extends Component<IProps> {
         return (
             <Paper className={className}>
                 <Grid container>
-                    <Grid item xs={6} className="left-area">
+                    <Grid item xs={12} sm={6} className="left-area">
                         <LoginForm 
                             description="登入以執行內部系統功能"
                             login={this.handleLogin}
                         />
                     </Grid>
-                    <Grid item xs={6} className="right-area" />
+                    <Hidden xsDown>
+                        <Grid  sm={6} className="right-area" />
+                    </Hidden>
                 </Grid>
             </Paper>
         )
