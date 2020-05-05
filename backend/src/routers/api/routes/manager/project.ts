@@ -27,7 +27,7 @@ export default (app: Router) => {
         const projects = await projectService.get({
             skip: req.query.offset || 0,
             take: req.query.count || 10
-        }, _.omit(req.query, 'skip', 'take'))
+        }, _.omit(req.query, 'offset', 'count'))
         
         return projects ?
             res.json(projects) :

@@ -1,12 +1,10 @@
 import { Service } from 'typedi'
-import { getCustomRepository } from 'typeorm'
+import { getCustomRepository, ObjectLiteral } from 'typeorm'
 
-import Member from '@/entity/Member'
-import { TaskStatus } from '@/entity/Task'
-import { TaskAssignmentType } from '@/entity/TaskAssignment'
+import TaskHelper from '@/helper/TaskHelper'
 import TaskRepo from '@/repository/TaskRepository'
 import TeamRepository from '@/repository/TeamRepository'
-import TaskHelper from '@/helper/TaskHelper'
+import { TaskAssignmentType } from '@/entity/TaskAssignment'
 
 @Service()
 export default class TaskService {
@@ -17,15 +15,20 @@ export default class TaskService {
     public async get(option?: {
         skip: number,
         take: number,
-    }) {
+    }, query?: ObjectLiteral) {
         try {
             const taskRepo = getCustomRepository(TaskRepo)
-            const tasks = await taskRepo.find({
-                relations: ['project', 'assignment'],
-                order: {  create_at: 'DESC' },
-                ...option
-            })
-            return await TaskHelper.attachTasksAssignment(tasks)
+                .initQueryBuilder()
+                .withProjectRelation()
+                .withAssignmentRelation()
+                .withCreateAtOrder('DESC')
+                .skip(option.skip)
+                .take(option.take)
+
+            query && this.setQueryConfig(taskRepo, query)
+
+            return await taskRepo.getMany()
+                .then(tasks => TaskHelper.attachTasksAssignment(tasks))
         } catch (err) {
             console.log('Get tasks fail')
             console.log(err.toString())
@@ -50,10 +53,13 @@ export default class TaskService {
     /**
      * Get total number of tasks
      */
-    public async getTotalCount() {
+    public async getTotalCount(query?: ObjectLiteral) {
         try {
-            const taskRepo = getCustomRepository(TaskRepo)
-            return await taskRepo.count()
+            const taskRepo = getCustomRepository(TaskRepo).initQueryBuilder()
+
+            query && this.setQueryConfig(taskRepo, query)
+
+            return await taskRepo.getCount()
         } catch (err) {
             console.log('Get total number of tasks fail')
             console.log(err.toString())
@@ -107,5 +113,14 @@ export default class TaskService {
             console.log(err.toString())
             return null
         }
+    }
+
+    private setQueryConfig(repo: TaskRepo, query: ObjectLiteral) {
+        Object.keys(query).forEach(key => {
+            if (['name'].includes(key))
+                repo.withFieldLikeCondition(key, query[key])
+            else if ([].includes(key))
+                repo.withFieldCondition(key, query[key])
+        })
     }
 }

@@ -14,6 +14,7 @@ import { withStyles } from '@material-ui/styles'
 import TaskMenu from 'components/Task/List/TaskMenu'
 import TaskItemSkeleton from 'components/Task/List/TaskMenu/TaskItem/Skeleton'
 import TasksGanttChartDialog from 'components/Task/GanttChart/Dialog'
+import TaskSearchBar from 'components/Task/List/SearchBar'
 
 const PageSymbol = Symbol('Management.Task.List')
 
@@ -81,14 +82,10 @@ class TaskList extends Component<IProps, IStatus> {
                             <Box fontWeight={500}>工作任務項目</Box>
                         </Typography>
                         <div className="d-flex mt-1 align-items-center">
-                            <Paper className="mr-1 px-1">
-                                <IconButton size="small" >
-                                    <SearchIcon />
-                                </IconButton>
-                                <InputBase
-                                    placeholder="搜尋工作任務"
-                                />
-                            </Paper>
+                            <TaskSearchBar
+                                className="mr-1"
+                                placeholder="搜尋工作任務"
+                            />
 
                             {/* <Tooltip title="過濾設置">
                                 <IconButton 

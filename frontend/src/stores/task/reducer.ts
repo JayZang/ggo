@@ -4,13 +4,17 @@ import {
     GET_TASK_COUNT_STATISTIC, 
     GET_TASK_DETAIL_INFO, 
     GET_TASKS, 
-    CLEAR_TASK_LIST_STATE
+    CLEAR_TASK_LIST_STATE,
+    SET_TASK_LIST_FILTER
 } from "./types";
 
 const initState: TaskState = {
     listPage: {
         tasks: null,
-        totalCount: 0
+        totalCount: 0,
+        filter: {
+            name: undefined
+        }
     },
     infoPage: {
         task: null
@@ -37,6 +41,18 @@ export default function taskReducer(state: TaskState = initState, action: TaskAc
                         ...(state.listPage.tasks || []),
                         ...action.payload.tasks
                     ]
+                }
+            }
+
+        case SET_TASK_LIST_FILTER:
+            return {
+                ...state,
+                listPage: {
+                    ...state.listPage,
+                    filter: {
+                        ...state.listPage.filter,
+                        ...action.payload
+                    }
                 }
             }
 

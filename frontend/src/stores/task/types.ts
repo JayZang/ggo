@@ -1,9 +1,8 @@
-import { ITeam } from 'contracts/team'
-import { IMember } from 'contracts/member'
 import { ITask } from 'contracts/task'
 
 export const GET_TASK_COUNT_STATISTIC = 'GET_TASK_COUNT_STATISTIC'
 export const GET_TASKS = 'GET_TASKS'
+export const SET_TASK_LIST_FILTER = 'SET_TASK_LIST_FILTER'
 export const CLEAR_TASK_LIST_STATE = 'CLEAR_TASK_LIST_STATE'
 export const GET_TASK_DETAIL_INFO = 'GET_TASK_DETAIL_INFO'
 
@@ -11,6 +10,9 @@ export type TaskState = {
     listPage: {
         tasks: ITask[] | null
         totalCount: number
+        filter: {
+            name: string | undefined
+        }
     }
 
     infoPage: {
@@ -32,6 +34,13 @@ type GetTasks = {
     }
 }
 
+type SetListFilter = {
+    type: typeof SET_TASK_LIST_FILTER,
+    payload: {
+        name?: string
+    }
+}
+
 type ClearTaskListState = {
     type: typeof CLEAR_TASK_LIST_STATE
 }
@@ -46,5 +55,6 @@ type GetTaskDetailInfo = {
 export type TaskActionType = 
     GetCountStatistic |
     GetTasks |
+    SetListFilter |
     ClearTaskListState |
     GetTaskDetailInfo
