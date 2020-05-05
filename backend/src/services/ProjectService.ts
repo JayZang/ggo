@@ -70,8 +70,8 @@ export default class ProjectService {
                 .withCreateAtOrder('DESC')
                 .withTeamParticipantsRelation()
                 .withMemberParticipantsRelation()
-                .offset(option.skip) 
-                .limit(option.take)
+                .skip(option.skip) 
+                .take(option.take)
 
             query && this.setQueryConfig(projectRepo, query)
 

@@ -57,8 +57,8 @@ export default class WorkReportService {
                 .withAssignmentCondition(assignmentConditions)
                 .withStatusCondition(TaskHelper.availableStatusToSubmitWorkReport)
                 .withCreateAtOrder('DESC')
-                .limit(10)
-                .offset(0)
+                .take(10)
+                .skip(0)
                 .getMany())
 
         if (tasks.length === 0)

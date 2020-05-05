@@ -28,8 +28,8 @@ export default class MemberTaskService {
                 .withAssignmentCondition(assignmentConditions)
                 .withProjectRelation()
                 .withCreateAtOrder('DESC')
-                .offset(option.skip)
-                .limit(option.take)
+                .skip(option.skip)
+                .take(option.take)
                 .getManyAndCount()
                 .then(async ([tasks, count]) => ({
                     tasks: await TaskHelper.attachTasksAssignment(tasks),

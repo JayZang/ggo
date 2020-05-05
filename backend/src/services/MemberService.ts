@@ -39,8 +39,8 @@ export default class MemberService {
         query && this.setQueryConfig(memberRepo, query)
 
         const members = await memberRepo
-            .limit(option.take)
-            .offset(option.skip)
+            .take(option.take)
+            .skip(option.skip)
             .getMany()
         await MemberHelper.attachIsUserField(members)
 

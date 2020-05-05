@@ -26,8 +26,8 @@ export default class UserProjectService {
             return await projectRepo.initQueryBuilder()
                 .withManagerCondition(member.id)
                 .withCustomerRelation()
-                .limit(option.take)
-                .offset(option.skip)
+                .take(option.take)
+                .skip(option.skip)
                 .getMany()
         } catch (err) {
             console.log(' Get user projects error')

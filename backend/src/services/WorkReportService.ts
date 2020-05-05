@@ -21,8 +21,8 @@ export default class WorkReportService {
                 .withSubmitterRelation()
                 .withTaskRelation()
                 .withCreateAtOrder('DESC')
-                .limit(option.take)
-                .offset(option.skip)
+                .take(option.take)
+                .skip(option.skip)
                 .getManyAndCount()
             
             return { workReports, count }

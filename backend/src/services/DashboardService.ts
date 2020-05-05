@@ -89,7 +89,7 @@ export default class DashboardService {
                 .withTaskRelation()
                 .withSubmitterRelation()
                 .withCreateAtOrder('DESC')
-                .limit(10)
+                .take(10)
                 .getMany()
         } catch (err) {
             console.log('Get dashboard work reports fail')

@@ -16,12 +16,12 @@ export class BaseRepository<T> extends Repository<T> {
         this.queryBuilder = this.createQueryBuilder(this.entityAlias)
     }
 
-    public limit(take: number) {
+    public take(take: number) {
         this.queryBuilder.take(take)
         return this
     }
 
-    public offset(offset: number) {
+    public skip(offset: number) {
         this.queryBuilder.skip(offset)
         return this
     }

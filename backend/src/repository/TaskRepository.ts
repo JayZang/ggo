@@ -47,8 +47,8 @@ class TaskRepository extends BaseRepository<Task> {
                 'task.id = taskAssignment.task_id AND taskAssignment.type = :type AND taskAssignment.target_id = :targetId', 
                 { type, targetId })
             .leftJoinAndMapOne('task.project', Project, 'project', 'task.project_id = project.id')
-            .limit(option.take)
-            .offset(option.skip)
+            .take(option.take)
+            .skip(option.skip)
             .getManyAndCount() 
     }
 
