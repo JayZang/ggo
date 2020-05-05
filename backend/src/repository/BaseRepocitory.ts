@@ -17,12 +17,12 @@ export class BaseRepository<T> extends Repository<T> {
     }
 
     public limit(take: number) {
-        this.queryBuilder.limit(take)
+        this.queryBuilder.take(take)
         return this
     }
 
     public offset(offset: number) {
-        this.queryBuilder.offset(offset)
+        this.queryBuilder.skip(offset)
         return this
     }
 

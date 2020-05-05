@@ -1,11 +1,11 @@
-import { Moment } from 'moment'
 import { ITask } from 'contracts/task'
-import { IProject } from 'contracts/project'
-import { ICustomer } from 'contracts/customer'
-import { IMember } from 'contracts/member'
 import { ITeam } from 'contracts/team'
+import { IProject } from 'contracts/project'
+import { IMember } from 'contracts/member'
+import { ICustomer } from 'contracts/customer'
 
 export const GET_PROJECTS = 'GET_PROJECTS'
+export const SET_PROJECT_LIST_FILTER = 'SET_PROJECT_LIST_FILTER'
 export const ADD_PROJECT = 'ADD_PROJECT'
 export const UPDATE_PROJECT = 'UPDATE_PROJECT'
 export const CLEAR_LIST_PAGE_STATE = 'CLEAR_LIST_PAGE_STATE'
@@ -26,6 +26,9 @@ export type ProjectState = {
         totalCount: number
         srcTypeInternalCount: number
         srcTypeCustomerCount: number
+        filter: {
+            name: string | undefined
+        }
     }
 
     infoPage: {
@@ -44,6 +47,13 @@ type GetProjects = {
     type: typeof GET_PROJECTS,
     payload: {
         projects: IProject[]
+    }
+}
+
+type SetListFilter = {
+    type: typeof SET_PROJECT_LIST_FILTER,
+    payload: {
+        name?: string
     }
 }
 
@@ -133,6 +143,7 @@ type RemoveProjectMemberParticipant = {
 
 export type ProjectActionType = 
     GetProjects |
+    SetListFilter |
     AddProject |
     UpdateProject |
     ClearListPageState |

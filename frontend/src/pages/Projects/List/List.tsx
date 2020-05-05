@@ -25,6 +25,7 @@ import ProjectMenu from 'components/Project/List/ProjectMenu'
 import ProjectItemSkeleton from 'components/Project/List/ProjectMenu/ProjectItem/Skeleton'
 import ProjectEditDrawer from 'components/Project/ProjectEditPanel/ProjectEditDrawer'
 import ProjectCountBar from 'components/Project/List/ProjectCountBar'
+import ProjectSearchBar from 'components/Project/List/SearchBar'
 import ProjectsGanttChartDialog from 'components/Project/GanttChart/Dialog'
 import { IProject } from 'contracts/project'
 
@@ -110,14 +111,10 @@ class ProjectList extends Component<IProps, IState> {
                             <Box fontWeight={500}>專案/案件管理</Box>
                         </Typography>
                         <div className="d-flex mt-1 align-items-center">
-                            <Paper className="mr-1 px-1">
-                                <IconButton size="small" >
-                                    <SearchIcon />
-                                </IconButton>
-                                <InputBase
-                                    placeholder="搜尋專案/案件"
-                                />
-                            </Paper>
+                            <ProjectSearchBar 
+                                className="mr-1"
+                                placeholder="搜尋專案/案件"
+                            />
 
                             {/* <Tooltip title="過濾設置">
                                 <IconButton 

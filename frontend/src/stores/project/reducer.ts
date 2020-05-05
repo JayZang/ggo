@@ -13,7 +13,8 @@ import {
     ADD_PROJECT_MANAGER,
     REMOVE_PROJECT_MANAGER,
     ADD_PROJECT_MEMBER_PARTICIPANT,
-    REMOVE_PROJECT_MEMBER_PARTICIPANT
+    REMOVE_PROJECT_MEMBER_PARTICIPANT,
+    SET_PROJECT_LIST_FILTER
 } from "./types"
 import { TaskActionType } from "stores/task/types"
 import { UserAreaActionType, FINISH_PROJECT, UPDATE_PROJECT_TASK_STATUS, ADD_PROJECT_TASK } from "stores/userArea/types"
@@ -23,7 +24,10 @@ const initState: ProjectState = {
         projects: null,
         totalCount: 0,
         srcTypeInternalCount: 0,
-        srcTypeCustomerCount: 0
+        srcTypeCustomerCount: 0,
+        filter: {
+            name: undefined
+        }
     },
     infoPage: {
         project: null,
@@ -47,6 +51,18 @@ export default function customerReducer(state: ProjectState = initState, action:
                         ...(state.listPage.projects || []),
                         ...action.payload.projects
                     ]
+                }
+            }
+
+        case SET_PROJECT_LIST_FILTER:
+            return {
+                ...state,
+                listPage: {
+                    ...state.listPage,
+                    filter: {
+                        ...state.listPage.filter,
+                        ...action.payload
+                    }
                 }
             }
 

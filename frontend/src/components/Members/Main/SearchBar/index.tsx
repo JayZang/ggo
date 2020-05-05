@@ -12,7 +12,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProp = (dispatch: ThunkDispatch<any, any, any>) => ({
     search: async (text: string) => {
         dispatch(clearMembers())
-        dispatch(setListFilter({ name: text }))
+        dispatch(setListFilter({ name: text || undefined }))
         await Promise.all([
             dispatch(fetchMemberCountStatistic()),
             dispatch(fetchMembers())

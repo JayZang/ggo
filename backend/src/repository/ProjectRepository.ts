@@ -1,7 +1,7 @@
 import { EntityRepository, Not, IsNull } from 'typeorm'
 import _ from 'lodash'
 
-import Project from '@/entity/Project'
+import Project, { ProjectSrcType } from '@/entity/Project'
 import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Project)
@@ -39,9 +39,12 @@ class ProjectRepository extends BaseRepository<Project> {
     }
 
     public withFinishedCondition(isFinish: boolean) {
-        this.queryBuilder.where({
-            'finish_datetime': isFinish ? Not(null) : IsNull()
-        })
+        this.withFieldCondition('finish_datetime', isFinish ? Not(null) : IsNull())
+        return this
+    }
+
+    public withSourceTypeCondition(type: ProjectSrcType) {
+        this.withFieldCondition('source_type', type)
         return this
     }
 
@@ -65,6 +68,21 @@ class ProjectRepository extends BaseRepository<Project> {
 
     public withCustomerRelation() {
         this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.customer`, 'customer')
+        return this
+    }
+
+    public withManagersRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.managers`, 'managers')
+        return this
+    }
+
+    public withTeamParticipantsRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.team_participants`, 'teamParticipants')
+        return this
+    }
+
+    public withMemberParticipantsRelation() {
+        this.queryBuilder.leftJoinAndSelect(`${this.entityAlias}.member_participants`, 'memberParticipants')
         return this
     }
 }

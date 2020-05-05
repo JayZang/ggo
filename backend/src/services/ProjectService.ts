@@ -1,5 +1,5 @@
 import { Service } from 'typedi'
-import { getCustomRepository } from 'typeorm'
+import { getCustomRepository, ObjectLiteral } from 'typeorm'
 import moment from 'moment'
 
 import { TaskStatus } from '@/entity/Task'
@@ -61,19 +61,21 @@ export default class ProjectService {
     public async get(option?: {
         skip: number,
         take: number,
-    }) {
+    }, query?: ObjectLiteral) {
         try {
             const projectRepo = getCustomRepository(ProjectRepo)
-            return await projectRepo.find({
-                ...option,
-                order: {  id: 'DESC' },
-                relations: [
-                    'customer', 
-                    'managers', 
-                    'team_participants', 
-                    'member_participants'
-                ]
-            })
+                .initQueryBuilder()
+                .withCustomerRelation()
+                .withManagersRelation()
+                .withCreateAtOrder('DESC')
+                .withTeamParticipantsRelation()
+                .withMemberParticipantsRelation()
+                .offset(option.skip) 
+                .limit(option.take)
+
+            query && this.setQueryConfig(projectRepo, query)
+
+            return await projectRepo.getMany()
         } catch (err) {
             console.log('Get Projects fail')
             console.log(err.toString())
@@ -257,10 +259,13 @@ export default class ProjectService {
     /**
      * Get project total count
      */
-    public async getTotalCount() {
+    public async getTotalCount(query?: ObjectLiteral) {
         try {
-            const projectRepo = getCustomRepository(ProjectRepo)
-            return await projectRepo.count()
+            const projectRepo = getCustomRepository(ProjectRepo).initQueryBuilder()
+
+            query && this.setQueryConfig(projectRepo, query)
+
+            return await projectRepo.getCount()
         } catch (err) {
             console.log('Get Projects total count fail')
             console.log(err.toString())
@@ -271,12 +276,15 @@ export default class ProjectService {
     /**
      * Get project count by source type
      */
-    public async getCountBySrcType(type: ProjectSrcType) {
+    public async getCountBySrcType(type: ProjectSrcType, query?: ObjectLiteral) {
         try {
-            const projectRepo = getCustomRepository(ProjectRepo)
-            return await projectRepo.count({
-                source_type: type
-            })
+            const projectRepo = getCustomRepository(ProjectRepo).initQueryBuilder()
+
+            query && this.setQueryConfig(projectRepo, query)
+
+            return await projectRepo
+                .withSourceTypeCondition(type)
+                .getCount()
         } catch (err) {
             console.log('Get Projects count by source type fail')
             console.log(err.toString())
@@ -336,5 +344,14 @@ export default class ProjectService {
         project.managers = managers
         project.member_participants = memberParticipants || []
         project.team_participants = teamParticipants || []
+    }
+
+    private setQueryConfig(repo: ProjectRepo, query: ObjectLiteral) {
+        Object.keys(query).forEach(key => {
+            if (['name'].includes(key))
+                repo.withFieldLikeCondition(key, query[key])
+            else if ([].includes(key))
+                repo.withFieldCondition(key, query[key])
+        })
     }
 }

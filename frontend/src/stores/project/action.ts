@@ -18,15 +18,16 @@ import {
     ADD_PROJECT_MANAGER,
     REMOVE_PROJECT_MANAGER,
     ADD_PROJECT_MEMBER_PARTICIPANT,
-    REMOVE_PROJECT_MEMBER_PARTICIPANT
+    REMOVE_PROJECT_MEMBER_PARTICIPANT,
+    SET_PROJECT_LIST_FILTER
 } from "./types";
-import { regularizeProjectData } from "stores/utils/regularizeProjectData";
-import { regularizeCustomerData } from "stores/customer/utils";
 import { RootState } from "stores";
-import { Moment } from "moment";
 import { MemberStatus } from "contracts/member";
-import { regularizeMemberData } from "stores/utils/regularizeMemberData";
+import { regularizeCustomerData } from "stores/customer/utils";
 import { regularizeTeamData } from "stores/utils/regularizeTeamData";
+import { regularizeProjectData } from "stores/utils/regularizeProjectData";
+import { regularizeMemberData } from "stores/utils/regularizeMemberData";
+import { IProject } from "contracts/project";
 
 export const createProject = (data: any) => async (dispatch : Dispatch) => {
    const res = await projectApi.create(data)
@@ -56,14 +57,16 @@ export const updateProject = (id: string | number, data: any) => async (dispatch
 
 export const fetchProjects = () => async (dispatch: Dispatch, getState: () => RootState) => {
     const {
+        projects,
         totalCount,
-        projects
+        filter: listFilter
     } = getState().project.listPage
 
     if (projects && projects.length >= totalCount)
         return
 
    const res = await projectApi.get({
+       ...listFilter,
        offset: projects ? projects.length : 0,
        count: 10
    })
@@ -78,23 +81,39 @@ export const fetchProjects = () => async (dispatch: Dispatch, getState: () => Ro
    dispatch(action)
 }
 
+export function setListFilter(parameters: Partial<Record<keyof IProject, any>>) {
+    return {
+        type: SET_PROJECT_LIST_FILTER,
+        payload: {
+            name: parameters.name
+        }
+    }
+}
+
 export const loadListPage = () => async (dispatch : Dispatch, getState: () => RootState) => {
     await Promise.all([
-        getCountStatistic()(dispatch),
+        getCountStatistic()(dispatch, getState),
         fetchProjects()(dispatch, getState)
     ])
+}
+
+export function clearListPageState() {
+    return {
+        type: CLEAR_LIST_PAGE_STATE
+    }
 }
 
 export const reloadListPage = () => async (dispatch : Dispatch, getState: () => RootState) => {
-    dispatch({ type: CLEAR_LIST_PAGE_STATE })
+    dispatch(clearListPageState())
     await Promise.all([
-        getCountStatistic()(dispatch),
+        getCountStatistic()(dispatch, getState),
         fetchProjects()(dispatch, getState)
     ])
 }
 
-export const getCountStatistic = () => async (dispatch: Dispatch) => {
-    const res = await projectApi.getCountStatistic()
+export const getCountStatistic = () => async (dispatch: Dispatch, getState: () => RootState) => {
+    const { filter } = getState().project.listPage
+    const res = await projectApi.getCountStatistic(filter)
 
     const action: ProjectActionType = {
         type: GET_PROJECT_COUNT_STATISTIC,

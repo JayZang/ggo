@@ -1,16 +1,14 @@
 import axios from 'axios'
+import queryString from 'query-string'
+
+import { IProject } from 'contracts/project'
 
 const URL = '/api/projects'
 
 export function get(option: {
     offset: number
     count: number
-}) {
-    const {
-        offset,
-        count
-    } = option
-
+} & Partial<Record<keyof IProject, any>>) {
     return axios.get<{
         id: string
         name: string
@@ -24,5 +22,5 @@ export function get(option: {
         customer: Object | null
         remark: string | null
         create_at: string
-    }[]>(`${URL}?offset=${offset}&count=${count}`)
+    }[]>(`${URL}?${queryString.stringify(option)}`)
 }

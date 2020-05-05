@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { Container } from 'typedi'
+import _ from 'lodash'
 
 import { ProjectSrcType } from '@/entity/Project'
 import TaskService from '@/services/TaskService'
@@ -14,7 +15,7 @@ const taskService = Container.get(TaskService)
 export default (app: Router) => {
     app.use('/projects', validatePermission('project_management'), router)
 
-    router.post('', CreateAndEditProject(), async (req: Request, res: Response) => {
+    router.post('/', CreateAndEditProject(), async (req: Request, res: Response) => {
         const project = await projectService.create(req.body)
 
         return project ?
@@ -22,11 +23,11 @@ export default (app: Router) => {
             res.status(400).end()
     })
 
-    router.get('', async (req: Request, res: Response) => {
+    router.get('/', async (req: Request, res: Response) => {
         const projects = await projectService.get({
             skip: req.query.offset || 0,
             take: req.query.count || 10
-        })
+        }, _.omit(req.query, 'skip', 'take'))
         
         return projects ?
             res.json(projects) :
@@ -38,8 +39,8 @@ export default (app: Router) => {
             totalCount,
             srcTypeInternalCount
         ] = await Promise.all([
-            projectService.getTotalCount(),
-            projectService.getCountBySrcType(ProjectSrcType.Internal)
+            projectService.getTotalCount(req.query),
+            projectService.getCountBySrcType(ProjectSrcType.Internal, req.query)
         ])
         
         return res.json({
