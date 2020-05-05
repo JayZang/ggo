@@ -3,6 +3,7 @@ import { ITeam } from 'contracts/team'
 
 export const GET_MEMBER_COUNT_STATISTIC = 'GET_MEMBER_COUNT_STATISTIC'
 export const GET_MEMBER_LIST = 'GET_MEMBER_LIST'
+export const SET_MEMBER_LIST_FILTER = 'SET_MEMBER_LIST_FILTER'
 export const ADD_MEMBER_TO_LIST = 'ADD_MEMBER_TO_LIST'
 export const CLEAR_MEMBERS = 'CLEAR_MEMBERS'
 export const UPDATE_MEMBER = 'UPDATE_MEMBER'
@@ -21,6 +22,9 @@ export type MemberState = {
         totalCount: number
         activeCount: number
         inactiveCount: number
+        filter: {
+            name: string | undefined
+        }
     },
 
     /**
@@ -50,6 +54,13 @@ type GetMemberList = {
     type: typeof GET_MEMBER_LIST,
     payload: {
         members: IMember[]
+    }
+}
+
+type SetListFilter = {
+    type: typeof SET_MEMBER_LIST_FILTER,
+    payload: {
+        name?: string
     }
 }
 
@@ -108,6 +119,7 @@ type RemoveEmergencyContact = {
 export type MemberActionTypes = 
     GetMemberCountStatistic |
     GetMemberList |
+    SetListFilter |
     AddMemberToList | 
     ClearMembers | 
     UpdateMember | 

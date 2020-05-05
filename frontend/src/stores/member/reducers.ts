@@ -10,7 +10,8 @@ import {
     GET_MEMBER_COUNT_STATISTIC,
     GET_MEMBER_LIST,
     ADD_MEMBER_TO_LIST,
-    UPDATE_MEMBER_STATUS
+    UPDATE_MEMBER_STATUS,
+    SET_MEMBER_LIST_FILTER
 } from './types'
 import { REGISTER_MEMBER_USER, IAMActionTypes } from 'stores/iam/types'
 
@@ -19,7 +20,10 @@ const initState: MemberState = {
         list: null,
         totalCount: 0,
         activeCount: 0,
-        inactiveCount: 0
+        inactiveCount: 0,
+        filter: {
+            name: undefined
+        }
     },
     infoPage: {
         member: null,
@@ -56,6 +60,18 @@ export default function memberReducer(state = initState, action: MemberActionTyp
                         ...(state.listPage.list || []),
                         ...action.payload.members
                     ]
+                }
+            }
+
+        case SET_MEMBER_LIST_FILTER:
+            return {
+                ...state,
+                listPage: {
+                    ...state.listPage,
+                    filter: {
+                        ...state.listPage.filter,
+                        ...action.payload
+                    }
                 }
             }
 

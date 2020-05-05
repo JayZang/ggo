@@ -6,6 +6,7 @@ import { Paper, IconButton, Box, Grid, Divider } from '@material-ui/core'
 import styled from 'styled-components'
 
 type IProps = {
+    searchText?: string
     className?: string
     placeholder?: string
     search?: (text: string) => Promise<void>
@@ -18,10 +19,21 @@ type IState = {
 }
 
 class SearchBar extends Component<IProps, IState> {
-    state = {
-        searchText: '',
-        inputStretch: false,
-        searching: false
+    constructor(props: IProps) {
+        super(props)
+
+        this.state = {
+            searchText: props.searchText || '',
+            inputStretch: false,
+            searching: false
+        }
+    }
+
+    componentDidUpdate(preProps: IProps) {
+        if (preProps.searchText !== this.props.searchText)
+            this.setState({
+                searchText: this.props.searchText || ''
+            })
     }
 
     handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {

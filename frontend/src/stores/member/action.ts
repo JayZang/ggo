@@ -14,14 +14,14 @@ import {
     GET_MEMBER_LIST,
     ADD_MEMBER_TO_LIST,
     UPDATE_MEMBER_STATUS,
+    SET_MEMBER_LIST_FILTER,
 } from './types'
 import { IEmergencyContactEditDTO, MemberStatus, IMember } from 'contracts/member'
 import { RootState } from 'stores'
 
-export const fetchMemberCountStatistic = (
-    parameters?: Partial<Record<keyof IMember, string | number>>
-) => async (dispatch: Dispatch) => {
-    const res = await memberAPI.getCountStatistic(parameters)
+export const fetchMemberCountStatistic = () => async (dispatch: Dispatch, getState: () => RootState) => {
+    const listFilter = getState().member.listPage.filter
+    const res = await memberAPI.getCountStatistic(listFilter)
 
     const action: MemberActionTypes = {
         type: GET_MEMBER_COUNT_STATISTIC,
@@ -35,19 +35,18 @@ export const fetchMemberCountStatistic = (
     dispatch(action)
 }
 
-export const fetchMembers = (
-    parameters?: Partial<Record<keyof IMember, string | number>>
-) => async (dispatch: Dispatch, getState: () => RootState) => {
+export const fetchMembers = () => async (dispatch: Dispatch, getState: () => RootState) => {
     const {
         list: memberList,
-        totalCount
+        totalCount,
+        filter: listFilter
     } = getState().member.listPage
 
     if (memberList && memberList.length >= totalCount)
         return
 
     const res = await memberAPI.get({
-        ...parameters,
+        ...listFilter,
         offset: memberList ? memberList.length : 0,
         count: 10
     })
@@ -60,6 +59,17 @@ export const fetchMembers = (
     }
 
     dispatch(action)
+}
+
+export function setListFilter(
+    parameters: Partial<Record<keyof IMember, any>>
+): MemberActionTypes {
+    return {
+        type: SET_MEMBER_LIST_FILTER,
+        payload: {
+            name: parameters.name
+        }
+    }
 }
 
 export function clearMembers(): MemberActionTypes {
