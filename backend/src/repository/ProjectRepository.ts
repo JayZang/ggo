@@ -39,7 +39,7 @@ class ProjectRepository extends BaseRepository<Project> {
     }
 
     public withFinishedCondition(isFinish: boolean) {
-        this.withFieldCondition('finish_datetime', isFinish ? Not(null) : IsNull())
+        this.queryBuilder.andWhere(`${this.entityAlias}.finish_datetime IS ${isFinish ? 'NOT' : ''} NULL`)
         return this
     }
 
