@@ -1,20 +1,23 @@
 import { Dispatch } from "redux";
 
-import { WorkReportActions, GET_WORK_REPORTS, CLEAR_WORK_REPORTS } from "./types";
-import * as workReportApi from 'api/workReport'
 import { RootState } from "stores";
+import * as workReportApi from 'api/workReport'
 import { regularizeWorkReportData } from "stores/utils/regularizeWorkReportData";
+import { WorkReportActions, GET_WORK_REPORTS, CLEAR_WORK_REPORTS, SET_WORK_REPORT_LIST_FILTER } from "./types";
+import { IWorkReport } from "contracts/workReport";
 
 export const fetchWorkReports = () => async (dispatch: Dispatch, getState: () => RootState) => {
     const {
         totalCount,
-        workReports
+        workReports,
+        filter: listFilter
     } = getState().workReport.listPage
 
     if (workReports && workReports.length >= totalCount)
         return
 
     const res = await workReportApi.get({
+        ...listFilter,
         count: 10,
         offset: workReports ? workReports.length : 0
     })
@@ -28,6 +31,17 @@ export const fetchWorkReports = () => async (dispatch: Dispatch, getState: () =>
     }
 
     dispatch(action)
+}
+
+export function setListFilter(
+    parameters: Partial<Record<keyof IWorkReport, any>>
+) {
+    return {
+        type: SET_WORK_REPORT_LIST_FILTER,
+        payload: {
+            title: parameters.title
+        }
+    }
 }
 
 export const clearWorkReports = () => {

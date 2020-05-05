@@ -1,5 +1,5 @@
 import { Service } from "typedi";
-import { getCustomRepository } from "typeorm";
+import { getCustomRepository, ObjectLiteral } from "typeorm";
 
 import WorkReportRepo from "@/repository/WorkReportRepository";
 
@@ -12,18 +12,19 @@ export default class WorkReportService {
     public async get(option: {
         skip: number,
         take: number,
-    }) {
+    }, query?: ObjectLiteral) {
         try {
             const workReportRepo = getCustomRepository(WorkReportRepo)
-
-            const [workReports, count] =await workReportRepo
                 .initQueryBuilder()
                 .withSubmitterRelation()
                 .withTaskRelation()
                 .withCreateAtOrder('DESC')
                 .take(option.take)
                 .skip(option.skip)
-                .getManyAndCount()
+
+            query && this.setQueryConfig(workReportRepo, query)
+
+            const [workReports, count] = await workReportRepo.getManyAndCount()
             
             return { workReports, count }
         } catch (err) {
@@ -31,5 +32,14 @@ export default class WorkReportService {
             console.log(err.toString())
             return null
         }
+    }
+
+    private setQueryConfig(repo: WorkReportRepo, query: ObjectLiteral) {
+        Object.keys(query).forEach(key => {
+            if (['title'].includes(key))
+                repo.withFieldLikeCondition(key, query[key])
+            else if ([].includes(key))
+                repo.withFieldCondition(key, query[key])
+        })
     }
 }

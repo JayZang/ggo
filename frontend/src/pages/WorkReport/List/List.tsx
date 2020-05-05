@@ -9,9 +9,10 @@ import {
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import { IWorkReport } from 'contracts/workReport'
+import WorkReportSearchBar from 'components/WorkReport/List/SearchBar'
+import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import WorkReportItem from 'components/WorkReport/WorkReportPanel/WorkReportList/WorkReportItem'
 import WorkReportDisplayPanel from 'components/WorkReport/WorkReportPanel/WorkReportDisplayPanel'
-import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import WorkReportItemSkeleton from 'components/WorkReport/WorkReportPanel/WorkReportList/WorkReportItemSkeleton'
 
 const PageSymbol = Symbol('Management.WorkReport.List')
@@ -91,12 +92,10 @@ class WorkReportListPage extends Component<IProps, IState> {
                             <Box fontWeight={500}>工作報告列表</Box>
                         </Typography>
                         <Box className="d-flex mt-1 align-items-center">
-                            <Paper className="px-1 mr-1">
-                                <IconButton size="small" >
-                                    <SearchIcon />
-                                </IconButton>
-                                <InputBase placeholder="搜尋工作報告" />
-                            </Paper>
+                            <WorkReportSearchBar 
+                                className="mr-1"
+                                placeholder="搜尋工作報告"
+                            />
 
                             {/* <Tooltip title="過濾設置">
                                 <IconButton size="small" color="primary">
