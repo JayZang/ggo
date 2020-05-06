@@ -2,28 +2,26 @@ import React, {  Component } from 'react'
 import {
     Grid,
     Button,
-    Paper,
-    IconButton,
-    InputBase,
     WithStyles,
     withStyles,
     Typography,
     Box
 } from '@material-ui/core'
 import {
-    Add as AddIcon,
-    Search as SearchIcon
+    Add as AddIcon
 } from '@material-ui/icons'
 
 import styles from './styles'
 import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
+import CustomerSearchBar from 'components/SearchBar'
 import CustomerMenu from 'components/Customer/List/CustomerMenu'
 import CustomerEditDrawer from 'components/Customer/CustomerEditPanel/CustomerEditDrawer'
 import CustomerItemSkeleton from 'components/Customer/List/CustomerMenu/CustomerItem/Skeleton'
 import { ICustomer } from 'contracts/customer'
 
 type IState = {
+    searchText: string
     openEditPanel: boolean
 }
 
@@ -37,6 +35,7 @@ class CustomerList extends Component<IProps, IState> {
         super(props)
 
         this.state = {
+            searchText: '',
             openEditPanel: false
         }
     }
@@ -45,14 +44,24 @@ class CustomerList extends Component<IProps, IState> {
         !this.props.customers && this.props.load()
     }
 
+    async handleSearch(text: string) {
+        this.setState({ searchText: text })
+    }
+
+    get customers() {
+        const { customers } = this.props
+        const { searchText } = this.state
+
+        return customers && customers.filter(customer => 
+            !searchText || 
+            customer.company_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            customer.contact.toLowerCase().includes(searchText.toLowerCase())
+        )
+    }
+
     render() {
-        const {
-            classes,
-            customers
-        } = this.props
-        const {
-            openEditPanel
-        } = this.state
+        const { openEditPanel } = this.state
+        const customers = this.customers
 
         return (
             <AppContent
@@ -63,17 +72,16 @@ class CustomerList extends Component<IProps, IState> {
                     />
                 )}
             >
-                <Grid container className="align-items-center mb-3">
+                <Grid container  alignItems="flex-end" className="mb-3">
                     <Grid item>
                         <Typography variant="h5" component="div">
                             <Box fontWeight={500}>客戶管理</Box>
                         </Typography>
-                        <Paper className="px-1 mr-1 mt-1">
-                            <IconButton size="small" >
-                                <SearchIcon />
-                            </IconButton>
-                            <InputBase placeholder="搜尋客戶" />
-                        </Paper>
+                        <CustomerSearchBar 
+                            className="mt-1"
+                            placeholder="搜尋客戶"
+                            search={this.handleSearch.bind(this)}
+                        />
                     </Grid>
                     <Grid item className="ml-auto">
                         <Button

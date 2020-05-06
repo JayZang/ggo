@@ -46,7 +46,7 @@ class Login extends Component<IProps> {
                         />
                     </Grid>
                     <Hidden xsDown>
-                        <Grid  sm={6} className="right-area" />
+                        <Grid  item sm={6} className="right-area" />
                     </Hidden>
                 </Grid>
             </Paper>

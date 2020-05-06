@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import CustomerItem from './CustomerItem'
 import { ICustomer } from 'contracts/customer'
+import { Box } from '@material-ui/core'
 
 type IProps = {
     customers: ICustomer[]
@@ -10,11 +11,13 @@ type IProps = {
 class CustomerMenu extends Component<IProps> {
     render() {
         return (
-            <div>
-                {this.props.customers.map(customer => {
-                    return <CustomerItem key={customer.id} customer={customer} />
-                })}
-            </div>
+            <Box>
+                {this.props.customers.map(customer => (
+                    <Box key={customer.id} marginBottom={2}>
+                        <CustomerItem customer={customer} />
+                    </Box>
+                ))}
+            </Box>
         )
     }
 }
