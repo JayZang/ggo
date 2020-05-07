@@ -105,7 +105,7 @@ class ProjectList extends Component<IProps, IState> {
                 onScrollBottom={this.handleScrollBottom.bind(this)}
                 pageSymbol={PageSymbol}
             >
-                <Grid container className="align-items-center mb-3">
+                <Grid container alignItems="flex-end" className="mb-3">
                     <Grid item>
                         <Typography variant="h5" component="div">
                             <Box fontWeight={500}>專案/案件管理</Box>

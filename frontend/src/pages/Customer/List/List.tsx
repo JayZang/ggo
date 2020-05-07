@@ -8,7 +8,8 @@ import {
     Box
 } from '@material-ui/core'
 import {
-    Add as AddIcon
+    Add as AddIcon,
+    Settings as SettingsIcon
 } from '@material-ui/icons'
 
 import styles from './styles'
@@ -16,6 +17,7 @@ import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import CustomerSearchBar from 'components/SearchBar'
 import CustomerMenu from 'components/Customer/List/CustomerMenu'
+import CustomerIndustryEditDialog from 'components/Customer/IndustryEdit/Dialog'
 import CustomerEditDrawer from 'components/Customer/CustomerEditPanel/CustomerEditDrawer'
 import CustomerItemSkeleton from 'components/Customer/List/CustomerMenu/CustomerItem/Skeleton'
 import { ICustomer } from 'contracts/customer'
@@ -23,6 +25,7 @@ import { ICustomer } from 'contracts/customer'
 type IState = {
     searchText: string
     openEditPanel: boolean
+    openIndustryEditDialog: boolean
 }
 
 type IProps = WithStyles<typeof styles> & {
@@ -36,7 +39,8 @@ class CustomerList extends Component<IProps, IState> {
 
         this.state = {
             searchText: '',
-            openEditPanel: false
+            openEditPanel: false,
+            openIndustryEditDialog: false
         }
     }
 
@@ -60,7 +64,7 @@ class CustomerList extends Component<IProps, IState> {
     }
 
     render() {
-        const { openEditPanel } = this.state
+        const { openEditPanel, openIndustryEditDialog } = this.state
         const customers = this.customers
 
         return (
@@ -84,14 +88,27 @@ class CustomerList extends Component<IProps, IState> {
                         />
                     </Grid>
                     <Grid item className="ml-auto">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<AddIcon />}
-                            onClick={() => this.setState({ openEditPanel: true })}
-                        >
-                            新增客戶
-                        </Button>
+                        <Grid container spacing={2}>
+                            <Grid item>
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<SettingsIcon />}
+                                    onClick={() => this.setState({ openIndustryEditDialog: true })}
+                                >
+                                    客戶產業類型
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    startIcon={<AddIcon />}
+                                    onClick={() => this.setState({ openEditPanel: true })}
+                                >
+                                    新增客戶
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
 
@@ -103,6 +120,11 @@ class CustomerList extends Component<IProps, IState> {
                     open={openEditPanel}
                     onOpen={() => this.setState({ openEditPanel: true })}
                     onClose={() => this.setState({ openEditPanel: false })}
+                />
+
+                <CustomerIndustryEditDialog 
+                    open={openIndustryEditDialog}
+                    onClose={() => this.setState({ openIndustryEditDialog: false })}
                 />
             </AppContent>
         )
