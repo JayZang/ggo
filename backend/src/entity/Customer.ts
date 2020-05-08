@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, AfterLoad, AfterInsert, AfterUpdate } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, AfterLoad, AfterInsert, AfterUpdate, ManyToMany } from 'typeorm'
 import Project from './Project'
 import CustomerDataRegularizer from '@/regularizer/CustomerDataRegularizer'
+import IndustryCategory from './IndustryCategory'
 
 @Entity()
 export default class Customer {
@@ -63,6 +64,9 @@ export default class Customer {
         cascade: true
     })
     projects: Project[]
+
+    @ManyToMany(type => IndustryCategory, industryCategory => industryCategory.customers)
+    industryCategories: IndustryCategory[]
 
     @AfterLoad()
     @AfterInsert()

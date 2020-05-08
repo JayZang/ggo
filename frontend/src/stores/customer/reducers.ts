@@ -1,7 +1,8 @@
-import { CustomerState, CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS } from "./types";
+import { CustomerState, CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS, GET_CUSTOMER_INDUSTRY_CATEGORIES, ADD_CUSTOMER_INDUSTRY_CATEGORY, EDIT_CUSTOMER_INDUSTRY_CATEGORY, REMOVE_CUSTOMER_INDUSTRY_CATEGORY } from "./types";
 
 const initState: CustomerState = {
-    customerMenu: null
+    customerMenu: null,
+    industryCategories: null
 }
 
 export default function customerReducer(state: CustomerState = initState, action: CustomerActionType): CustomerState {
@@ -19,6 +20,39 @@ export default function customerReducer(state: CustomerState = initState, action
             return {
                 ...state,
                 customerMenu: action.payload.customers
+            }
+
+        case GET_CUSTOMER_INDUSTRY_CATEGORIES:
+            return {
+                ...state,
+                industryCategories: action.payload.industryCategories
+            }
+
+        case ADD_CUSTOMER_INDUSTRY_CATEGORY:
+            return {
+                ...state,
+                industryCategories: state.industryCategories && [
+                    action.payload.industryCategory,
+                    ...state.industryCategories
+                ]
+            }
+
+        case EDIT_CUSTOMER_INDUSTRY_CATEGORY:
+            return {
+                ...state,
+                industryCategories: state.industryCategories && state.industryCategories.map(industryCategory => {
+                    if (industryCategory.id === action.payload.industryCategory.id)
+                        return action.payload.industryCategory
+                    return industryCategory
+                })
+            }
+
+        case REMOVE_CUSTOMER_INDUSTRY_CATEGORY:
+            return {
+                ...state,
+                industryCategories: state.industryCategories && state.industryCategories.filter(industryCategory => {
+                    return industryCategory.id !== action.payload.id
+                })
             }
 
         default:

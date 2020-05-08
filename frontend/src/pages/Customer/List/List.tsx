@@ -17,10 +17,10 @@ import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import CustomerSearchBar from 'components/SearchBar'
 import CustomerMenu from 'components/Customer/List/CustomerMenu'
-import CustomerIndustryEditDialog from 'components/Customer/IndustryEdit/Dialog'
+import CustomerIndustryEditDialog from 'components/Customer/IndustryEditDialog'
 import CustomerEditDrawer from 'components/Customer/CustomerEditPanel/CustomerEditDrawer'
 import CustomerItemSkeleton from 'components/Customer/List/CustomerMenu/CustomerItem/Skeleton'
-import { ICustomer } from 'contracts/customer'
+import { ICustomer, IndustryCategory } from 'contracts/customer'
 
 type IState = {
     searchText: string
@@ -31,6 +31,7 @@ type IState = {
 type IProps = WithStyles<typeof styles> & {
     load: () => Promise<void>
     customers: ICustomer[] | null
+    industryCategories: IndustryCategory[]
 }
 
 class CustomerList extends Component<IProps, IState> {
@@ -65,6 +66,7 @@ class CustomerList extends Component<IProps, IState> {
 
     render() {
         const { openEditPanel, openIndustryEditDialog } = this.state
+        const { industryCategories } = this.props
         const customers = this.customers
 
         return (
@@ -125,6 +127,7 @@ class CustomerList extends Component<IProps, IState> {
                 <CustomerIndustryEditDialog 
                     open={openIndustryEditDialog}
                     onClose={() => this.setState({ openIndustryEditDialog: false })}
+                    industryCategories={industryCategories}
                 />
             </AppContent>
         )

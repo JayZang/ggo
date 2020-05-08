@@ -1,2 +1,6 @@
 export * from './create'
 export * from './get'
+export * from './getIndustryCategories'
+export * from './createIndustryCategories'
+export * from './updateIndustryCategory'
+export * from './removeIndustryCategory'

@@ -1,10 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm'
+import { EntityRepository } from 'typeorm'
 import _ from 'lodash'
 
 import Customer from '@/entity/Customer'
+import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Customer)
-class CustomerRepository extends Repository<Customer> {
+class CustomerRepository extends BaseRepository<Customer> {
     
     /**
      * Insert one customer

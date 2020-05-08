@@ -3,15 +3,19 @@ import { connect } from "react-redux";
 import CustomerList from './List'
 import { RootState } from "stores";
 import { ThunkDispatch } from "redux-thunk";
-import { getCustomers } from "stores/customer/action";
+import { getCustomers, fetchIndustryCategories } from "stores/customer/action";
 
 const mapStateToProps = (state: RootState) => ({
-    customers: state.customer.customerMenu
+    customers: state.customer.customerMenu,
+    industryCategories: state.customer.industryCategories || []
 })
 
 const mapActionToProps = (dispatch: ThunkDispatch<any, any, any>) => ({
     load: async () => {
-        await dispatch(getCustomers())
+        await Promise.all([
+            dispatch(fetchIndustryCategories()),
+            dispatch(getCustomers())
+        ])
     }
 })
 

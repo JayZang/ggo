@@ -75,4 +75,9 @@ export class BaseRepository<T> extends Repository<T> {
         this.queryBuilder.orderBy(`${this.entityAlias}.${this.CREATE_AT}`, order)
         return this
     }
+
+    public withIdOrder(order: "ASC" | "DESC" = 'ASC') {
+        this.queryBuilder.orderBy(`${this.entityAlias}.${this.ID}`, order)
+        return this
+    }
 }
