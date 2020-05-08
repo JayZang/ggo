@@ -1,5 +1,5 @@
 import React, { Component, ChangeEvent } from 'react'
-import { Grid, FormControl, TextField, Button, Avatar, WithStyles, withStyles, Badge, Tooltip, FormHelperText } from '@material-ui/core'
+import { Grid, FormControl, TextField, Button, Avatar, WithStyles, withStyles, Badge, Tooltip, FormHelperText, Paper } from '@material-ui/core'
 import {
     AccountBox as AccountBoxIcon,
     Edit as EditIcon
@@ -9,6 +9,8 @@ import { withSnackbar, WithSnackbarProps } from 'notistack'
 
 import styles from './styles'
 import fileValidate from 'utils/fileValidate'
+import { ICustomer, IndustryCategory } from 'contracts/customer'
+import IndustrySelectionMenu from 'components/Customer/IndustrySelectionMenu'
 
 class FieldItem extends Component<{
     label: string,
@@ -17,6 +19,7 @@ class FieldItem extends Component<{
     multiline?: boolean,
     onChange?: any,
     hint?: string
+    required?: boolean
 }> {
     render() {
         return (
@@ -33,6 +36,7 @@ class FieldItem extends Component<{
                             style: { fontSize: 14 },
                         }}
                         onChange={this.props.onChange}
+                        required={this.props.required}
                     />
                     {this.props.hint ? (<FormHelperText>{this.props.hint}</FormHelperText>) : null}
                 </FormControl>
@@ -42,6 +46,8 @@ class FieldItem extends Component<{
 }
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
+    customer?: ICustomer | null
+    industryCategories: IndustryCategory[]
     createCustomer: (data: any) => Promise<void>
     onSubmitSuccess?: () => void
 }
@@ -55,6 +61,7 @@ type Fields = {
     website?: string
     address?: string
     remark?: string
+    industry_categories: number[] | string[]
 }
 
 type IState = {
@@ -68,17 +75,20 @@ class CustomerEditPanel extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
+        const customer = props.customer
         this.state = {
-            logo: null,
+            logo: customer && customer.hasLogo ? customer.logo : null,
             fields: {
                 logo: undefined,
-                company_name: undefined,
-                contact: undefined,
-                phone: undefined,
-                email: undefined,
-                website: undefined,
-                address: undefined,
-                remark: undefined,
+                company_name: customer ? customer.company_name : undefined,
+                contact: customer ? customer.contact : undefined,
+                phone: customer ? customer.phone : undefined,
+                email: customer && customer.email ? customer.email : undefined,
+                website: customer && customer.website ? customer.website : undefined,
+                address: customer && customer.address ? customer.address : undefined,
+                remark: customer && customer.remark ? customer.remark : undefined,
+                industry_categories: customer && customer.industry_categories ? 
+                    customer.industry_categories.map(industryCategory => industryCategory.id) as any : [],
             },
             errors: {
                 logo: '',
@@ -89,6 +99,7 @@ class CustomerEditPanel extends Component<IProps, IState> {
                 website: '',
                 address: '',
                 remark: '',
+                industry_categories: ''
             },
             isSending: false
         }
@@ -114,6 +125,15 @@ class CustomerEditPanel extends Component<IProps, IState> {
             fields,
             logo: fields.logo ? URL.createObjectURL(fields.logo) : null
          })
+    }
+
+    handleIndustryCategoriesChange(IndustryCategories: IndustryCategory[] | IndustryCategory | null) {
+        if (!Array.isArray(IndustryCategories))
+            return
+
+        const fields = this.state.fields
+        fields.industry_categories = IndustryCategories.map(IndustryCategory => IndustryCategory.id) as any
+        this.setState({ fields })
     }
 
     checkFields(propertyName: keyof Fields) {
@@ -147,7 +167,9 @@ class CustomerEditPanel extends Component<IProps, IState> {
         return !errMsg
     }
 
-    handleSubmitClick() {
+    handleSubmit(event: React.FormEvent) {
+        event.preventDefault()
+
         let isAllValid = true
 
         Object.keys(this.state.fields).forEach((key: any) => {
@@ -174,7 +196,9 @@ class CustomerEditPanel extends Component<IProps, IState> {
 
     render() {
         const {
-            classes
+            classes,
+            customer,
+            industryCategories
         } = this.props
         const {
             logo,
@@ -183,7 +207,8 @@ class CustomerEditPanel extends Component<IProps, IState> {
         } = this.state
 
         return (
-            <Grid container direction="column">
+            <form onSubmit={this.handleSubmit.bind(this)}>
+                <Grid container direction="column">
                     <Grid item className="mb-3 text-center">
                         <Badge
                             overlap="circle"
@@ -219,18 +244,21 @@ class CustomerEditPanel extends Component<IProps, IState> {
                         value={fields.company_name}
                         onChange={this.handleFieldChange.bind(this, 'company_name')}
                         hint={errors.company_name}
+                        required
                     />
                     <FieldItem 
                         label="聯絡人" 
                         value={fields.contact}
                         onChange={this.handleFieldChange.bind(this, 'contact')}
                         hint={errors.contact}
+                        required
                     />
                     <FieldItem 
                         label="聯絡電話" 
                         value={fields.phone}
                         onChange={this.handleFieldChange.bind(this, 'phone')}
                         hint={errors.phone}
+                        required
                     />
                     <FieldItem 
                         label="信箱" 
@@ -250,6 +278,18 @@ class CustomerEditPanel extends Component<IProps, IState> {
                         onChange={this.handleFieldChange.bind(this, 'address')}
                         hint={errors.address}
                     />
+
+                    {industryCategories.length ? (
+                        <Paper className="p-3 mb-3">
+                            <IndustrySelectionMenu
+                                multiple
+                                industryCategories={industryCategories}
+                                defaultIndustryCategories={customer ? customer.industry_categories : undefined}
+                                onChange={this.handleIndustryCategoriesChange.bind(this)}
+                            />
+                        </Paper>
+                    ) : null}
+
                     <FieldItem 
                         label="備註" 
                         value={fields.remark}
@@ -261,15 +301,16 @@ class CustomerEditPanel extends Component<IProps, IState> {
                     <Grid item className="mt-1">
                         <Button 
                             fullWidth
+                            type="submit"
                             color="primary" 
                             variant="contained"
-                            onClick={this.handleSubmitClick.bind(this)}
                             disabled={this.state.isSending}
                         >
                             儲存
                         </Button>
                     </Grid>
-            </Grid>
+                </Grid>
+            </form>
         )
     }
 }

@@ -11,7 +11,9 @@ export type ICustomer = {
     address: string | null
     remark: string | null
     create_at: Moment
-    industryCategories?: IndustryCategory[]
+    industry_categories?: IndustryCategory[]
+} & {
+    hasLogo: boolean
 }
 
 export type IndustryCategory = {

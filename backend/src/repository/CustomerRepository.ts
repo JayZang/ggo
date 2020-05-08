@@ -1,4 +1,4 @@
-import { EntityRepository } from 'typeorm'
+import { EntityRepository, ObjectLiteral } from 'typeorm'
 import _ from 'lodash'
 
 import Customer from '@/entity/Customer'
@@ -6,16 +6,8 @@ import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Customer)
 class CustomerRepository extends BaseRepository<Customer> {
-    
-    /**
-     * Insert one customer
-     * 
-     * @param data
-     */
-    public async createAndSave(data: any, filename: string|null = null) {
-        const customer = this.create()
 
-        customer.logo = filename
+    massAssign(customer: Customer, data: ObjectLiteral) {
         Object.assign(customer, _.pick(data, [
             'company_name',
             'contact',
@@ -25,8 +17,6 @@ class CustomerRepository extends BaseRepository<Customer> {
             'address',
             'remark'
         ]))
-
-        return this.save(customer)
     }
 }
 

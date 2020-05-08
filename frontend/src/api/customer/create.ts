@@ -11,11 +11,20 @@ export function create(data: {
     website?: string
     address?: string
     remark?: string
+    industry_categories: number[] | string[]
 }) {
     const formData = new FormData()
     Object.keys(data).forEach(key => {
         const value = (data as any)[key]
-        value !== undefined && formData.append(key, value)
+
+        if (value === undefined)
+            return
+        else if (Array.isArray(value)) {
+            value.forEach(v => {
+                formData.append(`${key}[]`, v)
+            })
+        } else 
+            formData.append(key, value)
     })
 
     return axios.post<{

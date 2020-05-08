@@ -138,6 +138,7 @@ class CustomerIndustryEditDialog extends Component<IProps, IState> {
             industryCategories,
             create,
             update,
+            remove,
             ...restProps
         } = this.props
         const {

@@ -6,9 +6,12 @@ import {
 import RightDrawerContainer from 'components/RightDrawerContainer'
 import MobileHeader from 'components/MobileHeader'
 import CustomerEditPanel from './index'
+import { ICustomer, IndustryCategory } from 'contracts/customer'
 
 type IProps = {
     open: boolean,
+    customer?: ICustomer | null
+    industryCategories: IndustryCategory[]
     onOpen: () => void,
     onClose: () => void
 }
@@ -18,7 +21,9 @@ class CustomerEditDrawer extends Component<IProps> {
         const {
             open,
             onOpen,
-            onClose
+            onClose,
+            customer,
+            industryCategories
         } = this.props
 
         return (
@@ -26,6 +31,8 @@ class CustomerEditDrawer extends Component<IProps> {
                 open={open}
                 onOpen={onOpen}
                 onClose={onClose}
+                maxWidth={500}
+                title={customer ? '編輯客戶' : '新增客戶'}
                 headComponent={
                     <MobileHeader
                         title="新增客戶"
@@ -36,8 +43,10 @@ class CustomerEditDrawer extends Component<IProps> {
                     />
                 }
             >
-                <CustomerEditPanel 
+                <CustomerEditPanel
+                    customer={customer}
                     onSubmitSuccess={onClose}
+                    industryCategories={industryCategories}
                 />
             </RightDrawerContainer>
         )

@@ -47,6 +47,7 @@ interface IProps extends WithStyles<typeof styles> {
     onOpen: () => void,
     onClose: () => void,
     headComponent?: JSX.Element
+    maxWidth?: number
 }
 
 class RightDrawerContainer extends Component<IProps> {
@@ -71,6 +72,11 @@ class RightDrawerContainer extends Component<IProps> {
                     classes={{
                         root: classes.drawerRoot,
                         paper: classes.drawerPaper
+                    }}
+                    PaperProps={{
+                        style: {
+                            maxWidth: this.props.maxWidth
+                        }
                     }}
                 >
                     {this.props.headComponent}

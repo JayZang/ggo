@@ -13,6 +13,7 @@ export function CreateCustomer(): RequestHandler[] {
         body('website').optional().isURL(),
         body('address').optional().isString(),
         body('remark').optional().isString(),
+        body('industry_categories').optional().isArray(),
         validate()
     ]
 }

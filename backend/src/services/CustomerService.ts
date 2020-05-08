@@ -15,13 +15,49 @@ export default class CustomerService {
     public  async create(data: any, logo?: Express.Multer.File) {
         try {
             const customerRepo = getCustomRepository(CustomerRepo)
+            const industryCategoryRepo = getCustomRepository(IndustryCategoryRepo)
+            
             const filename = logo ?
                 await storeFileWithRandomName(logo, resource.customerLogo.dest) :
                 null
+            const customer = customerRepo.create()
 
-            return await customerRepo.createAndSave(data, filename)
+            customerRepo.massAssign(customer, data)
+            customer.logo = filename
+            customer.industry_categories = data.industry_categories ? 
+                await industryCategoryRepo.findByIds(data.industry_categories) :
+                [ ]
+
+            return await customerRepo.save(customer)
         } catch (err) {
             console.log('Create Customer fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
+     * Update one customer
+     */
+    public  async update(id: string | number, data: any, logo?: Express.Multer.File) {
+        try {
+            const customerRepo = getCustomRepository(CustomerRepo)
+            const industryCategoryRepo = getCustomRepository(IndustryCategoryRepo)
+            
+            const filename = logo ?
+                await storeFileWithRandomName(logo, resource.customerLogo.dest) :
+                null
+            const customer = await customerRepo.findOneOrFail(id)
+
+            customerRepo.massAssign(customer, data)
+            filename && (customer.logo = filename)
+            customer.industry_categories = data.industry_categories ? 
+                await industryCategoryRepo.findByIds(data.industry_categories) :
+                [ ]
+
+            return await customerRepo.save(customer)
+        } catch (err) {
+            console.log('Update Customer fail')
             console.log(err.toString())
             return null
         }
@@ -33,7 +69,12 @@ export default class CustomerService {
     public async get() {
         try {
             const customerRepo = getCustomRepository(CustomerRepo)
-            return await customerRepo.find()
+            return await customerRepo.find({
+                relations: ['industry_categories'],
+                order: {
+                    'create_at': 'DESC'
+                }
+            })
         } catch (err) {
             console.log('Get Customer fail')
             console.log(err.toString())

@@ -6,6 +6,7 @@ export function regularizeCustomerData(data: any): ICustomer {
     return {
         ...data,
         logo: data.logo || defaultCompanyLogo,
+        hasLogo: !!data.logo,
         create_at: moment(data.create_at)
     }
 }

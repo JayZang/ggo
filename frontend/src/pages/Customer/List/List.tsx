@@ -26,6 +26,7 @@ type IState = {
     searchText: string
     openEditPanel: boolean
     openIndustryEditDialog: boolean
+    customerToEdit: ICustomer | null
 }
 
 type IProps = WithStyles<typeof styles> & {
@@ -41,7 +42,8 @@ class CustomerList extends Component<IProps, IState> {
         this.state = {
             searchText: '',
             openEditPanel: false,
-            openIndustryEditDialog: false
+            openIndustryEditDialog: false,
+            customerToEdit: null
         }
     }
 
@@ -65,7 +67,7 @@ class CustomerList extends Component<IProps, IState> {
     }
 
     render() {
-        const { openEditPanel, openIndustryEditDialog } = this.state
+        const { openEditPanel, openIndustryEditDialog, customerToEdit } = this.state
         const { industryCategories } = this.props
         const customers = this.customers
 
@@ -115,13 +117,21 @@ class CustomerList extends Component<IProps, IState> {
                 </Grid>
 
                 {customers ?
-                    <CustomerMenu customers={customers} /> : 
+                    <CustomerMenu 
+                        customers={customers} 
+                        onEdit={customer => this.setState({ 
+                            openEditPanel: true,
+                            customerToEdit: customer
+                         })} 
+                    /> : 
                     <CustomerItemSkeleton />}
 
-                <CustomerEditDrawer 
+                <CustomerEditDrawer
                     open={openEditPanel}
+                    customer={customerToEdit}
+                    industryCategories={industryCategories}
                     onOpen={() => this.setState({ openEditPanel: true })}
-                    onClose={() => this.setState({ openEditPanel: false })}
+                    onClose={() => this.setState({ openEditPanel: false, customerToEdit: null })}
                 />
 
                 <CustomerIndustryEditDialog 

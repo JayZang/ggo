@@ -12,7 +12,7 @@ export default class IndustryCategory {
   @Column()
   name: string
 
-  @ManyToMany(type => Customer, customer => customer.industryCategories)
+  @ManyToMany(type => Customer, customer => customer.industry_categories)
   @JoinTable({
     name: 'customer_industry_category'
 })

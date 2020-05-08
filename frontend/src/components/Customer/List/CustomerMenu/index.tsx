@@ -6,6 +6,7 @@ import { Box } from '@material-ui/core'
 
 type IProps = {
     customers: ICustomer[]
+    onEdit?: (customer: ICustomer) => void
 }
 
 class CustomerMenu extends Component<IProps> {
@@ -14,7 +15,10 @@ class CustomerMenu extends Component<IProps> {
             <Box>
                 {this.props.customers.map(customer => (
                     <Box key={customer.id} marginBottom={2}>
-                        <CustomerItem customer={customer} />
+                        <CustomerItem 
+                            customer={customer} 
+                            onEditBtnClick={() => this.props.onEdit && this.props.onEdit(customer)}
+                        />
                     </Box>
                 ))}
             </Box>

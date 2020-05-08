@@ -66,7 +66,7 @@ export default class Customer {
     projects: Project[]
 
     @ManyToMany(type => IndustryCategory, industryCategory => industryCategory.customers)
-    industryCategories: IndustryCategory[]
+    industry_categories: IndustryCategory[]
 
     @AfterLoad()
     @AfterInsert()

@@ -10,9 +10,9 @@ export default function customerReducer(state: CustomerState = initState, action
         case ADD_CUSTOMER:
             return {
                 ...state,
-                customerMenu: [
-                    ...(state.customerMenu || []),
-                    action.payload.customer
+                customerMenu: state.customerMenu && [
+                    action.payload.customer,
+                    ...state.customerMenu,
                 ]
             }
 

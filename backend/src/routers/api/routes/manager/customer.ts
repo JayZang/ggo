@@ -21,6 +21,18 @@ export default (app: Router) => {
             res.status(400).end()
     })
 
+    router.put('/:id', customerLogoUpload.single('logo'), CreateCustomer(), async (req: Request, res: Response) => {
+        const customer = await customerService.update(
+            req.params.id,
+            req.body, 
+            req.file
+        )
+
+        return customer ?
+            res.json(customer) :
+            res.status(400).end()
+    })
+
     router.get('/', async (req: Request, res: Response) => {
         const customers = await customerService.get()
         
