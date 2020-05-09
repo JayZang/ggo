@@ -1,4 +1,5 @@
 export * from './create'
+export * from './update'
 export * from './get'
 export * from './getIndustryCategories'
 export * from './createIndustryCategories'

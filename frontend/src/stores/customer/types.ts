@@ -1,6 +1,7 @@
 import { ICustomer, IndustryCategory } from 'contracts/customer'
 
 export const ADD_CUSTOMER = 'ADD_CUSTOMER'
+export const UPDATE_CUSTOMER = 'UPDATE_CUSTOMER'
 export const GET_CUSTOMERS = 'GET_CUSTOMERS'
 export const GET_CUSTOMER_INDUSTRY_CATEGORIES = 'GET_CUSTOMER_INDUSTRY_CATEGORIES'
 export const ADD_CUSTOMER_INDUSTRY_CATEGORY = 'ADD_CUSTOMER_INDUSTRY_CATEGORY'
@@ -15,6 +16,13 @@ export type CustomerState = {
 
 type AddCustomer = {
     type: typeof ADD_CUSTOMER,
+    payload: {
+        customer: ICustomer
+    }
+}
+
+type UpdateCustomer = {
+    type: typeof UPDATE_CUSTOMER,
     payload: {
         customer: ICustomer
     }
@@ -57,6 +65,7 @@ type RemoveCustomerIndustryCategory = {
 
 export type CustomerActionType = 
     AddCustomer |
+    UpdateCustomer |
     GetCustomers |
     GetCustomerIndustryCategories |
     AddCustomerIndustryCategory |

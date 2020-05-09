@@ -19,7 +19,7 @@ export default class Customer {
         type: 'text',
         nullable: true
     })
-    logo: string
+    logo: string | null
 
     @Column({
         type: 'varchar',

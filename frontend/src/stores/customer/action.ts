@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import * as customerApi from 'api/customer'
-import { CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS, GET_CUSTOMER_INDUSTRY_CATEGORIES, ADD_CUSTOMER_INDUSTRY_CATEGORY, EDIT_CUSTOMER_INDUSTRY_CATEGORY, REMOVE_CUSTOMER_INDUSTRY_CATEGORY } from "./types";
+import { CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS, GET_CUSTOMER_INDUSTRY_CATEGORIES, ADD_CUSTOMER_INDUSTRY_CATEGORY, EDIT_CUSTOMER_INDUSTRY_CATEGORY, REMOVE_CUSTOMER_INDUSTRY_CATEGORY, UPDATE_CUSTOMER } from "./types";
 import { regularizeCustomerData } from "./utils";
 
 export const createCustomer = (data: any) => async (dispatch : Dispatch) => {
@@ -9,6 +9,19 @@ export const createCustomer = (data: any) => async (dispatch : Dispatch) => {
 
    const action: CustomerActionType = {
        type: ADD_CUSTOMER,
+       payload: {
+           customer: regularizeCustomerData(res.data)
+       }
+   }
+
+   dispatch(action)
+}
+
+export const updateCustomer = (id: number | string, data: any) => async (dispatch : Dispatch) => {
+   const res = await customerApi.update(id, data)
+
+   const action: CustomerActionType = {
+       type: UPDATE_CUSTOMER,
        payload: {
            customer: regularizeCustomerData(res.data)
        }

@@ -1,4 +1,4 @@
-import { CustomerState, CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS, GET_CUSTOMER_INDUSTRY_CATEGORIES, ADD_CUSTOMER_INDUSTRY_CATEGORY, EDIT_CUSTOMER_INDUSTRY_CATEGORY, REMOVE_CUSTOMER_INDUSTRY_CATEGORY } from "./types";
+import { CustomerState, CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS, GET_CUSTOMER_INDUSTRY_CATEGORIES, ADD_CUSTOMER_INDUSTRY_CATEGORY, EDIT_CUSTOMER_INDUSTRY_CATEGORY, REMOVE_CUSTOMER_INDUSTRY_CATEGORY, UPDATE_CUSTOMER } from "./types";
 
 const initState: CustomerState = {
     customerMenu: null,
@@ -14,6 +14,16 @@ export default function customerReducer(state: CustomerState = initState, action
                     action.payload.customer,
                     ...state.customerMenu,
                 ]
+            }
+
+        case UPDATE_CUSTOMER:
+            return {
+                ...state,
+                customerMenu: state.customerMenu && state.customerMenu.map(customer => {
+                    if (customer.id === action.payload.customer.id)
+                        return action.payload.customer
+                    return customer
+                })
             }
 
         case GET_CUSTOMERS:

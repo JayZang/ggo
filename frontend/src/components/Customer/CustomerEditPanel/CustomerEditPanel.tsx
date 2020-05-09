@@ -49,6 +49,7 @@ type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     customer?: ICustomer | null
     industryCategories: IndustryCategory[]
     createCustomer: (data: any) => Promise<void>
+    updateCustomer: (id: number | string, data: any) => Promise<void>
     onSubmitSuccess?: () => void
 }
 
@@ -178,17 +179,22 @@ class CustomerEditPanel extends Component<IProps, IState> {
 
         if (!isAllValid) return 
 
+        const action = this.props.customer ?
+            this.props.updateCustomer.bind(this, this.props.customer.id) :
+            this.props.createCustomer.bind(this)
+        const actionName = this.props.customer ? '編輯' : '新增'
+
         this.setState({ isSending: true })
-        this.props.createCustomer(this.state.fields)
+        action(this.state.fields)
             .then(() => {
-                this.props.enqueueSnackbar('新增成員成功！', {
+                this.props.enqueueSnackbar(`${actionName}成員成功！`, {
                     variant: 'success'
                 })
                 this.props.onSubmitSuccess && this.props.onSubmitSuccess()
             })
             .catch(() => {
                 this.setState({ isSending: false })
-                this.props.enqueueSnackbar('新增成員失敗！', {
+                this.props.enqueueSnackbar(`${actionName}成員失敗！`, {
                     variant: 'error'
                 })
             })
