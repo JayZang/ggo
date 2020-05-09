@@ -3,6 +3,7 @@ import { ICustomer, IndustryCategory } from 'contracts/customer'
 export const ADD_CUSTOMER = 'ADD_CUSTOMER'
 export const UPDATE_CUSTOMER = 'UPDATE_CUSTOMER'
 export const GET_CUSTOMERS = 'GET_CUSTOMERS'
+export const REMOVE_CUSTOMER = 'REMOVE_CUSTOMER'
 export const GET_CUSTOMER_INDUSTRY_CATEGORIES = 'GET_CUSTOMER_INDUSTRY_CATEGORIES'
 export const ADD_CUSTOMER_INDUSTRY_CATEGORY = 'ADD_CUSTOMER_INDUSTRY_CATEGORY'
 export const EDIT_CUSTOMER_INDUSTRY_CATEGORY = 'EDIT_CUSTOMER_INDUSTRY_CATEGORY'
@@ -32,6 +33,13 @@ type GetCustomers = {
     type: typeof GET_CUSTOMERS,
     payload: {
         customers: ICustomer[]
+    }
+}
+
+type RemoveCustomer = {
+    type: typeof REMOVE_CUSTOMER,
+    payload: {
+        id: string | number
     }
 }
 
@@ -67,6 +75,7 @@ export type CustomerActionType =
     AddCustomer |
     UpdateCustomer |
     GetCustomers |
+    RemoveCustomer |
     GetCustomerIndustryCategories |
     AddCustomerIndustryCategory |
     EditCustomerIndustryCategory |

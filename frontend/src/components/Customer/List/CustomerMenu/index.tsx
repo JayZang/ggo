@@ -7,6 +7,7 @@ import { Box } from '@material-ui/core'
 type IProps = {
     customers: ICustomer[]
     onEdit?: (customer: ICustomer) => void
+    onRemove?: (customer: ICustomer) => void
 }
 
 class CustomerMenu extends Component<IProps> {
@@ -17,6 +18,7 @@ class CustomerMenu extends Component<IProps> {
                     <Box key={customer.id} marginBottom={2}>
                         <CustomerItem 
                             customer={customer} 
+                            onRemoveBtnClick={() => this.props.onRemove && this.props.onRemove(customer)}
                             onEditBtnClick={() => this.props.onEdit && this.props.onEdit(customer)}
                         />
                     </Box>

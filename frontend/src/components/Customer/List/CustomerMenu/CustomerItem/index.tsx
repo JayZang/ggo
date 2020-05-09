@@ -11,14 +11,17 @@ import {
     Box,
     ExpansionPanelActions,
     Paper,
-    Chip
+    Chip,
+    Divider
 } from '@material-ui/core'
 import {
     ExpandMore as ExpandMoreIcon,
     LocationOn as LocationOnIcon,
     Description as DescriptionIcon,
     Language as WebIcon,
-    OpenInNew as OpenInNewIcon
+    OpenInNew as OpenInNewIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon
 } from '@material-ui/icons';
 
 import styles from './styles'
@@ -29,6 +32,7 @@ import { indigo } from '@material-ui/core/colors';
 type IProps = {
     className?: string
     customer: ICustomer
+    onRemoveBtnClick?: () => void
     onEditBtnClick?: () => void
 } & WithStyles<typeof styles>
 
@@ -37,6 +41,7 @@ class CustomerItem extends Component<IProps> {
         const {
             classes,
             customer,
+            onRemoveBtnClick,
             onEditBtnClick
         } = this.props
 
@@ -174,7 +179,11 @@ class CustomerItem extends Component<IProps> {
                     </Box>
                 </ExpansionPanelDetails>
                 <ExpansionPanelActions>
-                    <Button size="small" onClick={onEditBtnClick}>
+                    <Button size="small" color="secondary" startIcon={<DeleteIcon />}  onClick={onRemoveBtnClick}>
+                        刪除
+                    </Button>
+                    <Divider orientation="vertical" flexItem />
+                    <Button size="small" startIcon={<EditIcon />} onClick={onEditBtnClick}>
                         編輯
                     </Button>
                     <Button size="small" color="primary">

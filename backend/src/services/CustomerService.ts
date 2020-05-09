@@ -83,6 +83,21 @@ export default class CustomerService {
     }
 
     /**
+     * Remove customer
+     */
+    public async remove(id: string | number) {
+        try {
+            const customerRepo = getCustomRepository(CustomerRepo)
+            const customer = await customerRepo.findOneOrFail(id)
+            return customerRepo.remove(customer)
+        } catch (err) {
+            console.log('Remove Customer fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
      * Create industry category
      */
     public async createIndustryCategory(name: string) {

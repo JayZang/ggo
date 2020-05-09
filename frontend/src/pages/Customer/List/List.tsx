@@ -5,7 +5,11 @@ import {
     WithStyles,
     withStyles,
     Typography,
-    Box
+    Box,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions
 } from '@material-ui/core'
 import {
     Add as AddIcon,
@@ -17,6 +21,7 @@ import AppContent from 'pages/App/Content'
 import MobileHeader from 'components/MobileHeader'
 import CustomerSearchBar from 'components/SearchBar'
 import CustomerMenu from 'components/Customer/List/CustomerMenu'
+import CustomerRemoveHintDialog from 'components/Customer/RemoveHintDialog'
 import CustomerIndustryEditDialog from 'components/Customer/IndustryEditDialog'
 import CustomerEditDrawer from 'components/Customer/CustomerEditPanel/CustomerEditDrawer'
 import CustomerItemSkeleton from 'components/Customer/List/CustomerMenu/CustomerItem/Skeleton'
@@ -25,8 +30,10 @@ import { ICustomer, IndustryCategory } from 'contracts/customer'
 type IState = {
     searchText: string
     openEditPanel: boolean
+    openCustomerRemoveHintDialog: boolean
     openIndustryEditDialog: boolean
     customerToEdit: ICustomer | null
+    customerToRemove: ICustomer | null
 }
 
 type IProps = WithStyles<typeof styles> & {
@@ -42,7 +49,9 @@ class CustomerList extends Component<IProps, IState> {
         this.state = {
             searchText: '',
             openEditPanel: false,
+            openCustomerRemoveHintDialog: false,
             openIndustryEditDialog: false,
+            customerToRemove: null,
             customerToEdit: null
         }
     }
@@ -67,7 +76,13 @@ class CustomerList extends Component<IProps, IState> {
     }
 
     render() {
-        const { openEditPanel, openIndustryEditDialog, customerToEdit } = this.state
+        const { 
+            openEditPanel, 
+            openIndustryEditDialog, 
+            openCustomerRemoveHintDialog, 
+            customerToRemove,
+            customerToEdit
+        } = this.state
         const { industryCategories } = this.props
         const customers = this.customers
 
@@ -123,6 +138,10 @@ class CustomerList extends Component<IProps, IState> {
                             openEditPanel: true,
                             customerToEdit: customer
                          })} 
+                         onRemove={customer => this.setState({
+                            openCustomerRemoveHintDialog: true,
+                            customerToRemove: customer
+                         })}
                     /> : 
                     <CustomerItemSkeleton />}
 
@@ -139,6 +158,14 @@ class CustomerList extends Component<IProps, IState> {
                     onClose={() => this.setState({ openIndustryEditDialog: false })}
                     industryCategories={industryCategories}
                 />
+
+                {customerToRemove ? (
+                    <CustomerRemoveHintDialog
+                        customer={customerToRemove}
+                        open={openCustomerRemoveHintDialog}
+                        onClose={() => this.setState({ openCustomerRemoveHintDialog: false })}
+                    />
+                ) : null}
             </AppContent>
         )
     }

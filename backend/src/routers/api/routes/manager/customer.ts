@@ -41,6 +41,14 @@ export default (app: Router) => {
             res.status(400).end()
     })
 
+    router.delete('/:id', async (req: Request, res: Response) => {
+        const customer = await customerService.remove(req.params.id)
+        
+        return customer ?
+            res.json(customer) :
+            res.status(400).end()
+    })
+
     router.post('/industry-categories', EditIndustryCategory(), async (req: Request, res: Response) => {
         const industryCategory = await customerService.createIndustryCategory(req.body.name)
 
