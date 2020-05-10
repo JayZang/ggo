@@ -3,15 +3,16 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, DialogProps,
 
 import DownToUpSlideTransition from 'components/Transition/DownToUpSlideTransition'
 import { ICustomer } from 'contracts/customer'
+import { WithSnackbarProps, withSnackbar } from 'notistack'
 
-type IProps = {
+type IProps = WithSnackbarProps & {
     open: boolean
     onClose: () => void
     customer: ICustomer
     remove?: (id: string | number) => Promise<void>
 }
 
-export default class CustomerRemoveHintDialog extends Component<IProps> {
+class CustomerRemoveHintDialog extends Component<IProps> {
     handleRemove() {
         if (!this.props.remove)
             return
@@ -19,6 +20,14 @@ export default class CustomerRemoveHintDialog extends Component<IProps> {
         this.props.remove(this.props.customer.id)
             .then(()=> {
                 this.props.onClose()
+                this.props.enqueueSnackbar(`刪除客戶 ${this.props.customer.company_name} 成功！`, {
+                    variant: 'success'
+                })
+            })
+            .catch(() => {
+                this.props.enqueueSnackbar(`刪除客戶 ${this.props.customer.company_name} 失敗！`, {
+                    variant: 'error'
+                })
             })
     }
 
@@ -41,6 +50,7 @@ export default class CustomerRemoveHintDialog extends Component<IProps> {
                 <DialogContent>
                     <DialogContentText>
                         此操作將無法進行還原動作，確認要刪除嗎？ <br/>
+                        ( 若尚有專案來源來自此客戶，刪除將會失敗 )
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -55,3 +65,5 @@ export default class CustomerRemoveHintDialog extends Component<IProps> {
         )
     }
 }
+
+export default withSnackbar(CustomerRemoveHintDialog)

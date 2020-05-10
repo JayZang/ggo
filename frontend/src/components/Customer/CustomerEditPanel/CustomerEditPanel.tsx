@@ -187,14 +187,14 @@ class CustomerEditPanel extends Component<IProps, IState> {
         this.setState({ isSending: true })
         action(this.state.fields)
             .then(() => {
-                this.props.enqueueSnackbar(`${actionName}成員成功！`, {
+                this.props.enqueueSnackbar(`${actionName}客戶成功！`, {
                     variant: 'success'
                 })
                 this.props.onSubmitSuccess && this.props.onSubmitSuccess()
             })
             .catch(() => {
                 this.setState({ isSending: false })
-                this.props.enqueueSnackbar(`${actionName}成員失敗！`, {
+                this.props.enqueueSnackbar(`${actionName}客戶失敗！`, {
                     variant: 'error'
                 })
             })

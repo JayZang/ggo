@@ -89,7 +89,7 @@ export default class CustomerService {
         try {
             const customerRepo = getCustomRepository(CustomerRepo)
             const customer = await customerRepo.findOneOrFail(id)
-            return customerRepo.remove(customer)
+            return await customerRepo.remove(customer)
         } catch (err) {
             console.log('Remove Customer fail')
             console.log(err.toString())
