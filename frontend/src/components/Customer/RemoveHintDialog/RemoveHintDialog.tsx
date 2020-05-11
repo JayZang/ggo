@@ -58,7 +58,7 @@ class CustomerRemoveHintDialog extends Component<IProps> {
                         返回
                     </Button>
                     <Button color="secondary" onClick={this.handleRemove.bind(this)}>
-                        確認
+                        刪除
                     </Button>
                 </DialogActions>
             </Dialog>

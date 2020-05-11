@@ -26,6 +26,7 @@ import CustomerIndustryEditDialog from 'components/Customer/IndustryEditDialog'
 import CustomerEditDrawer from 'components/Customer/CustomerEditPanel/CustomerEditDrawer'
 import CustomerItemSkeleton from 'components/Customer/List/CustomerMenu/CustomerItem/Skeleton'
 import { ICustomer, IndustryCategory } from 'contracts/customer'
+import { withRouter, RouteComponentProps } from 'react-router'
 
 type IState = {
     searchText: string
@@ -36,7 +37,7 @@ type IState = {
     customerToRemove: ICustomer | null
 }
 
-type IProps = WithStyles<typeof styles> & {
+type IProps = WithStyles<typeof styles> & RouteComponentProps & {
     load: () => Promise<void>
     customers: ICustomer[] | null
     industryCategories: IndustryCategory[]
@@ -137,11 +138,12 @@ class CustomerList extends Component<IProps, IState> {
                         onEdit={customer => this.setState({ 
                             openEditPanel: true,
                             customerToEdit: customer
-                         })} 
-                         onRemove={customer => this.setState({
+                        })} 
+                        onRemove={customer => this.setState({
                             openCustomerRemoveHintDialog: true,
                             customerToRemove: customer
-                         })}
+                        })}
+                        onView={customer => this.props.history.push(`${this.props.match.url}/${customer.id}`)}
                     /> : 
                     <CustomerItemSkeleton />}
 
@@ -171,4 +173,6 @@ class CustomerList extends Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(CustomerList)
+export default withStyles(styles)(
+    withRouter(CustomerList)
+)

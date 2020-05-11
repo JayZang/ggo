@@ -34,6 +34,7 @@ type IProps = {
     customer: ICustomer
     onRemoveBtnClick?: () => void
     onEditBtnClick?: () => void
+    onViewBtnClick?: () => void
 } & WithStyles<typeof styles>
 
 class CustomerItem extends Component<IProps> {
@@ -42,7 +43,8 @@ class CustomerItem extends Component<IProps> {
             classes,
             customer,
             onRemoveBtnClick,
-            onEditBtnClick
+            onEditBtnClick,
+            onViewBtnClick
         } = this.props
 
         return (
@@ -186,7 +188,7 @@ class CustomerItem extends Component<IProps> {
                     <Button size="small" startIcon={<EditIcon />} onClick={onEditBtnClick}>
                         編輯
                     </Button>
-                    <Button size="small" color="primary">
+                    <Button size="small" color="primary" onClick={onViewBtnClick}>
                         查看更多
                     </Button>
                 </ExpansionPanelActions>

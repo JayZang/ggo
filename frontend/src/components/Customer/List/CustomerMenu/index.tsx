@@ -8,6 +8,7 @@ type IProps = {
     customers: ICustomer[]
     onEdit?: (customer: ICustomer) => void
     onRemove?: (customer: ICustomer) => void
+    onView?: (customer: ICustomer) => void
 }
 
 class CustomerMenu extends Component<IProps> {
@@ -20,6 +21,7 @@ class CustomerMenu extends Component<IProps> {
                             customer={customer} 
                             onRemoveBtnClick={() => this.props.onRemove && this.props.onRemove(customer)}
                             onEditBtnClick={() => this.props.onEdit && this.props.onEdit(customer)}
+                            onViewBtnClick={() => this.props.onView && this.props.onView(customer)}
                         />
                     </Box>
                 ))}
