@@ -172,7 +172,9 @@ class CustomerItem extends Component<IProps> {
                                             <DescriptionIcon />
                                         </Grid>
                                         <Grid item style={{ paddingTop: 6 }}>
-                                            {customer.remark || '無備註'}
+                                            <Box whiteSpace="pre-line">
+                                                {customer.remark || '無備註'}
+                                            </Box>
                                         </Grid>
                                     </Grid>
                                 </Paper>

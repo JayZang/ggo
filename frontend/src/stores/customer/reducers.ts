@@ -1,7 +1,11 @@
-import { CustomerState, CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS, GET_CUSTOMER_INDUSTRY_CATEGORIES, ADD_CUSTOMER_INDUSTRY_CATEGORY, EDIT_CUSTOMER_INDUSTRY_CATEGORY, REMOVE_CUSTOMER_INDUSTRY_CATEGORY, UPDATE_CUSTOMER, REMOVE_CUSTOMER } from "./types";
+import { CustomerState, CustomerActionType, ADD_CUSTOMER, GET_CUSTOMERS, GET_CUSTOMER_INDUSTRY_CATEGORIES, ADD_CUSTOMER_INDUSTRY_CATEGORY, EDIT_CUSTOMER_INDUSTRY_CATEGORY, REMOVE_CUSTOMER_INDUSTRY_CATEGORY, UPDATE_CUSTOMER, REMOVE_CUSTOMER, GET_CUSTOMER_INFO } from "./types";
 
 const initState: CustomerState = {
     customerMenu: null,
+    infoPage: {
+        customer: null,
+        projects: null
+    },
     industryCategories: null
 }
 
@@ -23,13 +27,28 @@ export default function customerReducer(state: CustomerState = initState, action
                     if (customer.id === action.payload.customer.id)
                         return action.payload.customer
                     return customer
-                })
+                }),
+                infoPage: {
+                    ...state.infoPage,
+                    customer: state.infoPage.customer && state.infoPage.customer.id === action.payload.customer.id ?
+                        action.payload.customer :
+                        state.infoPage.customer
+                }
             }
 
         case GET_CUSTOMERS:
             return {
                 ...state,
                 customerMenu: action.payload.customers
+            }
+
+        case GET_CUSTOMER_INFO:
+            return {
+                ...state,
+                infoPage: {
+                    ...state.infoPage,
+                    ...action.payload
+                }
             }
 
         case REMOVE_CUSTOMER:

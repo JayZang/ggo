@@ -1,9 +1,15 @@
 import { connect } from 'react-redux';
 
 import CustomerEditPanel from './CustomerEditPanel'
-import { createCustomer, updateCustomer } from 'stores/customer/action';
+import { createCustomer, updateCustomer, fetchIndustryCategories } from 'stores/customer/action';
+import { RootState } from 'stores';
 
-export default connect(null, {
+const mapStateToProps = (state: RootState) => ({
+    industryCategories: state.customer.industryCategories
+})
+
+export default connect(mapStateToProps, {
     createCustomer,
-    updateCustomer
+    updateCustomer,
+    load: fetchIndustryCategories
 })(CustomerEditPanel)

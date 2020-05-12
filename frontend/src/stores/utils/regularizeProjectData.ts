@@ -4,7 +4,7 @@ import { ITask } from "contracts/task";
 import { IProject } from 'contracts/project'
 import { IMember } from "contracts/member";
 import { regularizeTeamData } from "./regularizeTeamData";
-import { regularizeCustomerData } from "stores/customer/utils";
+import { regularizeCustomerData } from "stores/utils/regularizeCustomerData";
 import { regularizeMemberData } from "./regularizeMemberData";
 import { regularizeTaskData } from "stores/utils/regularizeTaskData";
 

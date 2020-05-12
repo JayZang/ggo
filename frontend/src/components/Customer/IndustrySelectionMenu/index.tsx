@@ -98,7 +98,7 @@ class IndustrySelectionMenu extends Component<IProps, IState> {
         } = this.props
         const {
             checked,
-            searchInput
+            searchInput      
         } = this.state
 
         return (
@@ -115,12 +115,13 @@ class IndustrySelectionMenu extends Component<IProps, IState> {
                 </Grid>
                 <Paper className="p-1">
                     <Grid container spacing={1}>
-                        <IconButton className="p-1">
+                        <IconButton className="p-1 px-2">
                             <SearchIcon />
                         </IconButton>
                         <Divider orientation="vertical" />
-                        <Grid item>
+                        <Grid item xs>
                             <InputBase
+                                fullWidth
                                 placeholder="搜尋產業類型"
                                 value={searchInput}
                                 onChange={(event) => this.setState({ searchInput: event.target.value })}

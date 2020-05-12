@@ -6,17 +6,37 @@ import { BaseRepository } from './BaseRepocitory'
 
 @EntityRepository(Customer)
 class CustomerRepository extends BaseRepository<Customer> {
+    protected industryCategoriesAlias = 'industryCategories'
+    protected projectsAlias = 'projects'
 
     massAssign(customer: Customer, data: ObjectLiteral) {
-        Object.assign(customer, _.pick(data, [
-            'company_name',
-            'contact',
-            'email',
-            'phone',
-            'website',
-            'address',
-            'remark'
-        ]))
+        customer.company_name = data.company_name
+        customer.contact = data.contact
+        customer.phone = data.phone
+        customer.email = data.email || null
+        customer.website = data.website || null
+        customer.address = data.address || null
+        customer.remark = data.remark || null
+    }
+
+    withIndustryCategoryRelation() {
+        this.queryBuilder.leftJoinAndSelect(
+            `${this.entityAlias}.industry_categories`,
+            this.industryCategoriesAlias,
+        )
+        return this
+    }
+
+    withProjectsRelation(order: 'DESC' | 'ASC' = 'DESC') {
+        this.queryBuilder.leftJoinAndSelect(
+            `${this.entityAlias}.projects`,
+            this.projectsAlias
+        )
+        this.queryBuilder.orderBy(
+            `${this.projectsAlias}.id`,
+            order
+        )
+        return this
     }
 }
 

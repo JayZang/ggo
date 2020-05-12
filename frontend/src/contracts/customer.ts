@@ -1,4 +1,5 @@
 import { Moment } from "moment";
+import { IProject } from "./project";
 
 export type ICustomer = {
     id: number | string
@@ -12,6 +13,7 @@ export type ICustomer = {
     remark: string | null
     create_at: Moment
     industry_categories?: IndustryCategory[]
+    projects?: IProject[]
 } & {
     hasLogo: boolean
 }

@@ -150,7 +150,6 @@ class CustomerList extends Component<IProps, IState> {
                 <CustomerEditDrawer
                     open={openEditPanel}
                     customer={customerToEdit}
-                    industryCategories={industryCategories}
                     onOpen={() => this.setState({ openEditPanel: true })}
                     onClose={() => this.setState({ openEditPanel: false, customerToEdit: null })}
                 />

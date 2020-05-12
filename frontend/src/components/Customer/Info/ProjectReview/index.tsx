@@ -37,10 +37,10 @@ class CustomerProjectsReview extends Component<IProps> {
                         <TableHead>
                             <TableRow>
                                 <TableCell>專案名稱</TableCell>
-                                <TableCell>起訖日期</TableCell>
+                                <TableCell>專案期限</TableCell>
                                 <TableCell>完成日期</TableCell>
                                 <TableCell>預估比 
-                                    <Tooltip title="完成日期 / 起訖日期 X 100%">
+                                    <Tooltip title="完成日期 / 專案期限 X 100%">
                                         <Typography color="textSecondary" component="span">
                                             <ContactSupportIcon fontSize="small" />
                                         </Typography>

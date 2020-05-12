@@ -11,7 +11,6 @@ import { ICustomer, IndustryCategory } from 'contracts/customer'
 type IProps = {
     open: boolean,
     customer?: ICustomer | null
-    industryCategories: IndustryCategory[]
     onOpen: () => void,
     onClose: () => void
 }
@@ -22,8 +21,7 @@ class CustomerEditDrawer extends Component<IProps> {
             open,
             onOpen,
             onClose,
-            customer,
-            industryCategories
+            customer
         } = this.props
 
         return (
@@ -46,7 +44,6 @@ class CustomerEditDrawer extends Component<IProps> {
                 <CustomerEditPanel
                     customer={customer}
                     onSubmitSuccess={onClose}
-                    industryCategories={industryCategories}
                 />
             </RightDrawerContainer>
         )

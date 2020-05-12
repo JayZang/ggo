@@ -13,42 +13,6 @@ const customerLogoUpload = getImageMulter()
 export default (app: Router) => {
     app.use('/customers', validatePermission('customer_management'), router)
 
-    router.post('/', customerLogoUpload.single('logo'), CreateCustomer(), async (req: Request, res: Response) => {
-        const customer = await customerService.create(req.body, req.file)
-
-        return customer ?
-            res.json(customer) :
-            res.status(400).end()
-    })
-
-    router.put('/:id', customerLogoUpload.single('logo'), CreateCustomer(), async (req: Request, res: Response) => {
-        const customer = await customerService.update(
-            req.params.id,
-            req.body, 
-            req.file
-        )
-
-        return customer ?
-            res.json(customer) :
-            res.status(400).end()
-    })
-
-    router.get('/', async (req: Request, res: Response) => {
-        const customers = await customerService.get()
-        
-        return customers ?
-            res.json(customers) :
-            res.status(400).end()
-    })
-
-    router.delete('/:id', async (req: Request, res: Response) => {
-        const customer = await customerService.remove(req.params.id)
-        
-        return customer ?
-            res.json(customer) :
-            res.status(400).end()
-    })
-
     router.post('/industry-categories', EditIndustryCategory(), async (req: Request, res: Response) => {
         const industryCategory = await customerService.createIndustryCategory(req.body.name)
 
@@ -81,6 +45,50 @@ export default (app: Router) => {
 
         return industryCategory ?
             res.json(industryCategory) :
+            res.status(400).end()
+    })
+    
+    router.post('/', customerLogoUpload.single('logo'), CreateCustomer(), async (req: Request, res: Response) => {
+        const customer = await customerService.create(req.body, req.file)
+
+        return customer ?
+            res.json(customer) :
+            res.status(400).end()
+    })
+
+    router.put('/:id', customerLogoUpload.single('logo'), CreateCustomer(), async (req: Request, res: Response) => {
+        const customer = await customerService.update(
+            req.params.id,
+            req.body, 
+            req.file
+        )
+
+        return customer ?
+            res.json(customer) :
+            res.status(400).end()
+    })
+
+    router.get('/', async (req: Request, res: Response) => {
+        const customers = await customerService.get()
+        
+        return customers ?
+            res.json(customers) :
+            res.status(400).end()
+    })
+
+    router.get('/:id', async (req: Request, res: Response) => {
+        const customer = await customerService.getOne(req.params.id)
+        
+        return customer ?
+            res.json(customer) :
+            res.status(400).end()
+    })
+
+    router.delete('/:id', async (req: Request, res: Response) => {
+        const customer = await customerService.remove(req.params.id)
+        
+        return customer ?
+            res.json(customer) :
             res.status(400).end()
     })
 }

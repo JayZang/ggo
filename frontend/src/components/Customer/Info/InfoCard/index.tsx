@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Card, CardContent, CardHeader, Table, TableBody, TableRow, TableCell, CardActions, Button, Divider, Box } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 import EditIcon from '@material-ui/icons/Edit'
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 
 import { ICustomer } from 'contracts/customer'
 import styled from 'styled-components'
@@ -10,6 +11,7 @@ type IProps = {
     className?: string
     customer: ICustomer | null
     hiddenCompanyName?: boolean
+    onEditBtnClick?: () => void
 }
 
 class CustomerInfoCard extends Component<IProps> {
@@ -17,7 +19,8 @@ class CustomerInfoCard extends Component<IProps> {
         const {
             className,
             customer,
-            hiddenCompanyName
+            hiddenCompanyName,
+            onEditBtnClick
         } = this.props
 
         return (
@@ -54,7 +57,7 @@ class CustomerInfoCard extends Component<IProps> {
                                     信箱
                                 </TableCell>
                                 <TableCell>
-                                    {customer ? customer.phone : <Skeleton height={30} />}
+                                    {customer ? customer.email : <Skeleton height={30} />}
                                 </TableCell>
                             </TableRow>
                             <TableRow>
@@ -62,7 +65,16 @@ class CustomerInfoCard extends Component<IProps> {
                                     公司網站
                                 </TableCell>
                                 <TableCell>
-                                    {customer ? customer.phone : <Skeleton height={30} />}
+                                    {customer ? (customer.website && (
+                                        <a
+                                            className="d-flex"
+                                            target="_blank"
+                                            href={`//${customer.website}`}
+                                        >
+                                            <Box className="mr-1" component="span">{customer.website}</Box>
+                                            <OpenInNewIcon fontSize="small" />
+                                        </a>
+                                    )) : <Skeleton height={30} />}
                                 </TableCell>
                             </TableRow>
                             <TableRow>
@@ -70,9 +82,27 @@ class CustomerInfoCard extends Component<IProps> {
                                     公司地址
                                 </TableCell>
                                 <TableCell>
-                                    {customer ? customer.phone : <Skeleton height={30} />}
+                                    {customer ? (customer.address && (
+                                        <a
+                                            className="d-flex"
+                                            target="_blank"
+                                            href={`https://www.google.com.tw/maps/search/${customer.address}`}
+                                        >
+                                            <Box className="mr-1" component="span">{customer.address}</Box>
+                                            <OpenInNewIcon fontSize="small" />
+                                        </a>
+                                    )) : <Skeleton height={30} />}
                                 </TableCell>
                             </TableRow>
+                            {customer && customer.remark ? (
+                                <TableRow>
+                                    <TableCell colSpan={99}>
+                                        <Box>備註</Box>
+                                        <Divider className="mt-1 mb-2" />
+                                        <Box whiteSpace="pre-line">{customer.remark}</Box>
+                                    </TableCell>
+                                </TableRow>
+                            ) : null}
                         </TableBody>
                     </Table>
                 </CardContent>
@@ -80,7 +110,7 @@ class CustomerInfoCard extends Component<IProps> {
                     <Box>
                         <Divider />
                         <CardActions>
-                            <Button fullWidth color="primary" startIcon={<EditIcon />}>
+                            <Button fullWidth color="primary" startIcon={<EditIcon />} onClick={onEditBtnClick}>
                                 編輯
                             </Button>
                         </CardActions>

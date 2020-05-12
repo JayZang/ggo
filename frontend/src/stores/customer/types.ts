@@ -1,8 +1,10 @@
 import { ICustomer, IndustryCategory } from 'contracts/customer'
+import { IProject } from 'contracts/project'
 
 export const ADD_CUSTOMER = 'ADD_CUSTOMER'
 export const UPDATE_CUSTOMER = 'UPDATE_CUSTOMER'
 export const GET_CUSTOMERS = 'GET_CUSTOMERS'
+export const GET_CUSTOMER_INFO = 'GET_CUSTOMER_INFO'
 export const REMOVE_CUSTOMER = 'REMOVE_CUSTOMER'
 export const GET_CUSTOMER_INDUSTRY_CATEGORIES = 'GET_CUSTOMER_INDUSTRY_CATEGORIES'
 export const ADD_CUSTOMER_INDUSTRY_CATEGORY = 'ADD_CUSTOMER_INDUSTRY_CATEGORY'
@@ -10,7 +12,12 @@ export const EDIT_CUSTOMER_INDUSTRY_CATEGORY = 'EDIT_CUSTOMER_INDUSTRY_CATEGORY'
 export const REMOVE_CUSTOMER_INDUSTRY_CATEGORY = 'REMOVE_CUSTOMER_INDUSTRY_CATEGORY'
 
 export type CustomerState = {
-    customerMenu: ICustomer[] | null,
+    customerMenu: ICustomer[] | null
+
+    infoPage: {
+        customer: ICustomer | null
+        projects: IProject[] | null
+    }
 
     industryCategories: IndustryCategory[] | null
 }
@@ -33,6 +40,14 @@ type GetCustomers = {
     type: typeof GET_CUSTOMERS,
     payload: {
         customers: ICustomer[]
+    }
+}
+
+type GetCustomerInfo = {
+    type: typeof GET_CUSTOMER_INFO,
+    payload: {
+        customer: ICustomer
+        projects: IProject[]
     }
 }
 
@@ -75,6 +90,7 @@ export type CustomerActionType =
     AddCustomer |
     UpdateCustomer |
     GetCustomers |
+    GetCustomerInfo |
     RemoveCustomer |
     GetCustomerIndustryCategories |
     AddCustomerIndustryCategory |

@@ -23,7 +23,7 @@ import {
 } from "./types";
 import { RootState } from "stores";
 import { MemberStatus } from "contracts/member";
-import { regularizeCustomerData } from "stores/customer/utils";
+import { regularizeCustomerData } from "stores/utils/regularizeCustomerData";
 import { regularizeTeamData } from "stores/utils/regularizeTeamData";
 import { regularizeProjectData } from "stores/utils/regularizeProjectData";
 import { regularizeMemberData } from "stores/utils/regularizeMemberData";

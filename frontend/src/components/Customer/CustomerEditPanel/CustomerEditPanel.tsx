@@ -47,7 +47,8 @@ class FieldItem extends Component<{
 
 type IProps = WithStyles<typeof styles> & WithSnackbarProps & {
     customer?: ICustomer | null
-    industryCategories: IndustryCategory[]
+    industryCategories: IndustryCategory[] | null
+    load: () => Promise<void>
     createCustomer: (data: any) => Promise<void>
     updateCustomer: (id: number | string, data: any) => Promise<void>
     onSubmitSuccess?: () => void
@@ -106,9 +107,13 @@ class CustomerEditPanel extends Component<IProps, IState> {
         }
     }
 
+    componentDidMount() {
+        this.props.industryCategories || this.props.load()
+    }
+
     handleFieldChange(propertyName: keyof Fields, event: ChangeEvent<HTMLInputElement>) {
         const fields: any = this.state.fields
-        fields[propertyName] = event.target.value.trim() || undefined
+        fields[propertyName] = event.target.value.trimLeft() || undefined
 
         this.setState({ fields })
         this.checkFields(propertyName)
@@ -285,7 +290,7 @@ class CustomerEditPanel extends Component<IProps, IState> {
                         hint={errors.address}
                     />
 
-                    {industryCategories.length ? (
+                    {industryCategories && industryCategories.length ? (
                         <Paper className="p-3 mb-3">
                             <IndustrySelectionMenu
                                 multiple

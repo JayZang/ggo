@@ -9,8 +9,10 @@ import CustomerProjectList from 'components/Customer/Info/ProjectList'
 import CustomerProjectsReview from 'components/Customer/Info/ProjectReview'
 import AnnualProjectCountChart from 'components/Customer/Info/AnnualProjectCountChart'
 import YearsProjectCountChart from 'components/Customer/Info/YearsProjectCountChart'
-import { ICustomer } from 'contracts/customer'
+import CustomerEditDrawer from 'components/Customer/CustomerEditPanel/CustomerEditDrawer'
+import { ICustomer, IndustryCategory } from 'contracts/customer'
 import styled from 'styled-components'
+import { IProject } from 'contracts/project'
 
 class LabelInfoCard extends Component<{
     title: React.ReactNode
@@ -43,20 +45,43 @@ type IProps = {
     id: number | string
     className?: string
     customer: ICustomer | null
+    projects: IProject[] | null
     statistic: {
         projectTotalCount: number | null
         projectCurrentYearCount: number | null
         projectAvgSpendTime: string | null
-    }
+    },
+    load: (id: number | string) => Promise<void>
 }
 
-class CustomerInfoPage extends Component<IProps> {
+type IState = {
+    openEditPanel: boolean
+    loaded: boolean
+}
+
+class CustomerInfoPage extends Component<IProps, IState> {
+    state = {
+        openEditPanel: false,
+        loaded: false
+    }
+
+    async componentDidMount() {
+        const { customer, id } = this.props
+        if (!customer || customer.id != id)
+            await this.props.load(id)
+        this.setState({ loaded: true })
+    }
+
     render() {
-        const {
-            className,
-            customer,
-            statistic
-        } = this.props
+        const { className } = this.props
+        const { loaded, openEditPanel } = this.state
+        const customer = loaded ? this.props.customer : null
+        const projects = loaded ? this.props.projects : null
+        const statistic = loaded ? this.props.statistic : {
+            projectTotalCount: null,
+            projectCurrentYearCount: null,
+            projectAvgSpendTime: null,
+        }
 
         return (
             <AppContent
@@ -71,7 +96,7 @@ class CustomerInfoPage extends Component<IProps> {
                     <Grid item xs={4} style={{ position: 'sticky', top: 0, height: '100%' }}>
                         <Box marginBottom={1}>
                             {customer ? (
-                                <Typography>
+                                <Typography variant="h4">
                                     {customer.company_name}
                                 </Typography>
                             ) : (
@@ -81,6 +106,7 @@ class CustomerInfoPage extends Component<IProps> {
                         <CustomerInfoCard 
                             customer={customer}
                             hiddenCompanyName
+                            onEditBtnClick={() => this.setState({ openEditPanel: true })}
                         />
                     </Grid>
                     <Grid item xs={8}>
@@ -118,7 +144,7 @@ class CustomerInfoPage extends Component<IProps> {
                             </Grid>
                             <Grid item>
                                 <CustomerProjectList 
-                                    projects={null}
+                                    projects={projects}
                                 /> 
                             </Grid>
                             <Grid item>
@@ -139,6 +165,15 @@ class CustomerInfoPage extends Component<IProps> {
                         </Grid>
                     </Grid>
                 </Grid>
+
+                {customer && (
+                    <CustomerEditDrawer
+                        open={openEditPanel}
+                        customer={customer}
+                        onOpen={() => this.setState({ openEditPanel: true })}
+                        onClose={() => this.setState({ openEditPanel: false })}
+                    />
+                )}
             </AppContent>
         )
     }

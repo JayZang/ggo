@@ -83,6 +83,25 @@ export default class CustomerService {
     }
 
     /**
+     * Get a customer
+     */
+    public async getOne(id: string | number) {
+        try {
+            const customerRepo = getCustomRepository(CustomerRepo)
+            return await customerRepo
+                .initQueryBuilder()
+                .withIdCondition(id)
+                .withIndustryCategoryRelation()
+                .withProjectsRelation()
+                .getOne()
+        } catch (err) {
+            console.log('Get a customer fail')
+            console.log(err.toString())
+            return null
+        }
+    }
+
+    /**
      * Remove customer
      */
     public async remove(id: string | number) {
