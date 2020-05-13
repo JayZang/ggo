@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, CardContent, CardHeader, Table, TableBody, TableRow, TableCell, CardActions, Button, Divider, Box } from '@material-ui/core'
+import { Card, CardContent, CardHeader, Table, TableBody, TableRow, TableCell, CardActions, Button, Divider, Box, Grid, Chip } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 import EditIcon from '@material-ui/icons/Edit'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
@@ -34,6 +34,15 @@ class CustomerInfoCard extends Component<IProps> {
                     />
                 )}
                 <CardContent>
+                    <Grid container spacing={1} className="mb-2">
+                        {customer && customer.industry_categories ? customer.industry_categories.map(industryCategory => (
+                            <Grid item key={industryCategory.id}>
+                                <Chip
+                                    label={industryCategory.name}
+                                />
+                            </Grid>
+                        )) : null}
+                    </Grid>
                     <Table>
                         <TableBody>
                             <TableRow>
