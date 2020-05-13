@@ -1,6 +1,6 @@
 import { EntityRepository } from 'typeorm'
 
-import { BaseRepository } from './BaseRepocitory'
+import { BaseRepository } from './BaseRepository'
 import IndustryCategory from '@/entity/IndustryCategory'
 
 @EntityRepository(IndustryCategory)

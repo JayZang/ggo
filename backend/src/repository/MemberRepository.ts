@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { EntityRepository } from 'typeorm'
 
-import { BaseRepository } from './BaseRepocitory'
+import { BaseRepository } from './BaseRepository'
 import Member, { MemberStatus } from '@/entity/Member'
 
 @EntityRepository(Member)

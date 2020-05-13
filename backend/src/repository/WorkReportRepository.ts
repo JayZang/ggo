@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm'
 import _ from 'lodash'
 
-import { BaseRepository } from './BaseRepocitory'
+import { BaseRepository } from './BaseRepository'
 import WorkReport from '@/entity/WorkReport'
 
 @EntityRepository(WorkReport)

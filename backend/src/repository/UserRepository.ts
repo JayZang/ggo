@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 import User, { UserIdentityType } from '@/entity/User'
 import MemberRepo from './MemberRepository'
-import { BaseRepository } from './BaseRepocitory'
+import { BaseRepository } from './BaseRepository'
 
 @EntityRepository(User)
 class UserRepository extends BaseRepository<User> {

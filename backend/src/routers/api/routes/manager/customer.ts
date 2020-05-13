@@ -77,7 +77,7 @@ export default (app: Router) => {
     })
 
     router.get('/:id', async (req: Request, res: Response) => {
-        const customer = await customerService.getOne(req.params.id)
+        const customer = await customerService.getDetail(req.params.id)
         
         return customer ?
             res.json(customer) :

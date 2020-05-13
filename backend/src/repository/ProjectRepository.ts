@@ -2,7 +2,7 @@ import { EntityRepository, Not, IsNull } from 'typeorm'
 import _ from 'lodash'
 
 import Project, { ProjectSrcType } from '@/entity/Project'
-import { BaseRepository } from './BaseRepocitory'
+import { BaseRepository } from './BaseRepository'
 
 @EntityRepository(Project)
 class ProjectRepository extends BaseRepository<Project> {

@@ -1,10 +1,12 @@
 import { Service } from 'typedi'
+import moment from 'moment'
 import { getCustomRepository } from 'typeorm'
 
 import { resource } from '@/config'
 import CustomerRepo from '@/repository/CustomerRepository'
 import storeFileWithRandomName from '@/utils/storeFileWithRandomName'
 import IndustryCategoryRepo from '@/repository/IndustryCategoryRepository'
+import ProjectService from './ProjectService'
 
 @Service()
 export default class CustomerService {
@@ -85,15 +87,46 @@ export default class CustomerService {
     /**
      * Get a customer
      */
-    public async getOne(id: string | number) {
+    public async getDetail(id: string | number) {
         try {
             const customerRepo = getCustomRepository(CustomerRepo)
-            return await customerRepo
+            const customer = await customerRepo
                 .initQueryBuilder()
                 .withIdCondition(id)
                 .withIndustryCategoryRelation()
                 .withProjectsRelation()
                 .getOne()
+
+            if (!customer)
+                return null
+
+            let projectCompletedCount = 0
+            const now = moment()
+            const projectTotalCount = customer.projects.length
+            const projectCurrentYearCount = customer.projects.filter(project => {
+                return moment(project.create_at).year() === now.year()
+            }).length
+            const projectAvgSpendTime = projectTotalCount && customer.projects.reduce((prevSpendTime, project) => {
+                if (!project.finish_datetime)
+                    return prevSpendTime
+                projectCompletedCount++
+                return prevSpendTime + moment(project.finish_datetime).diff(project.start_datetime)
+            }, 0) / projectCompletedCount
+            const projectsOfReview = customer.projects.filter(project => {
+                const createAt = moment(project.create_at)
+                if (createAt.year() === now.year())
+                    return false
+                const monthDiff = Math.abs(createAt.month() - now.month())
+                return monthDiff <= 3 || monthDiff >= 9
+            })
+
+            return {
+                customer,
+                projectTotalCount,
+                projectCurrentYearCount,
+                projectAvgSpendTime,
+                projectsOfReview
+            }
         } catch (err) {
             console.log('Get a customer fail')
             console.log(err.toString())

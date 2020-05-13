@@ -10,7 +10,7 @@ import CustomerProjectsReview from 'components/Customer/Info/ProjectReview'
 import AnnualProjectCountChart from 'components/Customer/Info/AnnualProjectCountChart'
 import YearsProjectCountChart from 'components/Customer/Info/YearsProjectCountChart'
 import CustomerEditDrawer from 'components/Customer/CustomerEditPanel/CustomerEditDrawer'
-import { ICustomer, IndustryCategory } from 'contracts/customer'
+import { ICustomer } from 'contracts/customer'
 import styled from 'styled-components'
 import { IProject } from 'contracts/project'
 
@@ -46,6 +46,7 @@ type IProps = {
     className?: string
     customer: ICustomer | null
     projects: IProject[] | null
+    projectsOfReview: IProject[] | null
     statistic: {
         projectTotalCount: number | null
         projectCurrentYearCount: number | null
@@ -77,6 +78,7 @@ class CustomerInfoPage extends Component<IProps, IState> {
         const { loaded, openEditPanel } = this.state
         const customer = loaded ? this.props.customer : null
         const projects = loaded ? this.props.projects : null
+        const projectsOfReview = loaded ? this.props.projectsOfReview : null
         const statistic = loaded ? this.props.statistic : {
             projectTotalCount: null,
             projectCurrentYearCount: null,
@@ -111,13 +113,13 @@ class CustomerInfoPage extends Component<IProps, IState> {
                     </Grid>
                     <Grid item xs={8}>
                         <Box  height={40} marginBottom={1} />
-                        <Grid container direction="column" spacing={3}>
+                        <Grid container direction="column" spacing={3} wrap="nowrap">
                             <Grid item>
                                 <Grid container spacing={3}>
                                     <Grid item xs>
                                         <LabelInfoCard 
                                             title="專案總數" 
-                                            info={statistic.projectTotalCount ? statistic.projectTotalCount : (
+                                            info={statistic.projectTotalCount !== null ? statistic.projectTotalCount : (
                                                 <Skeleton width={80} height={40} />
                                             )} 
                                         />
@@ -125,7 +127,7 @@ class CustomerInfoPage extends Component<IProps, IState> {
                                     <Grid item xs>
                                         <LabelInfoCard 
                                             title="今年專案數" 
-                                            info={statistic.projectCurrentYearCount ? statistic.projectCurrentYearCount : (
+                                            info={statistic.projectCurrentYearCount !== null ? statistic.projectCurrentYearCount : (
                                                 <Skeleton width={80} height={40} />
                                             )} 
                                         />
@@ -135,7 +137,7 @@ class CustomerInfoPage extends Component<IProps, IState> {
                                             title={(
                                                 <Box>平均專案<br />花費時長</Box>
                                             )} 
-                                            info={statistic.projectAvgSpendTime ? statistic.projectAvgSpendTime : (
+                                            info={statistic.projectAvgSpendTime !== null ? statistic.projectAvgSpendTime : (
                                                 <Skeleton width={80} height={40} />
                                             )} 
                                         />
@@ -149,17 +151,44 @@ class CustomerInfoPage extends Component<IProps, IState> {
                             </Grid>
                             <Grid item>
                                 <CustomerProjectsReview 
-                                    projects={null}
+                                    projects={projectsOfReview}
                                 /> 
                             </Grid>
                             <Grid item>
                                 <AnnualProjectCountChart 
-                                    data={null}
+                                    data={loaded && projects ? 
+                                        projects.reduce<{ year: number, count: number[] }[]>((data, project) => {
+                                            if (!data[project.create_at.year()]) {
+                                                const count: number[] = []
+                                                count.length = 12
+                                                count.fill(0)
+                                                data[project.create_at.year()] = {
+                                                    year: project.create_at.year(),
+                                                    count
+                                                }
+                                            }
+                                            data[project.create_at.year()].count[project.create_at.month()]++
+                                            return data
+                                        }, []).filter(data => data).sort((a, b) => b.year - a.year) : 
+                                        null
+                                    }
                                 /> 
                             </Grid>
                             <Grid item>
                                 <YearsProjectCountChart 
-                                    data={null}
+                                    data={loaded && projects ? 
+                                        projects.reduce<{ year: number, count: number }[]>((data, project) => {
+                                            if (!data[project.create_at.year()]) {
+                                                data[project.create_at.year()] = {
+                                                    year: project.create_at.year(),
+                                                    count: 0
+                                                }
+                                            }
+                                            data[project.create_at.year()].count++
+                                            return data
+                                        }, []).filter(data => data).sort((a, b) => b.year - a.year) : 
+                                        null
+                                    }
                                 /> 
                             </Grid>
                         </Grid>

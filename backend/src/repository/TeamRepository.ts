@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 import Team from '@/entity/Team'
 import TaskAssignment, { TaskAssignmentType } from '@/entity/TaskAssignment'
-import { BaseRepository } from './BaseRepocitory'
+import { BaseRepository } from './BaseRepository'
 
 @EntityRepository(Team)
 class TeamRepository extends BaseRepository<Team> {

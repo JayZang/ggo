@@ -24,23 +24,15 @@ class YearsProjectCountChart extends Component<IProps> {
     }
 
    get  years() {
-        const years: number[] = []
-        for (let year = 2018; year <=  this.now.year(); year++)
-            years.push(year)
-        return years
+        return this.props.data && this.props.data.length ?
+            this.props.data.map(d => d.year).sort((a, b) => a - b) :
+            [this.now.year()]
     }
 
     get count() {
-        const count: number[] = []
-
-        if (!this.props.data) 
-            return count
-
-        for (let year = 2018; year <=  this.now.year(); year++) {
-            const index = this.props.data.findIndex(data => data.year === year)
-            count.push(index === -1 ? 0 : this.props.data[index].count)
-        }
-        return count
+        return this.props.data ?
+            this.props.data.sort((a, b) => a.year - b.year).map(d => d.count) :
+            []
     }
 
     render() {
@@ -59,6 +51,11 @@ class YearsProjectCountChart extends Component<IProps> {
                             series: [
                                 this.count
                             ]
+                        }}
+                        options={{
+                            axisY: {
+                                onlyInteger: true
+                            }
                         }}
                     />
                 </CardContent>

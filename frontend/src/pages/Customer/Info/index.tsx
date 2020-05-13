@@ -8,10 +8,11 @@ import { fetchCustomerInfo } from 'stores/customer/action';
 const mapStateToProps = (state: RootState) => ({
     customer: state.customer.infoPage.customer,
     projects: state.customer.infoPage.projects,
+    projectsOfReview: state.customer.infoPage.projectsOfReview,
     statistic: {
-        projectTotalCount: null,
-        projectCurrentYearCount: null,
-        projectAvgSpendTime: null
+        projectTotalCount: state.customer.infoPage.projectTotalCount,
+        projectCurrentYearCount: state.customer.infoPage.projectCurrentYearCount,
+        projectAvgSpendTime: state.customer.infoPage.projectAvgSpendTime
     }
 })
 

@@ -17,6 +17,10 @@ export type CustomerState = {
     infoPage: {
         customer: ICustomer | null
         projects: IProject[] | null
+        projectTotalCount: number | null
+        projectCurrentYearCount: number | null
+        projectAvgSpendTime: string | null
+        projectsOfReview: IProject[] | null
     }
 
     industryCategories: IndustryCategory[] | null
@@ -48,6 +52,10 @@ type GetCustomerInfo = {
     payload: {
         customer: ICustomer
         projects: IProject[]
+        projectTotalCount: number
+        projectCurrentYearCount: number
+        projectAvgSpendTime: string
+        projectsOfReview: IProject[]
     }
 }
 

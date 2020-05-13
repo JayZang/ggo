@@ -2,7 +2,7 @@ import { EntityRepository, ObjectLiteral } from 'typeorm'
 import _ from 'lodash'
 
 import Customer from '@/entity/Customer'
-import { BaseRepository } from './BaseRepocitory'
+import { BaseRepository } from './BaseRepository'
 
 @EntityRepository(Customer)
 class CustomerRepository extends BaseRepository<Customer> {
@@ -33,7 +33,7 @@ class CustomerRepository extends BaseRepository<Customer> {
             this.projectsAlias
         )
         this.queryBuilder.orderBy(
-            `${this.projectsAlias}.id`,
+            `${this.projectsAlias}.create_at`,
             order
         )
         return this

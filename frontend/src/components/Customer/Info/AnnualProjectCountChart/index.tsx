@@ -16,7 +16,6 @@ type IProps = {
 
 type IState = {
     year: number
-    count: number[]
 }
 
 class AnnualProjectCountChart extends Component<IProps, IState> {
@@ -28,9 +27,28 @@ class AnnualProjectCountChart extends Component<IProps, IState> {
         this.now = moment()
 
         this.state = {
-            year: props.data && props.data.length ? props.data[0].year : this.now.year(),
-            count: props.data && props.data.length ? props.data[0].count : []
+            year: this.years[0]
         }
+    }
+
+    componentDidUpdate(prevProps: IProps) {
+        if (prevProps.data !== this.props.data)
+            this.setState({
+                year: this.years[0]
+            })
+    }
+
+    get years() {
+        return this.props.data && this.props.data.length ?
+            this.props.data.map(d => d.year).sort((a, b) => b - a) : 
+            [this.now.year()]
+    }
+
+    get count() {
+        if (!this.props.data)
+            return []
+        const index = this.props.data ? this.props.data.findIndex(d => d.year === this.state.year) : -1
+        return index === -1 ? [] : this.props.data![index].count
     }
 
     render() {
@@ -39,7 +57,6 @@ class AnnualProjectCountChart extends Component<IProps, IState> {
         } = this.props
         const {
             year,
-            count
         } = this.state
 
         return (
@@ -57,19 +74,12 @@ class AnnualProjectCountChart extends Component<IProps, IState> {
                                 className: 'py-1'
                             }}
                             onChange={event => this.setState({ 
-                                year: event.target.value as number,
-                                count: (() => {
-                                    const index = this.props.data ? this.props.data.findIndex(d => d.year === event.target.value) : -1
-                                    return index === -1 ? [] : this.props.data![index].count
-                                })()
+                                year: event.target.value as number
                              })}
                         >
-                            {(() => {
-                                let menu: React.ReactNode[] = []
-                                for (let year = this.now.year(); year >= 2018; year--)
-                                    menu.push(<MenuItem value={year} key={year}>{year}</MenuItem>)
-                                return menu
-                            })()}
+                            {this.years.map(year => (
+                                <MenuItem value={year} key={year}>{year}</MenuItem>
+                            ))}}
                         </Select>
                     )}
                 />
@@ -79,8 +89,13 @@ class AnnualProjectCountChart extends Component<IProps, IState> {
                         data={{
                             labels: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
                             series: [
-                                count
+                                this.count
                             ]
+                        }}
+                        options={{
+                            axisY: {
+                                onlyInteger: true
+                            }
                         }}
                     />
                 </CardContent>

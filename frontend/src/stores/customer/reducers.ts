@@ -4,7 +4,11 @@ const initState: CustomerState = {
     customerMenu: null,
     infoPage: {
         customer: null,
-        projects: null
+        projects: null,
+        projectTotalCount: null,
+        projectCurrentYearCount: null,
+        projectAvgSpendTime: null,
+        projectsOfReview: null
     },
     industryCategories: null
 }
